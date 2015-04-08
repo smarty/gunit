@@ -141,10 +141,27 @@ const (
 )
 
 //////////////////////////////////////////////////////////////////////////////
+
+type SkipFixture struct {
+	*gunit.TestCase
+}
+
+type FocusFixture struct {
+	*gunit.TestCase
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // These types shouldn't be parsed as fixtures:
 
 type TestFixtureNoPointer struct {
 	gunit.TestCase
+}
+
+type TestFixtureWrongTestCase struct {
+	*blah.TestCase
+}
+type TestFixtureWrongPackage struct {
+	*gunit.TestCase2
 }
 
 type Hah interface {

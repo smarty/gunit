@@ -1,7 +1,10 @@
 package parse
 
 type Fixture struct {
-	StructName          string
+	Skipped    bool
+	Focused    bool
+	StructName string
+
 	FixtureSetupName    string
 	FixtureTeardownName string
 

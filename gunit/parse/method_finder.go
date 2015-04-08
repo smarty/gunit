@@ -45,11 +45,8 @@ func (self *FixtureMethodFinder) resolveFixture(function *ast.FuncDecl) *Fixture
 	if !isPointer {
 		return nil
 	}
-	fixtureName, isFixtureName := receiver.X.(*ast.Ident)
-	if !isFixtureName {
-		return nil
-	}
-	fixture, functionMatchesFixture := self.fixtures[fixtureName.Name]
+	fixtureName := receiver.X.(*ast.Ident).Name
+	fixture, functionMatchesFixture := self.fixtures[fixtureName]
 	if !functionMatchesFixture {
 		return nil
 	}

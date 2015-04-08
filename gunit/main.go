@@ -15,7 +15,7 @@ func init() {
 }
 
 func main() {
-	sourceFile := "parse/example_input_test.go"
+	sourceFile := "parse/example_input_test.go.txt"
 	source, err := ioutil.ReadFile(sourceFile)
 	fixtures, err := parse.ParseFixtures(string(source))
 	fatal(err)

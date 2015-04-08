@@ -10,9 +10,15 @@ import (
 //////////////////////////////////////////////////////////////////////////////
 
 func TestParseFileWithValidFixturesAndConstructs(t *testing.T) {
-	test := &FixtureParsingFixture{t: t, input: "example_input_test.go"}
+	test := &FixtureParsingFixture{t: t, input: "example_input_test.go.txt"}
 	test.ParseFixtures()
 	test.AssertFixturesParsedAccuratelyAndCompletely()
+}
+
+func TestParseFileWithMalformedSourceCode(t *testing.T) {
+	test := &FixtureParsingFixture{t: t, input: "example_input_failure_test.go.txt"}
+	test.ParseFixtures()
+	test.AssertErrorWasReturned()
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -64,6 +70,12 @@ func (self *FixtureParsingFixture) assertParsedFixturesAreCorrect() {
 	}
 }
 
+func (self *FixtureParsingFixture) AssertErrorWasReturned() {
+	if self.parseError == nil {
+		self.t.Error("Expected an error, but got nil instead")
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 var (
@@ -84,6 +96,14 @@ var (
 			},
 			TestSetupName:    "SetupTheGame",
 			TestTeardownName: "TeardownTheGame",
+		},
+		{
+			StructName: "SkipFixture",
+			Skipped:    true,
+		},
+		{
+			StructName: "FocusFixture",
+			Focused:    true,
 		},
 	}
 )
