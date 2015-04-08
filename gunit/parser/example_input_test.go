@@ -1,4 +1,4 @@
-package main_test
+package parser
 
 import (
 	"github.com/smartystreets/assertions/should"
@@ -11,8 +11,12 @@ type BowlingGameScoringTests struct {
 	game *Game
 }
 
-func (self *BowlingGameScoringTests) Setup() {
+func (self *BowlingGameScoringTests) SetupTheGame() {
 	self.game = NewGame()
+}
+
+func (self *BowlingGameScoringTests) TeardownTheGame() {
+	self.game = nil
 }
 
 func (self *BowlingGameScoringTests) TestAfterAllGutterBallsTheScoreShouldBeZero() {
@@ -25,6 +29,9 @@ func (self *BowlingGameScoringTests) TestAfterAllOnesTheScoreShouldBeTwenty() {
 	self.So(self.game.Score(), should.Equal, 20)
 }
 
+func (self *BowlingGameScoringTests) SkipTestASpareDeservesABonus()      {}
+func (self *BowlingGameScoringTests) FocusTestAStrikeDeservesABigBonus() {}
+
 func (self *BowlingGameScoringTests) rollMany(times, pins int) {
 	for x := 0; x < times; x++ {
 		self.game.Roll(pins)
@@ -36,6 +43,17 @@ func (self *BowlingGameScoringTests) rollSpare() {
 }
 func (self *BowlingGameScoringTests) rollStrike() {
 	self.game.Roll(10)
+}
+
+func (self *BowlingGameScoringTests) TestNotNiladic_ShouldNotBeCollected(a int) {
+	// This should not be collected (it's not niladic)
+}
+func (self *BowlingGameScoringTests) TestNotVoid_ShouldNOTBeCollected() int {
+	return -1
+	// This should not be collected (it's not void)
+}
+func (self BowlingGameScoringTests) TestNotPointerReceiver_ShouldNOTBeCollected() {
+	// This should not be collected (it doesn't have a pointer receiver)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -116,6 +134,10 @@ const (
 
 //////////////////////////////////////////////////////////////////////////////
 // These types shouldn't be parsed as fixtures:
+
+type TestFixtureNoPointer struct {
+	gunit.TestCase
+}
 
 type Hah interface {
 	Hi() string
