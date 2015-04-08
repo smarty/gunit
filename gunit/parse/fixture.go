@@ -1,4 +1,4 @@
-package parser
+package parse
 
 type Fixture struct {
 	StructName          string

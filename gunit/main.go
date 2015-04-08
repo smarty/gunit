@@ -7,17 +7,17 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/smartystreets/gunit/gunit/parser"
+	"github.com/smartystreets/gunit/gunit/parse"
 )
 
 func init() {
-	parser.DEBUG = true
+	parse.DEBUG = true
 }
 
 func main() {
-	sourceFile := "parser/example_input_test.go"
+	sourceFile := "parse/example_input_test.go"
 	source, err := ioutil.ReadFile(sourceFile)
-	fixtures, err := parser.ParseFixtures(string(source))
+	fixtures, err := parse.ParseFixtures(string(source))
 	fatal(err)
 	fmt.Println(fixtures)
 }
