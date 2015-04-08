@@ -29,7 +29,7 @@ func (self *FixtureMethodFinder) Visit(node ast.Node) ast.Visitor {
 		return self
 	}
 
-	if !validTestCaseSignature(function) {
+	if !isExportedAndVoidAndNiladic(function) {
 		return self
 	}
 
@@ -56,7 +56,7 @@ func (self *FixtureMethodFinder) resolveFixture(function *ast.FuncDecl) *Fixture
 	return fixture
 }
 
-func validTestCaseSignature(function *ast.FuncDecl) bool {
+func isExportedAndVoidAndNiladic(function *ast.FuncDecl) bool {
 	if isExported := function.Name.IsExported(); !isExported {
 		return false
 	}

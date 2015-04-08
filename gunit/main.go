@@ -15,7 +15,7 @@ func init() {
 }
 
 func main() {
-	sourceFile := "example_input_test.go"
+	sourceFile := "parser/example_input_test.go"
 	source, err := ioutil.ReadFile(sourceFile)
 	fixtures, err := parser.ParseFixtures(string(source))
 	fatal(err)
@@ -29,6 +29,6 @@ func main() {
 
 func fatal(err error) {
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("STUFF:", err)
 	}
 }

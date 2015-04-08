@@ -7,6 +7,8 @@ import (
 	. "github.com/smartystreets/assertions"
 )
 
+//////////////////////////////////////////////////////////////////////////////
+
 func TestParseFileWithValidFixturesAndConstructs(t *testing.T) {
 	test := &FixtureParsingFixture{t: t, input: "example_input_test.go"}
 	test.ParseFixtures()
@@ -33,7 +35,8 @@ func (self *FixtureParsingFixture) ParseFixtures() {
 func (self *FixtureParsingFixture) AssertFixturesParsedAccuratelyAndCompletely() {
 	self.assertFileWasReadWithoutError()
 	self.assertFileWasParsedWithoutError()
-	self.assertFixturesAreUnderstood()
+	self.assertAllFixturesParsed()
+	self.assertParsedFixturesAreCorrect()
 }
 func (self *FixtureParsingFixture) assertFileWasReadWithoutError() {
 	if self.readError != nil {
@@ -47,12 +50,13 @@ func (self *FixtureParsingFixture) assertFileWasParsedWithoutError() {
 		self.t.FailNow()
 	}
 }
-func (self *FixtureParsingFixture) assertFixturesAreUnderstood() {
+func (self *FixtureParsingFixture) assertAllFixturesParsed() {
 	if len(self.fixtures) != len(expected) {
 		self.t.Logf("Problem: Got back the wrong number of fixtures. Expected: %d Got: %d", len(expected), len(self.fixtures))
 		self.t.FailNow()
 	}
-
+}
+func (self *FixtureParsingFixture) assertParsedFixturesAreCorrect() {
 	for x := 0; x < len(expected); x++ {
 		if ok, message := So(self.fixtures[x], ShouldResemble, expected[x]); !ok {
 			self.t.Errorf("Comparison failure for record: %d\n%s", x, message)
@@ -65,7 +69,9 @@ func (self *FixtureParsingFixture) assertFixturesAreUnderstood() {
 var (
 	expected = []*Fixture{
 		{
-			StructName: "BowlingGameScoringTests",
+			StructName:          "BowlingGameScoringTests",
+			FixtureSetupName:    "SetupBowlingGameScoringTests",
+			FixtureTeardownName: "TeardownBowlingGameScoringTests",
 			TestCaseNames: []string{
 				"TestAfterAllGutterBallsTheScoreShouldBeZero",
 				"TestAfterAllOnesTheScoreShouldBeTwenty",

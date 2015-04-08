@@ -20,6 +20,7 @@ func ParseFixtures(code string) ([]*Fixture, error) {
 
 	collection := NewFixtureCollector().Collect(file)
 	collection = NewFixtureMethodFinder(collection).Find(file)
+	collection = NewFixtureSetupTeardownFinder(collection).Find(file)
 
 	fixtures := []*Fixture{}
 	for _, fixture := range collection {

@@ -5,6 +5,14 @@ import (
 	"github.com/smartystreets/gunit"
 )
 
+func SetupBowlingGameScoringTests()    {}
+func TeardownBowlingGameScoringTests() {}
+
+func Setup_BLAHBLAH_BowlingGameScoringTests()    {} // should NOT match
+func Teardown_BLAHBLAH_BowlingGameScoringTests() {} // should NOT match
+func Setup()                                     {} // should NOT match (not specific to a fixture)
+func Teardown()                                  {} // should NOT match (not specific to a fixture)
+
 type BowlingGameScoringTests struct {
 	*gunit.TestCase
 
