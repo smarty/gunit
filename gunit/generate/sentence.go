@@ -7,6 +7,8 @@ import (
 	"bytes"
 )
 
+// TODO: implement apostrophe insertion for known contractions (http://www.enchantedlearning.com/grammar/contractions/list.shtml)
+
 // toSentence turns identifiers (pascal-cased or underscored) into sentences.
 // It replaces underscores with spaces (ie. 'Super_awesome' -> 'super awesome').
 // It inserts spaces at casing boundaries (id. 'SuperAwesome' -> 'Super awesome').
