@@ -64,7 +64,8 @@ func (self *FixtureParsingFixture) assertAllFixturesParsed() {
 }
 func (self *FixtureParsingFixture) assertParsedFixturesAreCorrect() {
 	for x := 0; x < len(expected); x++ {
-		if ok, message := So(self.fixtures[x], ShouldResemble, expected[x]); !ok {
+		key := self.fixtures[x].StructName
+		if ok, message := So(self.fixtures[x], ShouldResemble, expected[key]); !ok {
 			self.t.Errorf("Comparison failure for record: %d\n%s", x, message)
 		}
 	}
@@ -79,8 +80,8 @@ func (self *FixtureParsingFixture) AssertErrorWasReturned() {
 //////////////////////////////////////////////////////////////////////////////
 
 var (
-	expected = []*Fixture{
-		{
+	expected = map[string]*Fixture{
+		"BowlingGameScoringTests": {
 			StructName:          "BowlingGameScoringTests",
 			FixtureSetupName:    "SetupBowlingGameScoringTests",
 			FixtureTeardownName: "TeardownBowlingGameScoringTests",
@@ -97,11 +98,11 @@ var (
 			TestSetupName:    "SetupTheGame",
 			TestTeardownName: "TeardownTheGame",
 		},
-		{
+		"SkipFixture": {
 			StructName: "SkipFixture",
 			Skipped:    true,
 		},
-		{
+		"FocusFixture": {
 			StructName: "FocusFixture",
 			Focused:    true,
 		},
