@@ -10,6 +10,7 @@ import (
 	"github.com/smartystreets/gunit/gunit/parse"
 )
 
+// TODO: Unit tests!
 func TestFile(packageName string, fixtures []*parse.Fixture) string {
 	buffer := bytes.NewBufferString(fmt.Sprintf(header, packageName))
 	buffer.WriteString("\n///////////////////////////////////////////////////////////////////////////////\n\n")
