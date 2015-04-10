@@ -7,91 +7,56 @@ import (
 	"github.com/smartystreets/gunit/gunit/parse"
 )
 
-func TestGenerateSetupsAndCasesAndTeardowns(t *testing.T) {
-	actual := singleLine(TestFile("blah", inputs))
-	if actual != expected {
-		t.Errorf("\nExpected: [%s]\nActual:   [%s]", expected, actual)
+//////////////////////////////////////////////////////////////////////////////
+
+func TestGenerateTestFunction(t *testing.T) {
+	for i, test := range testFunction_TestCases {
+		actual := strings.TrimSpace(TestFunction(test.input))
+		expected := strings.TrimSpace(test.expected)
+		if actual != expected {
+			t.Errorf("FAILED: Case #%d\nExpected:\n%s\n\nActual:\n%s", i, expected, actual)
+		} else {
+			t.Log("✔ " + test.description)
+		}
 	}
 }
 
-func singleLine(value string) string {
-	return strings.Replace(value, "\n", "|", -1)
+type TestFunction_TestCase struct {
+	input       *parse.Fixture
+	expected    string
+	description string
+	SKIP        bool
 }
 
-//////////////////////////////////////////////////////////////////////////////
+var testFunction_TestCases = []TestFunction_TestCase{
 
-var (
-	inputs = []*parse.Fixture{
-		{
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
+			StructName: "A",
+		},
+		expected: `
+
+func TestA(t *testing.T) {
+	fixture := gunit.NewFixture(t)
+	defer fixture.Finalize()
+
+	fixture.Skip("Fixture 'A' has no test cases.")
+}
+
+`,
+		description: "single fixture with no test cases",
+	},
+
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
 			StructName: "B",
 			TestCases:  []parse.TestCase{{Index: 0, Name: "TestB1", StructName: "B"}},
 		},
-		{
-			StructName:    "C",
-			TestSetupName: "SetupC_",
-			TestCases: []parse.TestCase{
-				{Index: 0, Name: "TestC1", StructName: "C"},
-				{Index: 1, Name: "TestC2", StructName: "C"},
-			},
-		},
-		{
-			StructName:       "D",
-			TestTeardownName: "TeardownD_",
-			TestCases: []parse.TestCase{
-				{Index: 0, Name: "TestD1", StructName: "D"},
-				{Index: 1, Name: "TestD2", StructName: "D"},
-			},
-		},
-		{
-			StructName:       "E",
-			TestSetupName:    "SetupE_",
-			TestTeardownName: "TeardownE_",
-			TestCases: []parse.TestCase{
-				{Index: 0, Name: "TestE1", StructName: "E"},
-				{Index: 1, Name: "TestE2", StructName: "E"},
-			},
-		},
-		{
-			StructName:       "F",
-			FixtureSetupName: "SetupF",
-			TestCases: []parse.TestCase{
-				{Index: 0, Name: "TestF1", StructName: "F"},
-				{Index: 1, Name: "TestF2", StructName: "F"},
-			},
-		},
-		{
-			StructName:          "G",
-			FixtureTeardownName: "TeardownG",
-			TestCases: []parse.TestCase{
-				{Index: 0, Name: "TestG1", StructName: "G"},
-				{Index: 1, Name: "TestG2", StructName: "G"},
-			},
-		},
-		{
-			StructName:          "H",
-			FixtureSetupName:    "SetupH",
-			FixtureTeardownName: "TeardownH",
-			TestCases: []parse.TestCase{
-				{Index: 0, Name: "TestH1", StructName: "H"},
-				{Index: 1, Name: "TestH2", StructName: "H"},
-			},
-		},
-	}
-)
-
-var expected = singleLine(`//////////////////////////////////////////////////////////////////////////////
-// Generated Code ////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-
-package blah
-
-import (
-	"testing"
-
-	"github.com/smartystreets/gunit"
-)
-
-//////////////////////////////////////////////////////////////////////////////
+		expected: `
 
 func TestB(t *testing.T) {
 	fixture := gunit.NewFixture(t)
@@ -106,7 +71,22 @@ func (self *B) RunTestCase__(test func(), description string) {
 	test()
 }
 
-//////////////////////////////////////////////////////////////////////////////
+`,
+		description: "A fixture with a single test case, no setups, no teardowns, no skips",
+	},
+
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
+			StructName:    "C",
+			TestSetupName: "SetupC_",
+			TestCases: []parse.TestCase{
+				{Index: 0, Name: "TestC1", StructName: "C"},
+				{Index: 1, Name: "TestC2", StructName: "C"},
+			},
+		},
+		expected: `
 
 func TestC(t *testing.T) {
 	fixture := gunit.NewFixture(t)
@@ -124,8 +104,21 @@ func (self *C) RunTestCase__(test func(), description string) {
 	self.SetupC_()
 	test()
 }
+`,
+		description: "A fixture with two test cases and a setup",
+	},
+	/////////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////
+	{
+		input: &parse.Fixture{
+			StructName:       "D",
+			TestTeardownName: "TeardownD_",
+			TestCases: []parse.TestCase{
+				{Index: 0, Name: "TestD1", StructName: "D"},
+				{Index: 1, Name: "TestD2", StructName: "D"},
+			},
+		},
+		expected: `
 
 func TestD(t *testing.T) {
 	fixture := gunit.NewFixture(t)
@@ -143,8 +136,23 @@ func (self *D) RunTestCase__(test func(), description string) {
 	defer self.TeardownD_()
 	test()
 }
+`,
+		description: "A fixture with a two test cases and a teardown",
+	},
 
-//////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
+			StructName:       "E",
+			TestSetupName:    "SetupE_",
+			TestTeardownName: "TeardownE_",
+			TestCases: []parse.TestCase{
+				{Index: 0, Name: "TestE1", StructName: "E"},
+				{Index: 1, Name: "TestE2", StructName: "E"},
+			},
+		},
+		expected: `
 
 func TestE(t *testing.T) {
 	fixture := gunit.NewFixture(t)
@@ -163,8 +171,22 @@ func (self *E) RunTestCase__(test func(), description string) {
 	self.SetupE_()
 	test()
 }
+`,
+		description: "A fixture with two test cases, a setup and a teardown",
+	},
 
-//////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
+			StructName:       "F",
+			FixtureSetupName: "SetupF",
+			TestCases: []parse.TestCase{
+				{Index: 0, Name: "TestF1", StructName: "F"},
+				{Index: 1, Name: "TestF2", StructName: "F"},
+			},
+		},
+		expected: `
 
 func TestF(t *testing.T) {
 	SetupF()
@@ -183,8 +205,22 @@ func (self *F) RunTestCase__(test func(), description string) {
 	self.T.Log(description)
 	test()
 }
+`,
+		description: "One-time fixture setup",
+	},
 
-//////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
+			StructName:          "G",
+			FixtureTeardownName: "TeardownG",
+			TestCases: []parse.TestCase{
+				{Index: 0, Name: "TestG1", StructName: "G"},
+				{Index: 1, Name: "TestG2", StructName: "G"},
+			},
+		},
+		expected: `
 
 func TestG(t *testing.T) {
 	defer TeardownG()
@@ -203,8 +239,23 @@ func (self *G) RunTestCase__(test func(), description string) {
 	self.T.Log(description)
 	test()
 }
+`,
+		description: "One-time fixture teardown",
+	},
 
-//////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
+			StructName:          "H",
+			FixtureSetupName:    "SetupH",
+			FixtureTeardownName: "TeardownH",
+			TestCases: []parse.TestCase{
+				{Index: 0, Name: "TestH1", StructName: "H"},
+				{Index: 1, Name: "TestH2", StructName: "H"},
+			},
+		},
+		expected: `
 
 func TestH(t *testing.T) {
 	defer TeardownH()
@@ -224,6 +275,61 @@ func (self *H) RunTestCase__(test func(), description string) {
 	self.T.Log(description)
 	test()
 }
+`,
+		description: "One-time fixture setup and teardown",
+	},
 
-//////////////////////////////////////////////////////////////////////////////
-`)
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
+			StructName: "I",
+			Skipped:    true,
+			TestCases: []parse.TestCase{
+				{Index: 0, Name: "TestI1", StructName: "I"},
+				{Index: 1, Name: "TestI2", StructName: "I"},
+			},
+		},
+		expected: `
+
+func TestI(t *testing.T) {
+	t.Skip("('I') Skipping test case: 'Test i1'")
+	t.Skip("('I') Skipping test case: 'Test i2'")
+}
+`,
+		description: "Skipping a fixture marks all test cases as skipped",
+	},
+
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
+			StructName: "J",
+			TestCases: []parse.TestCase{
+				{Index: 0, Name: "TestJ1", StructName: "J", Skipped: true},
+				{Index: 1, Name: "TestJ2", StructName: "J"},
+			},
+		},
+		expected: `
+
+func TestJ(t *testing.T) {
+	fixture := gunit.NewFixture(t)
+	defer fixture.Finalize()
+
+	test0 := &J{Fixture: fixture}
+	test0.Skip("Skipping test case: 'Test j1'")
+
+	test1 := &J{Fixture: fixture}
+	test1.RunTestCase__(test1.TestJ2, "Test j2")
+}
+
+func (self *J) RunTestCase__(test func(), description string) {
+	self.T.Log(description)
+	test()
+}
+`,
+		description: "Skipped test case alongside non-skipped test case",
+	},
+
+	/////////////////////////////////////////////////////////////////////////////////////////////
+}

@@ -1,19 +1,18 @@
 package generate
 
-const rawTestFile = `//////////////////////////////////////////////////////////////////////////////
-// Generated Code ////////////////////////////////////////////////////////////
+import "strings"
+
 //////////////////////////////////////////////////////////////////////////////
 
-package {{.PackageName}}
+var rawSkippedFixture = strings.TrimSpace(`
+func Test{{.StructName}}(t *testing.T) { {{range .TestCases}}
+	t.Skip("('{{.StructName}}') Skipping test case: '{{.Name | sentence}}'") {{end}}
+}
+`)
 
-import (
-	"testing"
-
-	"github.com/smartystreets/gunit"
-)
-{{range .Fixtures}}
 //////////////////////////////////////////////////////////////////////////////
 
+var rawTestFunction = strings.TrimSpace(`
 func Test{{.StructName}}(t *testing.T) { {{if .FixtureTeardownName}}
 	defer {{.FixtureTeardownName}}()
 	{{end}}{{if .FixtureSetupName}}{{.FixtureSetupName}}()
@@ -23,16 +22,42 @@ func Test{{.StructName}}(t *testing.T) { {{if .FixtureTeardownName}}
 	defer fixture.Finalize()
 
 {{range .TestCases}}
-	test{{.Index}} := &{{.StructName}}{Fixture: fixture}
-	test{{.Index}}.RunTestCase__(test{{.Index}}.{{.Name}}, "{{.Name | sentence}}")
+	test{{.Index}} := &{{.StructName}}{Fixture: fixture}{{if .Skipped}}
+	test{{.Index}}.Skip("Skipping test case: '{{.Name | sentence}}'"){{else}}
+	test{{.Index}}.RunTestCase__(test{{.Index}}.{{.Name}}, "{{.Name | sentence}}"){{end}}
+{{else}}	fixture.Skip("Fixture '{{.StructName}}' has no test cases.")
 {{end}}}
 
-func (self *{{.StructName}}) RunTestCase__(test func(), description string) {
+{{if .TestCases}}func (self *{{.StructName}}) RunTestCase__(test func(), description string) {
 	self.T.Log(description){{if .TestTeardownName}}
 	defer self.{{.TestTeardownName}}(){{end}}{{if .TestSetupName}}
 	self.{{.TestSetupName}}(){{end}}
 	test()
 }
-{{end}}{{/* range .Fixtures */}}
+{{end}}{{/*if .TestCases*/}}`)
+
 //////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+const header = `//////////////////////////////////////////////////////////////////////////////
+// Generated Code ////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+package %s
+
+import (
+	"testing"
+
+	"github.com/smartystreets/gunit"
+)
 `
+
+const footer = `///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////// Generated Code //
+///////////////////////////////////////////////////////////////////////////////
+`
+
+//////////////////////////////////////////////////////////////////////////////

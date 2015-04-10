@@ -1,10 +1,9 @@
 package generate
 
 import (
+	"bytes"
 	"strings"
 	"unicode"
-
-	"bytes"
 )
 
 // TODO: implement apostrophe insertion for known contractions (http://www.enchantedlearning.com/grammar/contractions/list.shtml)

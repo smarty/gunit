@@ -2,32 +2,41 @@ package generate
 
 import (
 	"bytes"
-	"fmt"
 	"go/format"
 	"text/template"
 
 	"github.com/smartystreets/gunit/gunit/parse"
 )
 
-// TODO: need to return an error as well (if formatting fails, the source code won't compile and we shouldn't write the contents to a *_test.go file...).
-func TestFile(packageName string, parsed []*parse.Fixture) string {
-	data := PackageFixtures{PackageName: packageName, Fixtures: parsed}
+// TestFunction generates a test function based solely on whether the fixture has test cases that are Skipped or not.
+func TestFunction(fixture *parse.Fixture) string {
+	if fixture.Skipped {
+		return executeTemplate(skippedFixtureTemplate, fixture)
+	}
+	return executeTemplate(testFixtureTemplate, fixture)
+}
+
+// FocusedTestFunction generates a test function based solely on whether the fixture has test cases that are Focused or not.
+func FocusedTestFunction(fixture *parse.Fixture) string {
+	panic("GOPHERS!")
+	return ""
+}
+
+func executeTemplate(template *template.Template, fixture *parse.Fixture) string {
 	writer := &bytes.Buffer{}
-	compiled.Execute(writer, data)
+	template.Execute(writer, fixture)
 	// return writer.String()
 	formatted, err := format.Source(writer.Bytes())
 	if err != nil {
-		panic(err)
+		panic(err) // TODO: return this error.
 	}
-	fmt.Println(string(formatted))
 	return string(formatted)
 }
 
-type PackageFixtures struct {
-	PackageName string
-	Fixtures    []*parse.Fixture
-}
+var skippedFixtureTemplate = template.Must(template.
+	New("testFunction").Funcs(map[string]interface{}{"sentence": toSentence}).
+	Parse(rawSkippedFixture))
 
-var compiled = template.Must(template.
-	New("testfile").Funcs(map[string]interface{}{"sentence": toSentence}).
-	Parse(rawTestFile))
+var testFixtureTemplate = template.Must(template.
+	New("testFunction").Funcs(map[string]interface{}{"sentence": toSentence}).
+	Parse(rawTestFunction))
