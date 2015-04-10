@@ -1,23 +1,18 @@
 package gunit
 
 import (
+	"bytes"
 	"fmt"
-	"os"
-	"runtime"
 	"strings"
 	"testing"
 
 	"github.com/smartystreets/assertions"
 )
 
-type Fixture struct {
-	T *T
-}
+type Fixture struct{ *T }
 
 func NewFixture(t *testing.T) *Fixture {
-	return &Fixture{
-		T: &T{T: t},
-	}
+	return &Fixture{T: NewT(t)}
 }
 
 // So is a convenience method for reporting assertion failure messages,
@@ -26,13 +21,36 @@ func NewFixture(t *testing.T) *Fixture {
 func (self *Fixture) So(actual interface{}, assert func(actual interface{}, expected ...interface{}) string, expected ...interface{}) {
 	if ok, failure := assertions.So(actual, assert, expected...); !ok {
 		self.T.Fail()
-		fmt.Print(report(failure, 3)) // Log + test function + test case method.
+		self.T.Log("\t" + strings.Replace(failure, "\n", "\n\t\t", -1))
 	}
 }
 
-// TODO: need a Finalize function (will look for calls to self.Skip so that it can mark the entire test function as skipped.)
+func (self *Fixture) Finalize() {
+	self.T.finalize()
+}
 
-type T struct{ *testing.T }
+//////////////////////////////////////////////////////////////////////////////
+
+type T struct {
+	*testing.T
+	log     *bytes.Buffer
+	skipped bool
+}
+
+func NewT(t *testing.T) *T {
+	return &T{T: t, log: &bytes.Buffer{}}
+}
+
+func (self *T) finalize() {
+	if self.log.Len() > 0 {
+		if testing.Verbose() || self.T.Failed() {
+			fmt.Println(self.log.String()) // Consider using self.T.Log(self.log.String()) // which will pollute the output with a line number from this file...
+		}
+	}
+	if self.skipped {
+		self.T.SkipNow()
+	}
+}
 
 func (self *T) Error(args ...interface{}) {
 	self.Log(args...)
@@ -43,59 +61,21 @@ func (self *T) Errorf(message string, args ...interface{}) {
 	self.T.Fail()
 }
 
-func (self *T) Fatal(args ...interface{}) {
-	self.Log(args...)
-	self.T.FailNow()
-}
-func (self *T) Fatalf(message string, args ...interface{}) {
-	self.Logf(message, args...)
-	self.T.FailNow()
-}
-
 func (self *T) Skip(args ...interface{}) {
-	// TODO: this should mark the current test case as skipped, but should not call
-	// self.T.SkipNow() until the end of the fixture-level teardown because it calls
-	// runtime.Goexit().
 	self.Log(args...)
-	self.T.SkipNow()
+	self.skipped = true
 }
 func (self *T) Skipf(message string, args ...interface{}) {
-	// TODO: see comment about Skip() (above).
 	self.Logf(message, args...)
-	self.T.SkipNow()
+	self.skipped = true
 }
 
 func (self *T) Logf(message string, args ...interface{}) {
-	fmt.Print(report(fmt.Sprintf(message, args...), 4)) // report + Log + test function + test case method.
+	self.log.WriteString("\t" + fmt.Sprintf(message, args...))
 
 }
 func (self *T) Log(args ...interface{}) {
-	fmt.Print(report(fmt.Sprintln(args...), 4)) // report + Log + test function + test case method.
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-func report(message string, depth int) string {
-	file, line := localizeCaller(depth)
-	return indent(message, file, line)
-}
-func localizeCaller(depth int) (file string, line int) {
-	// TODO: this should traverse the stack until it finds the right line (??).
-	_, file, line, ok := runtime.Caller(depth)
-	if ok {
-		file = file[strings.LastIndex(file, string(os.PathSeparator))+1:]
-	} else {
-		file, line = "<unknown_file>", 0
-	}
-	return file, line
-}
-func indent(message, file string, line int) string {
-	localized := strings.TrimSpace(location(file, line) + message)
-	indented := strings.Replace(localized, "\n", "\n\t\t", -1)
-	return "\t" + indented + "\n"
-}
-func location(file string, line int) string {
-	return fmt.Sprintf("%s:%d \n", file, line)
+	self.log.WriteString("\t" + fmt.Sprintln(args...))
 }
 
 //////////////////////////////////////////////////////////////////////////////

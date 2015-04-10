@@ -11,12 +11,15 @@ import (
 )
 
 func TestBowlingGameScoring(t *testing.T) {
-	test0 := &BowlingGameScoringTests{Fixture: gunit.NewFixture(t)}
+	fixture := gunit.NewFixture(t)
+	defer fixture.Finalize()
+
+	test0 := &BowlingGameScoringTests{Fixture: fixture}
 	test0.RunTestCase(
 		test0.TestAfterAllGutterBallsTheScoreShouldBeZero,
 		"After All Gutter Balls The Score Should Be Zero")
 
-	test1 := &BowlingGameScoringTests{Fixture: gunit.NewFixture(t)}
+	test1 := &BowlingGameScoringTests{Fixture: fixture}
 	test1.RunTestCase(
 		test1.TestAfterAllOnesTheScoreShouldBeTwenty,
 		"After All Ones The Score Should Be Twenty")

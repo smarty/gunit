@@ -316,8 +316,7 @@ func TestJ(t *testing.T) {
 	fixture := gunit.NewFixture(t)
 	defer fixture.Finalize()
 
-	test0 := &J{Fixture: fixture}
-	test0.Skip("Skipping test case: 'Test j1'")
+	fixture.Skip("Skipping test case: 'Test j1'")
 
 	test1 := &J{Fixture: fixture}
 	test1.RunTestCase__(test1.TestJ2, "Test j2")
