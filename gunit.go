@@ -10,7 +10,6 @@ import (
 	"github.com/smartystreets/assertions"
 )
 
-// TODO: rename to Fixture
 type Fixture struct {
 	T *T
 }
