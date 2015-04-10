@@ -1,6 +1,6 @@
-///////////////////////////////////////////////////////////////////////////////
-// Generated Code /////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// Generated Code ////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 package examples
 
@@ -10,22 +10,20 @@ import (
 	"github.com/smartystreets/gunit"
 )
 
-func TestBowlingGameScoring(t *testing.T) {
+///////////////////////////////////////////////////////////////////////////////
+
+func TestBowlingGameScoringTests(t *testing.T) {
 	fixture := gunit.NewFixture(t)
 	defer fixture.Finalize()
 
 	test0 := &BowlingGameScoringTests{Fixture: fixture}
-	test0.RunTestCase(
-		test0.TestAfterAllGutterBallsTheScoreShouldBeZero,
-		"After All Gutter Balls The Score Should Be Zero")
+	test0.RunTestCase__(test0.TestAfterAllGutterBallsTheScoreShouldBeZero, "Test after all gutter balls the score should be zero")
 
 	test1 := &BowlingGameScoringTests{Fixture: fixture}
-	test1.RunTestCase(
-		test1.TestAfterAllOnesTheScoreShouldBeTwenty,
-		"After All Ones The Score Should Be Twenty")
+	test1.RunTestCase__(test1.TestAfterAllOnesTheScoreShouldBeTwenty, "Test after all ones the score should be twenty")
 }
 
-func (self *BowlingGameScoringTests) RunTestCase(test func(), description string) {
+func (self *BowlingGameScoringTests) RunTestCase__(test func(), description string) {
 	self.T.Log(description)
 	self.Setup()
 	test()
@@ -33,34 +31,30 @@ func (self *BowlingGameScoringTests) RunTestCase(test func(), description string
 
 ///////////////////////////////////////////////////////////////////////////////
 
-func TestEnvironmentController(t *testing.T) {
-	test0 := &EnvironmentControllerFixture{Fixture: gunit.NewFixture(t)}
-	test0.RunTestCase(
-		test0.TestShouldStartWithEverythingDeactivated,
-		"Should start with everything deactivated")
+func TestEnvironmentControllerFixture(t *testing.T) {
+	fixture := gunit.NewFixture(t)
+	defer fixture.Finalize()
 
-	test1 := &EnvironmentControllerFixture{Fixture: gunit.NewFixture(t)}
-	test1.RunTestCase(
-		test1.TestNoHardwareComponentsAreActivatedWhenTemperatureIsJustRight,
-		"No Hardware Components Are Activated When Temperature Is Just Right")
+	test0 := &EnvironmentControllerFixture{Fixture: fixture}
+	test0.RunTestCase__(test0.TestShouldStartWithEverythingDeactivated, "Test should start with everything deactivated")
 
-	test2 := &EnvironmentControllerFixture{Fixture: gunit.NewFixture(t)}
-	test2.RunTestCase(
-		test2.TestCoolerAndBlowerActivatedWhenTemperatureIsTooHot,
-		"Test Cooler And Blower Activated When Temperature Is Too Hot")
+	test1 := &EnvironmentControllerFixture{Fixture: fixture}
+	test1.RunTestCase__(test1.TestNoHardwareComponentsAreActivatedWhenTemperatureIsJustRight, "Test no hardware components are activated when temperature is just right")
 
-	test3 := &EnvironmentControllerFixture{Fixture: gunit.NewFixture(t)}
-	test3.RunTestCase(
-		test2.TestHeaterAndBlowerActivatedWhenTemperatureIsTooCold,
-		"Test Heater And Blower Activated When Temperature Is Too Cold")
+	test2 := &EnvironmentControllerFixture{Fixture: fixture}
+	test2.RunTestCase__(test2.TestCoolerAndBlowerActivatedWhenTemperatureIsTooHot, "Test cooler and blower activated when temperature is too hot")
 
+	test3 := &EnvironmentControllerFixture{Fixture: fixture}
+	test3.RunTestCase__(test3.TestHeaterAndBlowerActivatedWhenTemperatureIsTooCold, "Test heater and blower activated when temperature is too cold")
 }
 
-func (self *EnvironmentControllerFixture) RunTestCase(test func(), description string) {
+func (self *EnvironmentControllerFixture) RunTestCase__(test func(), description string) {
 	self.T.Log(description)
 	self.Setup()
 	test()
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////// Generated Code //
