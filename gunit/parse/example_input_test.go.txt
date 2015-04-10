@@ -14,7 +14,7 @@ func Setup()                                     {} // should NOT match (not spe
 func Teardown()                                  {} // should NOT match (not specific to a fixture)
 
 type BowlingGameScoringTests struct {
-	*gunit.TestCase
+	*gunit.Fixture
 
 	game *Game
 }
@@ -142,21 +142,21 @@ const (
 //////////////////////////////////////////////////////////////////////////////
 
 type SkipFixture struct {
-	*gunit.TestCase
+	*gunit.Fixture
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // These types shouldn't be parsed as fixtures:
 
 type TestFixtureNoPointer struct {
-	gunit.TestCase
+	gunit.Fixture
 }
 
 type TestFixtureWrongTestCase struct {
-	*blah.TestCase
+	*blah.Fixture
 }
 type TestFixtureWrongPackage struct {
-	*gunit.TestCase2
+	*gunit.Fixture2
 }
 
 type Hah interface {
@@ -164,7 +164,7 @@ type Hah interface {
 }
 
 type NoPointerFixture struct {
-	gunit.TestCase
+	gunit.Fixture
 }
 
 type BlahFixture struct {

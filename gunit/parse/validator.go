@@ -8,7 +8,7 @@ type FixtureValidator struct {
 }
 
 func (self *FixtureValidator) Visit(node ast.Node) ast.Visitor {
-	// We start at a TypeSpec and look for an embedded pointer field: `*gunit.TestCase`.
+	// We start at a TypeSpec and look for an embedded pointer field: `*gunit.Fixture`.
 	field, isField := node.(*ast.Field)
 	if !isField {
 		return self
@@ -22,7 +22,7 @@ func (self *FixtureValidator) Visit(node ast.Node) ast.Visitor {
 		return self
 	}
 	gunit, isGunit := selector.X.(*ast.Ident)
-	if selector.Sel.Name != "TestCase" || !isGunit || gunit.Name != "gunit" {
+	if selector.Sel.Name != "Fixture" || !isGunit || gunit.Name != "gunit" {
 		return self
 	}
 	self.Parent.Validate(self.FixtureName)
