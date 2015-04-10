@@ -6,7 +6,7 @@ import (
 )
 
 type BowlingGameScoringTests struct {
-	*gunit.TestCase
+	*gunit.Fixture
 
 	game *Game
 }

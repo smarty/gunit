@@ -15,10 +15,10 @@ import (
 //////////////////////////////////////////////////////////////////////////////
 
 {{range .Fixtures}}func Test{{.StructName}}(t *testing.T) {
-	fixture := gunit.NewTestCase(t)
+	fixture := gunit.NewFixture(t)
 	defer fixture.Finalize()
 
-	{{range .TestCases}}test{{.Index}} := &{{.StructName}}{TestCase: fixture}
+	{{range .TestCases}}test{{.Index}} := &{{.StructName}}{Fixture: fixture}
 	test{{.Index}}.RunTestCase(test{{.Index}}.{{.Name}}, "{{.Name | sentence}}"){{end}}
 }
 

@@ -10,12 +10,13 @@ import (
 	"github.com/smartystreets/assertions"
 )
 
-type TestCase struct {
+// TODO: rename to Fixture
+type Fixture struct {
 	T *T
 }
 
-func NewTestCase(t *testing.T) *TestCase {
-	return &TestCase{
+func NewFixture(t *testing.T) *Fixture {
+	return &Fixture{
 		T: &T{T: t},
 	}
 }
@@ -23,14 +24,14 @@ func NewTestCase(t *testing.T) *TestCase {
 // So is a convenience method for reporting assertion failure messages,
 // say from the assertion functions found in github.com/smartystreets/assertions/should.
 // Example: self.So(actual, should.Equal, expected)
-func (self TestCase) So(actual interface{}, assert func(actual interface{}, expected ...interface{}) string, expected ...interface{}) {
+func (self *Fixture) So(actual interface{}, assert func(actual interface{}, expected ...interface{}) string, expected ...interface{}) {
 	if ok, failure := assertions.So(actual, assert, expected...); !ok {
 		self.T.Fail()
 		fmt.Print(report(failure, 3)) // Log + test function + test case method.
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////
+// TODO: need a Finalize function (will look for calls to self.Skip so that it can mark the entire test function as skipped.)
 
 type T struct{ *testing.T }
 
@@ -99,3 +100,10 @@ func location(file string, line int) string {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+// TODO: implement the checksum validation function
+func ValidateChecksums(checksums map[string]string) {
+	// 1. For each file/checksum pair, verify that the file still exists and that the checksum matches the current contents
+	// 2. Make sure there are not any additional files.
+	// 3. If mismatch, fmt.Println("error!!!!") && os.Exit(1)
+}

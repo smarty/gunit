@@ -11,12 +11,12 @@ import (
 )
 
 func TestBowlingGameScoring(t *testing.T) {
-	test0 := &BowlingGameScoringTests{TestCase: gunit.NewTestCase(t)}
+	test0 := &BowlingGameScoringTests{Fixture: gunit.NewFixture(t)}
 	test0.RunTestCase(
 		test0.TestAfterAllGutterBallsTheScoreShouldBeZero,
 		"After All Gutter Balls The Score Should Be Zero")
 
-	test1 := &BowlingGameScoringTests{TestCase: gunit.NewTestCase(t)}
+	test1 := &BowlingGameScoringTests{Fixture: gunit.NewFixture(t)}
 	test1.RunTestCase(
 		test1.TestAfterAllOnesTheScoreShouldBeTwenty,
 		"After All Ones The Score Should Be Twenty")
@@ -31,22 +31,22 @@ func (self *BowlingGameScoringTests) RunTestCase(test func(), description string
 ///////////////////////////////////////////////////////////////////////////////
 
 func TestEnvironmentController(t *testing.T) {
-	test0 := &EnvironmentControllerFixture{TestCase: gunit.NewTestCase(t)}
+	test0 := &EnvironmentControllerFixture{Fixture: gunit.NewFixture(t)}
 	test0.RunTestCase(
 		test0.TestShouldStartWithEverythingDeactivated,
 		"Should start with everything deactivated")
 
-	test1 := &EnvironmentControllerFixture{TestCase: gunit.NewTestCase(t)}
+	test1 := &EnvironmentControllerFixture{Fixture: gunit.NewFixture(t)}
 	test1.RunTestCase(
 		test1.TestNoHardwareComponentsAreActivatedWhenTemperatureIsJustRight,
 		"No Hardware Components Are Activated When Temperature Is Just Right")
 
-	test2 := &EnvironmentControllerFixture{TestCase: gunit.NewTestCase(t)}
+	test2 := &EnvironmentControllerFixture{Fixture: gunit.NewFixture(t)}
 	test2.RunTestCase(
 		test2.TestCoolerAndBlowerActivatedWhenTemperatureIsTooHot,
 		"Test Cooler And Blower Activated When Temperature Is Too Hot")
 
-	test3 := &EnvironmentControllerFixture{TestCase: gunit.NewTestCase(t)}
+	test3 := &EnvironmentControllerFixture{Fixture: gunit.NewFixture(t)}
 	test3.RunTestCase(
 		test2.TestHeaterAndBlowerActivatedWhenTemperatureIsTooCold,
 		"Test Heater And Blower Activated When Temperature Is Too Cold")

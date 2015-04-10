@@ -24,12 +24,7 @@ var (
 	fixtures = []*parse.Fixture{
 		{
 			StructName: "B",
-			TestCases: []parse.TestCase{
-				{
-					Name:       "TestB1",
-					StructName: "B",
-				},
-			},
+			TestCases:  []parse.TestCase{{Name: "TestB1", StructName: "B"}},
 		},
 		// {
 		// 	StructName:    "C",
@@ -86,10 +81,10 @@ import (
 //////////////////////////////////////////////////////////////////////////////
 
 func TestB(t *testing.T) {
-	fixture := gunit.NewTestCase(t)
+	fixture := gunit.NewFixture(t)
 	defer fixture.Finalize()
 
-	test0 := &B{TestCase: fixture}
+	test0 := &B{Fixture: fixture}
 	test0.RunTestCase(test0.TestB1, "Test b1")
 }
 

@@ -6,7 +6,7 @@ import (
 )
 
 type EnvironmentControllerFixture struct {
-	*gunit.TestCase
+	*gunit.Fixture
 	hardware   *FakeHVAC
 	controller *EnvironmentController
 }
