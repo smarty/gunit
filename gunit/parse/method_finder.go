@@ -68,7 +68,11 @@ func attach(function *ast.FuncDecl, fixture *Fixture) {
 	name := function.Name.Name
 
 	if strings.HasPrefix(name, "Test") {
-		fixture.TestCaseNames = append(fixture.TestCaseNames, name)
+		fixture.TestCases = append(fixture.TestCases, TestCase{
+			Index:      len(fixture.TestCases),
+			Name:       name,
+			StructName: fixture.StructName,
+		})
 
 	} else if strings.HasPrefix(name, "Setup") {
 		fixture.TestSetupName = name
@@ -77,9 +81,19 @@ func attach(function *ast.FuncDecl, fixture *Fixture) {
 		fixture.TestTeardownName = name
 
 	} else if strings.HasPrefix(name, "SkipTest") {
-		fixture.SkippedTestCaseNames = append(fixture.SkippedTestCaseNames, name)
+		fixture.TestCases = append(fixture.TestCases, TestCase{
+			Index:      len(fixture.TestCases),
+			Name:       name,
+			StructName: fixture.StructName,
+			Skipped:    true,
+		})
 
 	} else if strings.HasPrefix(name, "FocusTest") {
-		fixture.FocusedTestCaseNames = append(fixture.FocusedTestCaseNames, name)
+		fixture.TestCases = append(fixture.TestCases, TestCase{
+			Index:      len(fixture.TestCases),
+			Name:       name,
+			StructName: fixture.StructName,
+			Focused:    true,
+		})
 	}
 }

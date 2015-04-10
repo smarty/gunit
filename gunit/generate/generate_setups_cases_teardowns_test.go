@@ -23,8 +23,13 @@ func singleLine(value string) string {
 var (
 	fixtures = []*parse.Fixture{
 		{
-			StructName:    "B",
-			TestCaseNames: []string{"TestB1"},
+			StructName: "B",
+			TestCases: []parse.TestCase{
+				{
+					Name:       "TestB1",
+					StructName: "B",
+				},
+			},
 		},
 		// {
 		// 	StructName:    "C",

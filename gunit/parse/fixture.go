@@ -11,7 +11,13 @@ type Fixture struct {
 	TestSetupName    string
 	TestTeardownName string
 
-	TestCaseNames        []string
-	SkippedTestCaseNames []string
-	FocusedTestCaseNames []string
+	TestCases []TestCase
+}
+
+type TestCase struct {
+	Index      int
+	Name       string
+	StructName string
+	Skipped    bool
+	Focused    bool
 }

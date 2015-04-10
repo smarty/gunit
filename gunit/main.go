@@ -15,6 +15,8 @@ func init() {
 }
 
 func main() {
+	// TODO: if there are no fixture structs, don't generate anything, exit code: 0
+
 	sourceFile := "parse/example_input_test.go.txt"
 	source, err := ioutil.ReadFile(sourceFile)
 	fixtures, err := parse.ParseFixtures(string(source))

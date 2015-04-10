@@ -85,15 +85,29 @@ var (
 			StructName:          "BowlingGameScoringTests",
 			FixtureSetupName:    "SetupBowlingGameScoringTests",
 			FixtureTeardownName: "TeardownBowlingGameScoringTests",
-			TestCaseNames: []string{
-				"TestAfterAllGutterBallsTheScoreShouldBeZero",
-				"TestAfterAllOnesTheScoreShouldBeTwenty",
-			},
-			SkippedTestCaseNames: []string{
-				"SkipTestASpareDeservesABonus",
-			},
-			FocusedTestCaseNames: []string{
-				"FocusTestAStrikeDeservesABigBonus",
+			TestCases: []TestCase{
+				TestCase{
+					Index:      0,
+					Name:       "TestAfterAllGutterBallsTheScoreShouldBeZero",
+					StructName: "BowlingGameScoringTests",
+				},
+				TestCase{
+					Index:      1,
+					Name:       "TestAfterAllOnesTheScoreShouldBeTwenty",
+					StructName: "BowlingGameScoringTests",
+				},
+				TestCase{
+					Index:      2,
+					Name:       "SkipTestASpareDeservesABonus",
+					StructName: "BowlingGameScoringTests",
+					Skipped:    true,
+				},
+				TestCase{
+					Index:      3,
+					Name:       "FocusTestAStrikeDeservesABigBonus",
+					StructName: "BowlingGameScoringTests",
+					Focused:    true,
+				},
 			},
 			TestSetupName:    "SetupTheGame",
 			TestTeardownName: "TeardownTheGame",
