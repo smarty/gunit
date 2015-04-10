@@ -85,7 +85,6 @@ var (
 			StructName:          "BowlingGameScoringTests",
 			FixtureSetupName:    "SetupBowlingGameScoringTests",
 			FixtureTeardownName: "TeardownBowlingGameScoringTests",
-			HasFocusedTestCases: true,
 			TestCases: []TestCase{
 				TestCase{
 					Index:      0,
@@ -103,12 +102,6 @@ var (
 					StructName: "BowlingGameScoringTests",
 					Skipped:    true,
 				},
-				TestCase{
-					Index:      3,
-					Name:       "FocusTestAStrikeDeservesABigBonus",
-					StructName: "BowlingGameScoringTests",
-					Focused:    true,
-				},
 			},
 			TestSetupName:    "SetupTheGame",
 			TestTeardownName: "TeardownTheGame",
@@ -116,10 +109,6 @@ var (
 		"SkipFixture": {
 			StructName: "SkipFixture",
 			Skipped:    true,
-		},
-		"FocusFixture": {
-			StructName: "FocusFixture",
-			Focused:    true,
 		},
 	}
 )

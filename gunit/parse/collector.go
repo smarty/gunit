@@ -39,7 +39,5 @@ func (self *FixtureCollector) Validate(fixture string) {
 
 	if strings.HasPrefix(fixture, "Skip") {
 		self.fixtures[fixture].Skipped = true
-	} else if strings.HasPrefix(fixture, "Focus") {
-		self.fixtures[fixture].Focused = true
 	}
 }

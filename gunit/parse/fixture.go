@@ -2,7 +2,6 @@ package parse
 
 type Fixture struct {
 	Skipped    bool
-	Focused    bool
 	StructName string
 
 	FixtureSetupName    string
@@ -10,8 +9,6 @@ type Fixture struct {
 
 	TestSetupName    string
 	TestTeardownName string
-
-	HasFocusedTestCases bool
 
 	TestCases []TestCase
 }
@@ -21,5 +18,4 @@ type TestCase struct {
 	Name       string
 	StructName string
 	Skipped    bool
-	Focused    bool
 }

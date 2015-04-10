@@ -16,16 +16,9 @@ func TestFunction(fixture *parse.Fixture) string {
 	return executeTemplate(testFixtureTemplate, fixture)
 }
 
-// FocusedTestFunction generates a test function based solely on whether the fixture has test cases that are Focused or not.
-func FocusedTestFunction(fixture *parse.Fixture) string {
-	panic("GOPHERS!")
-	return ""
-}
-
 func executeTemplate(template *template.Template, fixture *parse.Fixture) string {
 	writer := &bytes.Buffer{}
 	template.Execute(writer, fixture)
-	// return writer.String()
 	formatted, err := format.Source(writer.Bytes())
 	if err != nil {
 		panic(err) // TODO: return this error.
