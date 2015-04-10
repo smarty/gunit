@@ -85,6 +85,7 @@ var (
 			StructName:          "BowlingGameScoringTests",
 			FixtureSetupName:    "SetupBowlingGameScoringTests",
 			FixtureTeardownName: "TeardownBowlingGameScoringTests",
+			HasFocusedTestCases: true,
 			TestCases: []TestCase{
 				TestCase{
 					Index:      0,

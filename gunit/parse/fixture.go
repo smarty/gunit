@@ -11,6 +11,8 @@ type Fixture struct {
 	TestSetupName    string
 	TestTeardownName string
 
+	HasFocusedTestCases bool
+
 	TestCases []TestCase
 }
 

@@ -89,6 +89,7 @@ func attach(function *ast.FuncDecl, fixture *Fixture) {
 		})
 
 	} else if strings.HasPrefix(name, "FocusTest") {
+		fixture.HasFocusedTestCases = true
 		fixture.TestCases = append(fixture.TestCases, TestCase{
 			Index:      len(fixture.TestCases),
 			Name:       name,
