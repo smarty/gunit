@@ -10,41 +10,33 @@ import (
 )
 
 // TestFunction generates complete source code for a _test.go file from the provided fixtures.
-func TestFile(packageName string, fixtures []*parse.Fixture) (string, error) {
+func TestFile(packageName string, fixtures []*parse.Fixture) ([]byte, error) {
 	buffer := bytes.NewBufferString(fmt.Sprintf(header, packageName))
 	buffer.WriteString("\n///////////////////////////////////////////////////////////////////////////////\n\n")
 	for _, fixture := range fixtures {
 		function, err := TestFunction(fixture)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
-		buffer.WriteString(function)
+		buffer.Write(function)
 		buffer.WriteString("\n\n///////////////////////////////////////////////////////////////////////////////\n\n")
 	}
 	buffer.WriteString(footer)
-	formatted, err := format.Source(buffer.Bytes())
-	if err != nil {
-		return "", err
-	}
-	return string(formatted), nil
+	return format.Source(buffer.Bytes())
 }
 
 // TestFunction generates a test function based solely on whether the fixture has test cases that are Skipped or not.
-func TestFunction(fixture *parse.Fixture) (string, error) {
+func TestFunction(fixture *parse.Fixture) ([]byte, error) {
 	if fixture.Skipped {
 		return executeTemplate(skippedFixtureTemplate, fixture)
 	}
 	return executeTemplate(testFixtureTemplate, fixture)
 }
 
-func executeTemplate(template *template.Template, fixture *parse.Fixture) (string, error) {
+func executeTemplate(template *template.Template, fixture *parse.Fixture) ([]byte, error) {
 	writer := &bytes.Buffer{}
 	template.Execute(writer, fixture)
-	formatted, err := format.Source(writer.Bytes())
-	if err != nil {
-		return "", err
-	}
-	return string(formatted), nil
+	return format.Source(writer.Bytes())
 }
 
 var skippedFixtureTemplate = template.Must(template.

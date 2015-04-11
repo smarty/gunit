@@ -35,7 +35,7 @@ func TestGenerateValidTestFile(t *testing.T) {
 	if err != nil {
 		t.Error("Unexpected err:", err)
 	}
-	if file != expectedFileOutput {
+	if string(file) != expectedFileOutput {
 		t.Errorf("Expected:\n%s\n\nActual:\n%s", expectedFileOutput, file)
 	}
 }
@@ -81,7 +81,7 @@ func TestGenerateTestFunction(t *testing.T) {
 			continue
 		}
 
-		actual := strings.TrimSpace(function)
+		actual := strings.TrimSpace(string(function))
 		expected := strings.TrimSpace(test.expected)
 		if actual != expected {
 			t.Errorf("FAILED: Case #%d\nExpected:\n%s\n\nActual:\n%s", i, expected, actual)

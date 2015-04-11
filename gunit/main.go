@@ -64,7 +64,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = ioutil.WriteFile(filepath.Join(working, "generated_by_gunit_test.go"), []byte(generated), 0644)
+	err = ioutil.WriteFile(filepath.Join(working, "generated_by_gunit_test.go"), generated, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
