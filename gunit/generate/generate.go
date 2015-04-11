@@ -9,6 +9,7 @@ import (
 	"github.com/smartystreets/gunit/gunit/parse"
 )
 
+// TestFunction generates complete source code for a _test.go file from the provided fixtures.
 func TestFile(packageName string, fixtures []*parse.Fixture) (string, error) {
 	buffer := bytes.NewBufferString(fmt.Sprintf(header, packageName))
 	buffer.WriteString("\n///////////////////////////////////////////////////////////////////////////////\n\n")
