@@ -1,3 +1,4 @@
 ast.txt
 gunit/gunit
 coverage.out
+generated_by_gunit_test.go
