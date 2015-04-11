@@ -89,9 +89,8 @@ func (self *word) Next() {
 
 //////////////////////////////////////////////////////////////////////////////
 
-func upper(r rune) bool   { return unicode.IsUpper(r) }
-func lower(r rune) bool   { return unicode.IsLower(r) }
-func toLower(r rune) rune { return unicode.ToLower(r) }
+func upper(r rune) bool { return unicode.IsUpper(r) }
+func lower(r rune) bool { return unicode.IsLower(r) }
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -170,17 +169,8 @@ func NewAcronymEndedSpecification(word []rune) *AcronymEndedSpecification {
 
 func (self *AcronymEndedSpecification) IsSatisfiedBy(character rune) bool {
 	last := len(self.word) - 1
-	if !upper(self.word[last]) {
-		return false
-	}
 	penultimate := len(self.word) - 2
-	if !upper(self.word[penultimate]) {
-		return false
-	}
-	if upper(character) {
-		return false
-	}
-	return true
+	return upper(self.word[last]) && upper(self.word[penultimate]) && !upper(character)
 }
 
 //////////////////////////////////////////////////////////////////////////////

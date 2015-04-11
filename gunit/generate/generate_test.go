@@ -7,6 +7,67 @@ import (
 	"github.com/smartystreets/gunit/gunit/parse"
 )
 
+func TestGenerateTestFileFails(t *testing.T) {
+	fixtures := []*parse.Fixture{{StructName: "Not a valid struct name (spaces and parens!)"}}
+	file, err := TestFile("blah", fixtures)
+	if err == nil {
+		t.Error("Expected a generate error, got nil instead.")
+	}
+	if len(file) > 0 {
+		t.Error("Expected no generated content, got:", file)
+	}
+}
+
+func TestGenerateWithoutPackageNameFails(t *testing.T) {
+	fixtures := []*parse.Fixture{{StructName: "A"}}
+	file, err := TestFile("", fixtures)
+	if err == nil {
+		t.Error("Expected a generate error, got nil instead.")
+	}
+	if len(file) > 0 {
+		t.Error("Expected no generated content, got:", file)
+	}
+}
+
+func TestGenerateValidTestFile(t *testing.T) {
+	fixtures := []*parse.Fixture{{StructName: "A"}}
+	file, err := TestFile("blah", fixtures)
+	if err != nil {
+		t.Error("Unexpected err:", err)
+	}
+	if file != expectedFileOutput {
+		t.Errorf("Expected:\n%s\n\nActual:\n%s", expectedFileOutput, file)
+	}
+}
+
+const expectedFileOutput = `//////////////////////////////////////////////////////////////////////////////
+// Generated Code ////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+package blah
+
+import (
+	"testing"
+
+	"github.com/smartystreets/gunit"
+)
+
+///////////////////////////////////////////////////////////////////////////////
+
+func TestA(t *testing.T) {
+	fixture := gunit.NewFixture(t)
+	defer fixture.Finalize()
+
+	fixture.Skip("Fixture 'A' has no test cases.")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////// Generated Code //
+///////////////////////////////////////////////////////////////////////////////
+`
+
 //////////////////////////////////////////////////////////////////////////////
 
 func TestGenerateTestFunction(t *testing.T) {
