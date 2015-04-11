@@ -1,5 +1,9 @@
 package parse
 
+const malformedTestCode = "This isn't really a go file."
+
+const comprehensiveTestCode = `package parse
+
 import (
 	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
@@ -172,3 +176,4 @@ type BlahFixture struct {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+`

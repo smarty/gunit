@@ -1,7 +1,6 @@
 package parse
 
 import (
-	"io/ioutil"
 	"testing"
 
 	. "github.com/smartystreets/assertions"
@@ -10,13 +9,13 @@ import (
 //////////////////////////////////////////////////////////////////////////////
 
 func TestParseFileWithValidFixturesAndConstructs(t *testing.T) {
-	test := &FixtureParsingFixture{t: t, input: "example_input_test.go.txt"}
+	test := &FixtureParsingFixture{t: t, input: comprehensiveTestCode}
 	test.ParseFixtures()
 	test.AssertFixturesParsedAccuratelyAndCompletely()
 }
 
 func TestParseFileWithMalformedSourceCode(t *testing.T) {
-	test := &FixtureParsingFixture{t: t, input: "example_input_failure_test.go.txt"}
+	test := &FixtureParsingFixture{t: t, input: malformedTestCode}
 	test.ParseFixtures()
 	test.AssertErrorWasReturned()
 }
@@ -33,9 +32,7 @@ type FixtureParsingFixture struct {
 }
 
 func (self *FixtureParsingFixture) ParseFixtures() {
-	var source []byte
-	source, self.readError = ioutil.ReadFile(self.input)
-	self.fixtures, self.parseError = ParseFixtures(string(source))
+	self.fixtures, self.parseError = ParseFixtures(self.input)
 }
 
 func (self *FixtureParsingFixture) AssertFixturesParsedAccuratelyAndCompletely() {
