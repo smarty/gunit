@@ -3,13 +3,12 @@
 package main
 
 import (
+	"go/build"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"go/build"
 
 	"github.com/smartystreets/gunit/gunit/generate"
 	"github.com/smartystreets/gunit/gunit/parse"
