@@ -25,7 +25,7 @@ func main() {
 		panic("must have gopath!")
 	}
 
-	working, err := os.Getwd()
+	working, err := os.Getwd() // TODO: or a specified import path from cli
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +59,10 @@ func main() {
 		fixtures = append(fixtures, batch...)
 	}
 
-	generated, err := generate.TestFile(pkg.Name, fixtures)
+	// TODO: if there are no go files, no test files, or no fixture structs found, don't generate anything, exit code: 0
+	// TODO: checksums
+
+	generated, err := generate.TestFile(pkg.Name, fixtures, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -68,13 +71,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// TODO: decide if we are working in the current directory (later: or if we need to derive a directory from an import path (command line flag).)
-	// TODO: parse and concatenate fixtures from each *_test.go file in the target directory.
-	// TODO: if there are no go files, no test files, or no fixture structs found, don't generate anything, exit code: 0
-	// TODO: generate the contents of a single *_test.go file from the parsed fixtures.
-	// TODO (later): generate checksum validation code and append it to the content generated in the previous step.
-	// TODO: write the combined content to a gunit_fixtures_test.go file.
 }
 
 //////////////////////////////////////////////////////////////////////////////
