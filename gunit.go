@@ -109,7 +109,7 @@ func Validate(checksums map[string]string) {
 	// 1. For each file/checksum pair, verify that the file still exists and that the checksum matches the current contents
 	// 2. Make sure there are not any additional files.
 	// 3. If mismatch, fmt.Println("error!!!!") && os.Exit(1)
-	// 4. Set validated flag
+	// 4. Set validated flag (for case when user tries to delete the checksums)
 	validated = true
 }
 
