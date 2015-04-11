@@ -11,7 +11,16 @@ import (
 
 func TestGenerateTestFunction(t *testing.T) {
 	for i, test := range testFunction_TestCases {
-		actual := strings.TrimSpace(TestFunction(test.input))
+		function, err := TestFunction(test.input)
+		if err == nil && test.err {
+			t.Error("Expected a parse error but got nil.")
+			continue
+		} else if err != nil && test.err {
+			t.Log("✔ " + test.description)
+			continue
+		}
+
+		actual := strings.TrimSpace(function)
 		expected := strings.TrimSpace(test.expected)
 		if actual != expected {
 			t.Errorf("FAILED: Case #%d\nExpected:\n%s\n\nActual:\n%s", i, expected, actual)
@@ -24,11 +33,23 @@ func TestGenerateTestFunction(t *testing.T) {
 type TestFunction_TestCase struct {
 	input       *parse.Fixture
 	expected    string
+	err         bool
 	description string
 	SKIP        bool
 }
 
 var testFunction_TestCases = []TestFunction_TestCase{
+
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
+			StructName: "Not a valid struct name (see the spaces and parens?)",
+		},
+		expected:    ``,
+		err:         true,
+		description: "Wonky fixture should cause error (but I'm not sure how this could ever happen)",
+	},
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -59,7 +59,11 @@ func main() {
 		fixtures = append(fixtures, batch...)
 	}
 
-	generated := generate.TestFile(pkg.Name, fixtures)
+	generated, err := generate.TestFile(pkg.Name, fixtures)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	err = ioutil.WriteFile(filepath.Join(working, "generated_by_gunit_test.go"), []byte(generated), 0644)
 	if err != nil {
 		log.Fatal(err)
