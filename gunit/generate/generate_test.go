@@ -9,7 +9,7 @@ import (
 
 func TestGenerateTestFileFails(t *testing.T) {
 	fixtures := []*parse.Fixture{{StructName: "Not a valid struct name (spaces and parens!)"}}
-	file, err := TestFile("blah", fixtures, nil)
+	file, err := TestFile("blah", fixtures, 0)
 	if err == nil {
 		t.Error("Expected a generate error, got nil instead.")
 	}
@@ -20,7 +20,7 @@ func TestGenerateTestFileFails(t *testing.T) {
 
 func TestGenerateWithoutPackageNameFails(t *testing.T) {
 	fixtures := []*parse.Fixture{{StructName: "A"}}
-	file, err := TestFile("", fixtures, nil)
+	file, err := TestFile("", fixtures, 0)
 	if err == nil {
 		t.Error("Expected a generate error, got nil instead.")
 	}
@@ -31,7 +31,7 @@ func TestGenerateWithoutPackageNameFails(t *testing.T) {
 
 func TestGenerateValidTestFile(t *testing.T) {
 	fixtures := []*parse.Fixture{{StructName: "A"}}
-	file, err := TestFile("blah", fixtures, map[string]string{"awesome_test.go": "md5-checksum"})
+	file, err := TestFile("blah", fixtures, 42)
 	if err != nil {
 		t.Error("Unexpected err:", err)
 	}
@@ -64,8 +64,7 @@ func TestA(t *testing.T) {
 ///////////////////////////////////////////////////////////////////////////////
 
 func init() {
-	checksums := map[string]string{"awesome_test.go": "md5-checksum"}
-	gunit.Validate(checksums)
+	gunit.Validate(42)
 }
 
 ///////////////////////////////////////////////////////////////////////////////

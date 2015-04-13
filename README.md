@@ -1,5 +1,19 @@
 # gunit
 
+### TODO:
+
+- checksums
+- main logic
+- unit test the gunit package
+- should the gunit command be at the root instead?\
+- remove 'Test' from output?
+- apostrophes in contractions
+- focus? (technically the -run flag achieves this)
+- better README
+- extend goconvey to run gunit
+- extend scantest to run gunit
+
+
 -------------------------
 
 Here's the basic idea of what the test author would implement:

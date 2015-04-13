@@ -58,8 +58,7 @@ import (
 const footer = `
 
 func init() {
-	checksums := %#v
-	gunit.Validate(checksums)
+	gunit.Validate(%d)
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,7 @@ import (
 )
 
 // TestFunction generates complete source code for a _test.go file from the provided fixtures.
-func TestFile(packageName string, fixtures []*parse.Fixture, checksums map[string]string) ([]byte, error) {
+func TestFile(packageName string, fixtures []*parse.Fixture, checksum int64) ([]byte, error) {
 	buffer := bytes.NewBufferString(fmt.Sprintf(header, packageName))
 	buffer.WriteString("\n///////////////////////////////////////////////////////////////////////////////\n\n")
 	for _, fixture := range fixtures {
@@ -21,7 +21,7 @@ func TestFile(packageName string, fixtures []*parse.Fixture, checksums map[strin
 		buffer.Write(function)
 		buffer.WriteString("\n\n///////////////////////////////////////////////////////////////////////////////\n\n")
 	}
-	buffer.WriteString(fmt.Sprintf(footer, checksums))
+	buffer.WriteString(fmt.Sprintf(footer, checksum))
 	return format.Source(buffer.Bytes())
 }
 

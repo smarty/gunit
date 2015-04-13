@@ -36,16 +36,22 @@ func main() {
 	}
 
 	fixtures := []*parse.Fixture{}
+	fileInfo := []os.FileInfo{}
 	for _, item := range pkg.TestGoFiles {
 		if item == "generated_by_gunit_test.go" {
 			continue
-		}
-		if strings.HasPrefix(item, ".") {
+		} else if strings.HasPrefix(item, ".") {
 			continue
 		} else if !strings.HasSuffix(item, "_test.go") {
 			continue
 		}
-		source, err := ioutil.ReadFile(filepath.Join(working, item))
+		path := filepath.Join(working, item)
+		info, err := os.Stat(path)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fileInfo = append(fileInfo, info)
+		source, err := ioutil.ReadFile(path)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -58,10 +64,12 @@ func main() {
 		fixtures = append(fixtures, batch...)
 	}
 
-	// TODO: if there are no go files, no test files, or no fixture structs found, don't generate anything, exit code: 0
-	// TODO: checksums
-
-	generated, err := generate.TestFile(pkg.Name, fixtures, nil)
+	files, err := ioutil.ReadDir(working)
+	if err != nil {
+		log.Fatal(err)
+	}
+	checksum := generate.Checksum(generate.SelectGoFiles(files))
+	generated, err := generate.TestFile(pkg.Name, fixtures, checksum)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -71,8 +79,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
