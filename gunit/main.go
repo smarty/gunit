@@ -3,6 +3,8 @@
 package main
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"go/build"
 	"io/ioutil"
 	"log"
@@ -38,7 +40,7 @@ func main() {
 	fixtures := []*parse.Fixture{}
 	fileInfo := []os.FileInfo{}
 	for _, item := range pkg.TestGoFiles {
-		if item == "generated_by_gunit_test.go" {
+		if item == generate.GeneratedFilename {
 			continue
 		} else if strings.HasPrefix(item, ".") {
 			continue
@@ -68,7 +70,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	checksum := generate.Checksum(generate.SelectGoFiles(files))
+	contents, err := generate.ReadFiles(working, generate.SelectGoFiles(files))
+	if err != nil {
+		log.Fatal(err)
+	}
+	hash := md5.Sum(contents)
+	buffer := make([]byte, len(hash))
+	copy(buffer, hash[:])
+	checksum := hex.EncodeToString(buffer)
 	generated, err := generate.TestFile(pkg.Name, fixtures, checksum)
 	if err != nil {
 		log.Fatal(err)

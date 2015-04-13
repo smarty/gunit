@@ -1,9 +1,29 @@
 package generate
 
 import (
+	"bytes"
+	"crypto/md5"
+	"encoding/hex"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 )
+
+func Checksum(directory string) (string, error) {
+	listing, err := ioutil.ReadDir(directory)
+	if err != nil {
+		return "", err
+	}
+	goContents, err := ReadFiles(directory, SelectGoFiles(listing))
+	if err != nil {
+		return "", err
+	}
+	hash := md5.Sum(goContents)
+	buffer := make([]byte, len(hash))
+	copy(buffer, hash[:])
+	return hex.EncodeToString(buffer), nil
+}
 
 func SelectGoFiles(files []os.FileInfo) []os.FileInfo {
 	filtered := []os.FileInfo{}
@@ -12,7 +32,7 @@ func SelectGoFiles(files []os.FileInfo) []os.FileInfo {
 			continue
 		} else if !strings.HasSuffix(file.Name(), ".go") {
 			continue
-		} else if file.Name() == "generated_by_gunit_test.go" { // TODO: const
+		} else if file.Name() == GeneratedFilename {
 			continue
 		}
 		filtered = append(filtered, file)
@@ -20,10 +40,18 @@ func SelectGoFiles(files []os.FileInfo) []os.FileInfo {
 	return filtered
 }
 
-func Checksum(files []os.FileInfo) int64 {
-	var total int64 = int64(len(files))
+func ReadFiles(directory string, files []os.FileInfo) ([]byte, error) {
+	all := &bytes.Buffer{}
 	for _, file := range files {
-		total += int64(len(file.Name())) + file.Size() + file.ModTime().Unix() + int64(file.Mode())
+		content, err := ioutil.ReadFile(filepath.Join(directory, file.Name()))
+		if err != nil {
+			return nil, err
+		}
+		_, err = all.Write(content)
+		if err != nil {
+			return nil, err
+		}
+
 	}
-	return total
+	return all.Bytes(), nil
 }

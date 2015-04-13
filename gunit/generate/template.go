@@ -2,6 +2,8 @@ package generate
 
 import "strings"
 
+const GeneratedFilename = "generated_by_gunit_test.go"
+
 //////////////////////////////////////////////////////////////////////////////
 
 var rawSkippedFixture = strings.TrimSpace(`
@@ -58,7 +60,7 @@ import (
 const footer = `
 
 func init() {
-	gunit.Validate(%d)
+	gunit.Validate("%s")
 }
 
 ///////////////////////////////////////////////////////////////////////////////

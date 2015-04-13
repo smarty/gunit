@@ -9,7 +9,7 @@ import (
 func TestSelectGoFiles(t *testing.T) {
 	files := []os.FileInfo{
 		NewFakeFile("yes.go", 5, 0644, time.Now(), false),
-		NewFakeFile("generated_by_gunit_test.go", 123, 0644, time.Now(), false),
+		NewFakeFile(GeneratedFilename, 123, 0644, time.Now(), false),
 		NewFakeFile("no.txt", 6, 0644, time.Now(), false),
 		NewFakeFile("no", 1, 0644, time.Now(), true),
 	}
@@ -21,28 +21,6 @@ func TestSelectGoFiles(t *testing.T) {
 	}
 	if name := actual[0].Name(); name != "yes.go" {
 		t.Errorf("Expected 'yes.go' as the only file. Got '%s'", name)
-	}
-}
-
-func TestChecksumCalculation(t *testing.T) {
-	now := time.Now()
-	files1 := []os.FileInfo{
-		NewFakeFile("1.go", 1, 1, now, false),
-		NewFakeFile("2.go", 2, 2, now, false),
-	}
-	files2 := []os.FileInfo{ // only difference are the bits of the first file (by 9):
-		NewFakeFile("1.go", 1, 10, now, false),
-		NewFakeFile("2.go", 2, 2, now, false),
-	}
-
-	checksum1 := Checksum(files1)
-	checksum2 := Checksum(files2)
-
-	expectedDiff := int64(files2[0].Mode() - files1[0].Mode())
-	actualDiff := checksum2 - checksum1
-
-	if actualDiff != expectedDiff {
-		t.Errorf("The only difference were the permission bits, which should have been different by %d. The difference was %d instead.", expectedDiff, actualDiff)
 	}
 }
 

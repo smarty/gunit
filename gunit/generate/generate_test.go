@@ -9,7 +9,7 @@ import (
 
 func TestGenerateTestFileFails(t *testing.T) {
 	fixtures := []*parse.Fixture{{StructName: "Not a valid struct name (spaces and parens!)"}}
-	file, err := TestFile("blah", fixtures, 0)
+	file, err := TestFile("blah", fixtures, "")
 	if err == nil {
 		t.Error("Expected a generate error, got nil instead.")
 	}
@@ -20,7 +20,7 @@ func TestGenerateTestFileFails(t *testing.T) {
 
 func TestGenerateWithoutPackageNameFails(t *testing.T) {
 	fixtures := []*parse.Fixture{{StructName: "A"}}
-	file, err := TestFile("", fixtures, 0)
+	file, err := TestFile("", fixtures, "")
 	if err == nil {
 		t.Error("Expected a generate error, got nil instead.")
 	}
@@ -31,7 +31,7 @@ func TestGenerateWithoutPackageNameFails(t *testing.T) {
 
 func TestGenerateValidTestFile(t *testing.T) {
 	fixtures := []*parse.Fixture{{StructName: "A"}}
-	file, err := TestFile("blah", fixtures, 42)
+	file, err := TestFile("blah", fixtures, "42")
 	if err != nil {
 		t.Error("Unexpected err:", err)
 	}
@@ -64,7 +64,7 @@ func TestA(t *testing.T) {
 ///////////////////////////////////////////////////////////////////////////////
 
 func init() {
-	gunit.Validate(42)
+	gunit.Validate("42")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
