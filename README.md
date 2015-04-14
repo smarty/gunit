@@ -137,7 +137,13 @@ Ah, that. The call to `gunit.Validate` passes an md5 checksum of the contents of
 
 > Oh, so that prevents your struct-based tests from getting out of sync with the test functions `go test` expects to run.
 
-Exactly. We use a script that runs our tests automatically whenever a `*.go` file changes (and it alwo runs `gunit`). Depending on the number of test fixtures in a package it generally takes a hundredth of a second to run. Your mileage may vary. Enjoy.
+Exactly. And you can invoke the `gunit` command be calling `go generate` if you put the following comment somewhere in your package:
+
+```
+//go:generate gunit
+```
+
+We use a script that runs our tests automatically whenever a `*.go` file changes (and it alwo runs `go generate`). Depending on the number of test fixtures in a package it generally takes a hundredth of a second to run. Your mileage may vary. Enjoy.
 
 [Advanced Examples](https://github.com/smartystreets/gunit/tree/master/advanced_examples)
 
