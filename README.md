@@ -143,7 +143,7 @@ Exactly. And you can invoke the `gunit` command be calling `go generate` if you 
 //go:generate gunit
 ```
 
-We use a script that runs our tests automatically whenever a `*.go` file changes (and it alwo runs `go generate`). Depending on the number of test fixtures in a package it generally takes a hundredth of a second to run. Your mileage may vary. Enjoy.
+We use a script that runs our tests automatically whenever a `*.go` file changes (and it also runs `go generate`). Depending on the number of test fixtures in a package it generally takes a hundredth of a second to run. Your mileage may vary. Enjoy.
 
 [Advanced Examples](https://github.com/smartystreets/gunit/tree/master/advanced_examples)
 
