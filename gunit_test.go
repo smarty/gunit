@@ -128,6 +128,7 @@ func TestWhenLogIsEmpty_NoOutputIsGenerated(t *testing.T) {
 }
 
 func TestWhenLogIsFull_ButNoVerboseMode_AndNoFailure(t *testing.T) {
+	verbose = func() bool { return false }
 	out = &bytes.Buffer{}
 	fake := NewFakeT()
 	wrapper := NewTWrapper(fake)
@@ -144,7 +145,9 @@ func TestWhenLogIsFullAndVerboseModeIsOn_GenerateOutput(t *testing.T) {
 	out = &bytes.Buffer{}
 	fake := NewFakeT()
 	wrapper := NewTWrapper(fake)
-	verbose = true
+	verbose = func() bool { return true }
+	defer func() { verbose = testing.Verbose }()
+
 	wrapper.Log("hi")
 
 	wrapper.finalize()

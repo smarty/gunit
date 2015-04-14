@@ -36,16 +36,16 @@ func TestEnvironmentControllerFixture(t *testing.T) {
 	defer fixture.Finalize()
 
 	test0 := &EnvironmentControllerFixture{Fixture: fixture}
-	test0.RunTestCase__(test0.TestShouldStartWithEverythingDeactivated, "Test should start with everything deactivated")
+	test0.RunTestCase__(test0.TestEverythingTurnedOffAtStartup, "Test everything turned off at startup")
 
 	test1 := &EnvironmentControllerFixture{Fixture: fixture}
-	test1.RunTestCase__(test1.TestNoHardwareComponentsAreActivatedWhenTemperatureIsJustRight, "Test no hardware components are activated when temperature is just right")
+	test1.RunTestCase__(test1.TestEverythingOffWhenComfortable, "Test everything off when comfortable")
 
 	test2 := &EnvironmentControllerFixture{Fixture: fixture}
-	test2.RunTestCase__(test2.TestCoolerAndBlowerActivatedWhenTemperatureIsTooHot, "Test cooler and blower activated when temperature is too hot")
+	test2.RunTestCase__(test2.TestCoolerAndBlowerWhenHot, "Test cooler and blower when hot")
 
 	test3 := &EnvironmentControllerFixture{Fixture: fixture}
-	test3.RunTestCase__(test3.TestHeaterAndBlowerActivatedWhenTemperatureIsTooCold, "Test heater and blower activated when temperature is too cold")
+	test3.RunTestCase__(test3.TestHeaterAndBlowerWhenCold, "Test heater and blower when cold")
 }
 
 func (self *EnvironmentControllerFixture) RunTestCase__(test func(), description string) {
@@ -57,7 +57,7 @@ func (self *EnvironmentControllerFixture) RunTestCase__(test func(), description
 ///////////////////////////////////////////////////////////////////////////////
 
 func init() {
-	gunit.Validate("a576dc9862b62ba936c4245906eeb964")
+	gunit.Validate("217834f498d563759ec4d749b6309e94")
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,7 @@ package main
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"flag"
 	"go/build"
 	"io/ioutil"
 	"log"
@@ -16,22 +17,29 @@ import (
 	"github.com/smartystreets/gunit/gunit/parse"
 )
 
+var importPath string
+
 func init() {
 	log.SetFlags(log.Lshortfile)
+	flag.StringVar(&importPath, "package", "", "The import path for the package to run `gunit` on.")
+	flag.Parse()
 }
 
 func main() {
-	gopath := os.Getenv("GOPATH")
-	if gopath == "" {
-		panic("must have gopath!")
+	if importPath == "" {
+		gopath := os.Getenv("GOPATH")
+		if gopath == "" {
+			panic("must have gopath!")
+		}
+
+		working, err := os.Getwd() // TODO: or a specified import path from cli
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		importPath = strings.Replace(working, gopath+"/src/", "", 1)
 	}
 
-	working, err := os.Getwd() // TODO: or a specified import path from cli
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	importPath := strings.Replace(working, gopath+"/src/", "", 1)
 	pkg, err := build.Import(importPath, "", build.AllowBinary)
 	if err != nil {
 		log.Fatal(err)
@@ -47,7 +55,7 @@ func main() {
 		} else if !strings.HasSuffix(item, "_test.go") {
 			continue
 		}
-		path := filepath.Join(working, item)
+		path := filepath.Join(pkg.Dir, item)
 		info, err := os.Stat(path)
 		if err != nil {
 			log.Fatal(err)
@@ -66,11 +74,15 @@ func main() {
 		fixtures = append(fixtures, batch...)
 	}
 
-	files, err := ioutil.ReadDir(working)
+	if len(fixtures) == 0 {
+		return
+	}
+
+	files, err := ioutil.ReadDir(pkg.Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
-	contents, err := generate.ReadFiles(working, generate.SelectGoFiles(files))
+	contents, err := generate.ReadFiles(pkg.Dir, generate.SelectGoFiles(files))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,7 +95,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = ioutil.WriteFile(filepath.Join(working, "generated_by_gunit_test.go"), generated, 0644)
+	err = ioutil.WriteFile(filepath.Join(pkg.Dir, generate.GeneratedFilename), generated, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}

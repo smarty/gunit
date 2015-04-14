@@ -16,23 +16,23 @@ func (self *EnvironmentControllerFixture) Setup() {
 	self.controller = NewController(self.hardware)
 }
 
-func (self *EnvironmentControllerFixture) TestShouldStartWithEverythingDeactivated() {
+func (self *EnvironmentControllerFixture) TestEverythingTurnedOffAtStartup() {
 	self.activateAllHardwareComponents()
 	self.controller = NewController(self.hardware)
 	self.assertAllHardwareComponentsAreDeactivated()
 }
 
-func (self *EnvironmentControllerFixture) TestNoHardwareComponentsAreActivatedWhenTemperatureIsJustRight() {
+func (self *EnvironmentControllerFixture) TestEverythingOffWhenComfortable() {
 	self.setupComfortableEnvironment()
 	self.assertAllHardwareComponentsAreDeactivated()
 }
 
-func (self *EnvironmentControllerFixture) TestCoolerAndBlowerActivatedWhenTemperatureIsTooHot() {
+func (self *EnvironmentControllerFixture) TestCoolerAndBlowerWhenHot() {
 	self.setupHotEnvironment()
 	self.So(self.hardware.String(), should.Equal, "heater BLOWER COOLER low high")
 }
 
-func (self *EnvironmentControllerFixture) TestHeaterAndBlowerActivatedWhenTemperatureIsTooCold() {
+func (self *EnvironmentControllerFixture) TestHeaterAndBlowerWhenCold() {
 	self.setupColdEnvironment()
 	self.So(self.hardware.String(), should.Equal, "HEATER BLOWER cooler low high")
 }
