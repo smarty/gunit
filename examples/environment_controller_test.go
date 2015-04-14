@@ -37,6 +37,16 @@ func (self *EnvironmentControllerFixture) TestHeaterAndBlowerWhenCold() {
 	self.So(self.hardware.String(), should.Equal, "HEATER BLOWER cooler low high")
 }
 
+func (self *EnvironmentControllerFixture) TestHighAlarmOnIfAtThreshold() {
+	self.setupBlazingEnvironment()
+	self.So(self.hardware.String(), should.Equal, "heater BLOWER COOLER low HIGH")
+}
+
+func (self *EnvironmentControllerFixture) TestLowAlarmOnIfAtThreshold() {
+	self.setupFreezingEnvironment()
+	self.So(self.hardware.String(), should.Equal, "HEATER BLOWER cooler LOW high")
+}
+
 func (self *EnvironmentControllerFixture) setupComfortableEnvironment() {
 	self.hardware.SetCurrentTemperature(COMFORTABLE)
 	self.controller.Regulate()
@@ -45,8 +55,16 @@ func (self *EnvironmentControllerFixture) setupHotEnvironment() {
 	self.hardware.SetCurrentTemperature(TOO_HOT)
 	self.controller.Regulate()
 }
+func (self *EnvironmentControllerFixture) setupBlazingEnvironment() {
+	self.hardware.SetCurrentTemperature(WAY_TOO_HOT)
+	self.controller.Regulate()
+}
 func (self *EnvironmentControllerFixture) setupColdEnvironment() {
 	self.hardware.SetCurrentTemperature(TOO_COLD)
+	self.controller.Regulate()
+}
+func (self *EnvironmentControllerFixture) setupFreezingEnvironment() {
+	self.hardware.SetCurrentTemperature(WAY_TOO_COLD)
 	self.controller.Regulate()
 }
 

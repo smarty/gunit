@@ -123,7 +123,3 @@ func exit(message string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, message, args...)
 	os.Exit(1)
 }
-
-func init() {
-	fmt.Println(testing.Verbose())
-}
