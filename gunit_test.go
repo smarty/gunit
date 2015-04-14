@@ -6,23 +6,41 @@ import (
 	"io/ioutil"
 	"strings"
 	"testing"
+
+	"github.com/smartystreets/assertions/should"
 )
 
 func TestPassingAssertion(t *testing.T) {
-	// not marked as failure
-	// no log output
-	t.Skip("Not yet implemented")
+	fake := NewFakeT()
+	wrapper := &Fixture{T: fake}
+	wrapper.So(true, should.BeTrue)
+	if fake.Failed() {
+		t.Error("Passing test marked as failed!")
+	}
+	if log := fake.log.String(); log != "" {
+		t.Errorf("Log should be empty, was: '%s'", log)
+	}
 }
 
 func TestFailingAssertion(t *testing.T) {
-	// marked as failure
-	// log output not empty
-	t.Skip("Not yet implemented")
+	fake := NewFakeT()
+	wrapper := &Fixture{T: fake}
+	wrapper.So(true, should.BeFalse)
+	if !fake.Failed() {
+		t.Error("Failing test not marked as such!")
+	}
+	if log := fake.log.String(); log == "" {
+		t.Error("Log should be populated, was empty.")
+	}
 }
 
 func TestFinalize(t *testing.T) {
-	// forwards the call to the inner T.
-	t.Skip("Not yet implemented")
+	fake := NewFakeT()
+	wrapper := &Fixture{T: fake}
+	wrapper.Finalize()
+	if !fake.finalized {
+		t.Error("Call to finalize was not forwared as expected.")
+	}
 }
 
 func TestErrorMarksFailure(t *testing.T) {

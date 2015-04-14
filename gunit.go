@@ -105,21 +105,21 @@ func (self *TWrapper) Log(args ...interface{}) {
 func Validate(checksum string) {
 	_, file, _, ok := runtime.Caller(1)
 	if !ok {
-		exit(1, "Unable to resolve the test file from runtime.Caller(...).")
+		exit("Unable to resolve the test file from runtime.Caller(...).")
 	}
 	current, err := generate.Checksum(filepath.Dir(file))
 	if err != nil {
-		exit(1, "Could not calculate checksum of current go files. Error: %s", err.Error())
+		exit("Could not calculate checksum of current go files. Error: %s", err.Error())
 	}
 	if checksum != current {
-		exit(1, "The checksum provided (%d) does not match the current file listing (%d). Please re-run the `gunit` command and try again.", checksum, current)
+		exit("The checksum provided (%d) does not match the current file listing (%d). Please re-run the `gunit` command and try again.", checksum, current)
 	}
 }
 
 var out io.Writer = os.Stdout
 var verbose = testing.Verbose()
 
-func exit(status int, message string, args ...interface{}) {
+func exit(message string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, message, args...)
-	os.Exit(status)
+	os.Exit(1)
 }
