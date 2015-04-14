@@ -32,7 +32,7 @@ type FixtureParsingFixture struct {
 }
 
 func (self *FixtureParsingFixture) ParseFixtures() {
-	self.fixtures, self.parseError = ParseFixtures(self.input)
+	self.fixtures, self.parseError = Fixtures(self.input)
 }
 
 func (self *FixtureParsingFixture) AssertFixturesParsedAccuratelyAndCompletely() {

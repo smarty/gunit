@@ -7,7 +7,7 @@ import (
 
 //////////////////////////////////////////////////////////////////////////////
 
-func ParseFixtures(code string) ([]*Fixture, error) {
+func Fixtures(code string) ([]*Fixture, error) {
 	fileset := token.NewFileSet()
 	file, err := parser.ParseFile(fileset, "", code, 0)
 	if err != nil {

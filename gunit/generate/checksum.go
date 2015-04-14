@@ -20,9 +20,7 @@ func Checksum(directory string) (string, error) {
 		return "", err
 	}
 	hash := md5.Sum(goContents)
-	buffer := make([]byte, len(hash))
-	copy(buffer, hash[:])
-	return hex.EncodeToString(buffer), nil
+	return hex.EncodeToString(hash[:]), nil
 }
 
 func SelectGoFiles(files []os.FileInfo) []os.FileInfo {

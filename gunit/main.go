@@ -3,8 +3,6 @@
 package main
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"flag"
 	"go/build"
 	"io/ioutil"
@@ -21,52 +19,56 @@ var importPath string
 
 func init() {
 	log.SetFlags(log.Lshortfile)
-	flag.StringVar(&importPath, "package", "", "The import path for the package to run `gunit` on.")
+	flag.StringVar(&importPath, "package", "", "The import path of the package for which a gunit test file will be generated.")
 	flag.Parse()
 }
 
 func main() {
-	if importPath == "" {
-		gopath := os.Getenv("GOPATH")
-		if gopath == "" {
-			panic("must have gopath!")
-		}
+	pkg := resolvePackage()
+	fixtures := parseFixtures(pkg)
+	code := generateTestFileContents(pkg, fixtures)
+	writeTestFile(pkg, code)
+}
 
-		working, err := os.Getwd() // TODO: or a specified import path from cli
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		importPath = strings.Replace(working, gopath+"/src/", "", 1)
-	}
+func resolvePackage() *build.Package {
+	importPath := resolveImportPath()
 
 	pkg, err := build.Import(importPath, "", build.AllowBinary)
 	if err != nil {
 		log.Fatal(err)
 	}
+	return pkg
+}
+func resolveImportPath() string {
+	if importPath != "" {
+		return importPath
+	}
 
+	gopath := os.Getenv("GOPATH")
+	if gopath == "" {
+		log.Fatal("$GOPATH environment variable required.")
+	}
+
+	working, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return strings.Replace(working, gopath+"/src/", "", 1)
+}
+
+func parseFixtures(pkg *build.Package) []*parse.Fixture {
 	fixtures := []*parse.Fixture{}
-	fileInfo := []os.FileInfo{}
 	for _, item := range pkg.TestGoFiles {
 		if item == generate.GeneratedFilename {
 			continue
-		} else if strings.HasPrefix(item, ".") {
-			continue
-		} else if !strings.HasSuffix(item, "_test.go") {
-			continue
 		}
-		path := filepath.Join(pkg.Dir, item)
-		info, err := os.Stat(path)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fileInfo = append(fileInfo, info)
-		source, err := ioutil.ReadFile(path)
+		source, err := ioutil.ReadFile(filepath.Join(pkg.Dir, item))
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		batch, err := parse.ParseFixtures(string(source))
+		batch, err := parse.Fixtures(string(source))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -75,27 +77,27 @@ func main() {
 	}
 
 	if len(fixtures) == 0 {
-		return
+		os.Exit(0)
 	}
 
-	files, err := ioutil.ReadDir(pkg.Dir)
+	return fixtures
+}
+
+func generateTestFileContents(pkg *build.Package, fixtures []*parse.Fixture) []byte {
+	checksum, err := generate.Checksum(pkg.Dir)
 	if err != nil {
 		log.Fatal(err)
 	}
-	contents, err := generate.ReadFiles(pkg.Dir, generate.SelectGoFiles(files))
-	if err != nil {
-		log.Fatal(err)
-	}
-	hash := md5.Sum(contents)
-	buffer := make([]byte, len(hash))
-	copy(buffer, hash[:])
-	checksum := hex.EncodeToString(buffer)
 	generated, err := generate.TestFile(pkg.Name, fixtures, checksum)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = ioutil.WriteFile(filepath.Join(pkg.Dir, generate.GeneratedFilename), generated, 0644)
+	return generated
+}
+
+func writeTestFile(pkg *build.Package, code []byte) {
+	err := ioutil.WriteFile(filepath.Join(pkg.Dir, generate.GeneratedFilename), code, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
