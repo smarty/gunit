@@ -153,7 +153,7 @@ func TestB(t *testing.T) {
 }
 
 func (self *B) RunTestCase__(test func(), description string) {
-	self.T.Log(description)
+	self.Describe(description)
 	test()
 }
 
@@ -186,7 +186,7 @@ func TestC(t *testing.T) {
 }
 
 func (self *C) RunTestCase__(test func(), description string) {
-	self.T.Log(description)
+	self.Describe(description)
 	self.SetupC_()
 	test()
 }
@@ -218,7 +218,7 @@ func TestD(t *testing.T) {
 }
 
 func (self *D) RunTestCase__(test func(), description string) {
-	self.T.Log(description)
+	self.Describe(description)
 	defer self.TeardownD_()
 	test()
 }
@@ -252,7 +252,7 @@ func TestE(t *testing.T) {
 }
 
 func (self *E) RunTestCase__(test func(), description string) {
-	self.T.Log(description)
+	self.Describe(description)
 	defer self.TeardownE_()
 	self.SetupE_()
 	test()
@@ -288,7 +288,7 @@ func TestF(t *testing.T) {
 }
 
 func (self *F) RunTestCase__(test func(), description string) {
-	self.T.Log(description)
+	self.Describe(description)
 	test()
 }
 `,
@@ -322,7 +322,7 @@ func TestG(t *testing.T) {
 }
 
 func (self *G) RunTestCase__(test func(), description string) {
-	self.T.Log(description)
+	self.Describe(description)
 	test()
 }
 `,
@@ -358,7 +358,7 @@ func TestH(t *testing.T) {
 }
 
 func (self *H) RunTestCase__(test func(), description string) {
-	self.T.Log(description)
+	self.Describe(description)
 	test()
 }
 `,
@@ -409,7 +409,7 @@ func TestJ(t *testing.T) {
 }
 
 func (self *J) RunTestCase__(test func(), description string) {
-	self.T.Log(description)
+	self.Describe(description)
 	test()
 }
 `,

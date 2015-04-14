@@ -2,190 +2,156 @@ package gunit
 
 import (
 	"bytes"
-	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/smartystreets/assertions/should"
 )
 
-func TestPassingAssertion(t *testing.T) {
-	fake := NewFakeT()
-	wrapper := &Fixture{T: fake}
-	wrapper.So(true, should.BeTrue)
-	if fake.Failed() {
-		t.Error("Passing test marked as failed!")
-	}
-	if log := fake.log.String(); log != "" {
-		t.Errorf("Log should be empty, was: '%s'", log)
-	}
-}
+func TestFinalizeAfterNoActions(t *testing.T) {
+	defer reset()
+	patchVerbosity(false)
+	log := patchOutput()
+	fake := &FakeTT{}
+	fixture := NewFixture(fake)
 
-func TestFailingAssertion(t *testing.T) {
-	fake := NewFakeT()
-	wrapper := &Fixture{T: fake}
-	wrapper.So(true, should.BeFalse)
-	if !fake.Failed() {
-		t.Error("Failing test not marked as such!")
-	}
-	if log := fake.log.String(); log == "" {
-		t.Error("Log should be populated, was empty.")
-	}
-}
-
-func TestFinalize(t *testing.T) {
-	fake := NewFakeT()
-	wrapper := &Fixture{T: fake}
-	wrapper.Finalize()
-	if !fake.finalized {
-		t.Error("Call to finalize was not forwared as expected.")
-	}
-}
-
-func TestErrorMarksFailure(t *testing.T) {
-	fake := NewFakeT()
-	wrapper := NewTWrapper(fake)
-
-	wrapper.Error("hello", "world")
-
-	if !fake.failed {
-		t.Error("Calling .Error(...) should have marked the test as failed (but it didn't).")
-	}
-	if actual := strings.TrimSpace(wrapper.log.String()); actual != "hello world" {
-		t.Errorf("Expected log: '	hello world' Actual log: '%s'", actual)
-	}
-}
-
-func TestErrorfMarksFailure(t *testing.T) {
-	fake := NewFakeT()
-	wrapper := NewTWrapper(fake)
-
-	wrapper.Errorf("hello %s", "world")
-
-	if !fake.failed {
-		t.Error("Calling .Errorf(...) should have marked the test as failed (but it didn't).")
-	}
-	if actual := strings.TrimSpace(wrapper.log.String()); actual != "hello world" {
-		t.Errorf("Expected log: '	hello world' Actual log: '%s'", actual)
-	}
-}
-
-func TestSkip_OnlyCallsSkipNowAtFinalize(t *testing.T) {
-	fake := NewFakeT()
-	wrapper := NewTWrapper(fake)
-
-	wrapper.Skip()
-
-	if fake.skipped {
-		t.Error("SkipNow should only be called after finalize!")
-		t.FailNow()
-	}
-
-	wrapper.finalize()
-
-	if !fake.skipped {
-		t.Error("SkipNow should have been called by finalize!")
-	}
+	fixture.Finalize()
 
 	if fake.failed {
-		t.Error("The test was erroneously marked as failed.")
+		t.Error("Fake should not have been marked as failed.")
+	}
+	if fake.skipped {
+		t.Error("Fake should not have been marked as skipped.")
+	}
+	if log.Len() > 0 {
+		t.Errorf("Output was not blank: '%s'", log.String())
 	}
 }
 
-func TestSkipf_OnlyCallsSkipNowAtFinalize(t *testing.T) {
-	fake := NewFakeT()
-	wrapper := NewTWrapper(fake)
+func TestFinalizeAfterPass_NotVerbose(t *testing.T) {
+	defer reset()
+	patchVerbosity(false)
+	log := patchOutput()
+	fake := &FakeTT{}
+	fixture := NewFixture(fake)
+	fixture.Describe("Hello")
+	fixture.Finalize()
 
-	wrapper.Skipf("hi %s", "world")
-
-	if fake.skipped {
-		t.Error("SkipNow should only be called after finalize!")
-		t.FailNow()
+	if output := strings.TrimSpace(log.String()); output != "" {
+		t.Errorf("Unexpected output: '%s'", log.String())
 	}
+}
 
-	wrapper.finalize()
+func TestFinalizeAfterPass_Verbose(t *testing.T) {
+	defer reset()
+	patchVerbosity(true)
+	log := patchOutput()
+	fake := &FakeTT{}
+	fixture := NewFixture(fake)
+	fixture.Describe("Hello")
+	fixture.Finalize()
+
+	if output := strings.TrimSpace(log.String()); output != "- Hello" {
+		t.Errorf("Unexpected output: '%s'", log.String())
+	}
+}
+
+func TestFinalizeAfterFailure(t *testing.T) {
+	defer reset()
+	patchVerbosity(false)
+	log := patchOutput()
+	fake := &FakeTT{}
+	fixture := NewFixture(fake)
+
+	fixture.Describe("Hello")
+	fake.Fail()
+
+	fixture.Finalize()
+
+	if output := strings.TrimSpace(log.String()); output != "- Hello" {
+		t.Errorf("Unexpected output: '%s'", output)
+	}
+}
+
+func TestFinalizeAfterSkip_NotVerbose(t *testing.T) {
+	defer reset()
+	patchVerbosity(false)
+	log := patchOutput()
+	fake := &FakeTT{}
+	fixture := NewFixture(fake)
+
+	fixture.Skip("Hello")
+
+	fixture.Finalize()
 
 	if !fake.skipped {
-		t.Error("SkipNow should have been called by finalize!")
+		t.Error("SkipNow() was not called.")
 	}
 
+	if log.Len() > 0 {
+		t.Errorf("Unexpected output: '%s'", log.String())
+	}
+}
+
+func TestSoPasses(t *testing.T) {
+	defer reset()
+	patchVerbosity(false)
+	log := patchOutput()
+	fake := &FakeTT{}
+	fixture := NewFixture(fake)
+	fixture.So(true, should.BeTrue)
+	fixture.Finalize()
+
+	if log.Len() > 0 {
+		t.Errorf("Unexpected ouput: '%s'", log.String())
+	}
 	if fake.failed {
-		t.Error("The test was erroneously marked as failed.")
+		t.Error("Test was erroneously marked as failed.")
 	}
 }
 
-func TestWhenLogIsEmpty_NoOutputIsGenerated(t *testing.T) {
-	out = &bytes.Buffer{}
-	fake := NewFakeT()
-	wrapper := NewTWrapper(fake)
+func TestSoFails(t *testing.T) {
+	defer reset()
+	patchVerbosity(false)
+	log := patchOutput()
+	fake := &FakeTT{}
+	fixture := NewFixture(fake)
+	fixture.So(true, should.BeFalse)
+	fixture.Finalize()
 
-	wrapper.finalize()
-
-	if log := out.(fmt.Stringer).String(); log != "" {
-		t.Errorf("Expected a blank log, got: '%s'", log)
+	if output := log.String(); !strings.Contains(output, "Expected:") {
+		t.Errorf("Unexpected ouput: '%s'", log.String())
 	}
-}
-
-func TestWhenLogIsFull_ButNoVerboseMode_AndNoFailure(t *testing.T) {
-	verbose = func() bool { return false }
-	out = &bytes.Buffer{}
-	fake := NewFakeT()
-	wrapper := NewTWrapper(fake)
-	wrapper.Log("HI")
-
-	wrapper.finalize()
-
-	if log := out.(fmt.Stringer).String(); log != "" {
-		t.Errorf("Expected a blank log, got: '%s'", log)
-	}
-}
-
-func TestWhenLogIsFullAndVerboseModeIsOn_GenerateOutput(t *testing.T) {
-	out = &bytes.Buffer{}
-	fake := NewFakeT()
-	wrapper := NewTWrapper(fake)
-	verbose = func() bool { return true }
-	defer func() { verbose = testing.Verbose }()
-
-	wrapper.Log("hi")
-
-	wrapper.finalize()
-
-	if log := out.(fmt.Stringer).String(); log == "" {
-		t.Error("Log was empty!")
-	}
-}
-
-func TestWhenLogIsFullAndTestFailed_GenerateOutput(t *testing.T) {
-	out = &bytes.Buffer{}
-	fake := NewFakeT()
-	wrapper := NewTWrapper(fake)
-	wrapper.Log("hi")
-	wrapper.Fail()
-
-	wrapper.finalize()
-
-	if log := out.(fmt.Stringer).String(); log == "" {
-		t.Error("Log was empty!")
+	if !fake.failed {
+		t.Error("Test should have been marked as failed.")
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-type FakeT struct {
-	skipped   bool
-	failed    bool
-	log       *bytes.Buffer
-	finalized bool
+func patchVerbosity(verbosity bool) {
+	verbose = func() bool { return verbosity }
+}
+func patchOutput() *bytes.Buffer {
+	output := &bytes.Buffer{}
+	out = output
+	return output
+}
+func reset() {
+	out = os.Stdout
+	verbose = testing.Verbose
 }
 
-func NewFakeT() *FakeT                      { return &FakeT{log: &bytes.Buffer{}} }
-func (self *FakeT) SkipNow()                { self.skipped = true }
-func (self *FakeT) Fail()                   { self.failed = true }
-func (self *FakeT) Failed() bool            { return self.failed }
-func (self *FakeT) Log(args ...interface{}) { self.log.WriteString(fmt.Sprintln(args...)) }
-func (self *FakeT) finalize()               { self.finalized = true }
-func init() {
-	out = ioutil.Discard // NOTE: if you aren't seeing debug output, this is why...
+//////////////////////////////////////////////////////////////////////////////
+
+type FakeTT struct {
+	failed  bool
+	skipped bool
 }
+
+func (self *FakeTT) Fail()        { self.failed = true }
+func (self *FakeTT) Failed() bool { return self.failed }
+func (self *FakeTT) SkipNow()     { self.skipped = true }
+
+//////////////////////////////////////////////////////////////////////////////

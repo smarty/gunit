@@ -4,14 +4,14 @@
 
 - [X] checksums
 - [X] main logic
-- [ ] unit test the gunit package
+- [X] unit test the gunit package
+- [X] extend scantest to run gunit
 - [ ] should the gunit command be at the root instead?\
 - [ ] remove 'Test' from output?
 - [ ] apostrophes in contractions
 - [ ] focus? (technically the -run flag achieves this)
 - [ ] better README
 - [ ] extend goconvey to run gunit
-- [ ] extend scantest to run gunit
 
 
 -------------------------

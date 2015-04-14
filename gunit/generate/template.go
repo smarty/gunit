@@ -31,7 +31,7 @@ func Test{{.StructName}}(t *testing.T) { {{if .FixtureTeardownName}}
 {{end}}}
 
 {{if .TestCases}}func (self *{{.StructName}}) RunTestCase__(test func(), description string) {
-	self.T.Log(description){{if .TestTeardownName}}
+	self.Describe(description){{if .TestTeardownName}}
 	defer self.{{.TestTeardownName}}(){{end}}{{if .TestSetupName}}
 	self.{{.TestSetupName}}(){{end}}
 	test()
