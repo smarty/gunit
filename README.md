@@ -1,5 +1,11 @@
 # gunit
 
+## Installation
+
+```
+$ go get github.com/smartystreets/gunit/gunit
+```
+
 -------------------------
 
 We now present `gunit`, yet another testing tool for Go.
@@ -30,39 +36,41 @@ import (
 )
 
 type ExampleFixture struct {
-	*gunit.Fixture // Embedding this type is what makes the magic happen.
+	*gunit.Fixture // Required: Embedding this type is what makes the magic happen.
 
 	// Declare useful state here (probably the stuff being testing, any fakes, etc...).
 }
 
 func SetupExampleFixture() {
-	// This fixture-level setup function will be run once,
+	// This optional, fixture-level setup function will be run once,
 	// before any "Test" methods on the ExampleFixture are executed.
 }
 func TeardownExampleFixture() {
-	// This fixture-level function will be run once,
+	// This optional, fixture-level function will be run once,
 	// after all "Test" methods on the ExampleFixture have been executed.
 }
 
 func (self *ExampleFixture) SetupStuff() {
-	// This method will be executed before each "Test"
+	// This optional method will be executed before each "Test"
 	// method becuase it starts with "Setup".
 }
 func (self *ExampleFixture) TeardownStuff() {
-	// This method will be executed after each "Test"
+	// This optional method will be executed after each "Test"
 	// method (because it starts with "Teardown"), even if the test method panics.
 }
 
-// This function demonstrates how to use the functions from the
-// `should` package at github.com/smartystreets/assertions/should
-// to perform assertions:
+
+// This is an actual test case:
 func (self *ExampleFixture) TestWithAssertions() {
+	// Here's how to use the functions from the `should`
+	// package at github.com/smartystreets/assertions/should
+	// to perform assertions:
 	self.So(42, should.Equal, 42)
-	self.So("Hello, World!", should.ContainSubstring, "o, W")
+	self.So("Hello, World!", should.ContainSubstring, "World")
 }
 
 func (self *ExampleFixture) SkipTestWithNothing() {
-	// Because this method's name starts with 'Skip', this will be skipped in the generated code.
+	// Because this method's name starts with 'Skip', it will be skipped.
 }
 
 ```
@@ -137,7 +145,7 @@ Ah, that. The call to `gunit.Validate` passes an md5 checksum of the contents of
 
 > Oh, so that prevents your struct-based tests from getting out of sync with the test functions `go test` expects to run.
 
-Exactly. And you can invoke the `gunit` command be calling `go generate` if you put the following comment somewhere in your package:
+Exactly. And you can invoke the `gunit` command be calling `go generate` if you put the following comment somewhere in your package (even in a `*_test.go` file):
 
 ```
 //go:generate gunit
@@ -160,4 +168,5 @@ We use a script that runs our tests automatically whenever a `*.go` file changes
 - [ ] remove 'Test' from output?
 - [ ] apostrophes in contractions
 - [ ] focus? (technically the -run flag achieves this)
-- [ ] extend goconvey to run gunit
+- [ ] t.Error?
+- [ ] extend goconvey to run go generate

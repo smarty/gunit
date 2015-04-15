@@ -18,7 +18,7 @@ func (self *BowlingGameScoringTests) Setup() {
 }
 
 func (self *BowlingGameScoringTests) TestAfterAllGutterBallsTheScoreShouldBeZero() {
-	self.rollZero(20)
+	self.rollMany(20, 0)
 	self.So(self.game.Score(), should.Equal, 0)
 }
 
@@ -31,7 +31,7 @@ func (self *BowlingGameScoringTests) TestSpareReceivesSingleRollBonus() {
 	self.rollSpare()
 	self.game.Roll(4)
 	self.game.Roll(3)
-	self.rollZero(16)
+	self.rollMany(16, 0)
 	self.So(self.game.Score(), should.Equal, 21)
 }
 
@@ -39,17 +39,13 @@ func (self *BowlingGameScoringTests) TestStrikeRecievesDoubleRollBonus() {
 	self.rollStrike()
 	self.game.Roll(4)
 	self.game.Roll(3)
-	self.rollZero(16)
+	self.rollMany(16, 0)
 	self.So(self.game.Score(), should.Equal, 24)
 }
 
 func (self *BowlingGameScoringTests) TestPerfectGame() {
 	self.rollMany(12, 10)
 	self.So(self.game.Score(), should.Equal, 300)
-}
-
-func (self *BowlingGameScoringTests) rollZero(times int) {
-	self.rollMany(times, 0)
 }
 
 func (self *BowlingGameScoringTests) rollMany(times, pins int) {
