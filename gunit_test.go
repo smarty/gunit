@@ -111,7 +111,7 @@ func TestSoPasses(t *testing.T) {
 	}
 }
 
-func TestSoFails(t *testing.T) {
+func TestSoFailsAndLogs(t *testing.T) {
 	defer reset()
 	patchVerbosity(false)
 	log := patchOutput()
@@ -125,6 +125,41 @@ func TestSoFails(t *testing.T) {
 	}
 	if !fake.failed {
 		t.Error("Test should have been marked as failed.")
+	}
+}
+
+func TestErrorFailsAndLogs(t *testing.T) {
+	defer reset()
+	patchVerbosity(false)
+	log := patchOutput()
+	fake := &FakeTT{}
+	fixture := NewFixture(fake)
+	fixture.Error("1", "2", "3")
+	fixture.Finalize()
+
+	if !fake.failed {
+		t.Error("Test should have been marked as failed.")
+	}
+
+	if output := log.String(); !strings.Contains(output, "123") {
+		t.Errorf("Expected string containing: '123' Got: '%s'", output)
+	}
+}
+
+func TestErrorfFailsAndLogs(t *testing.T) {
+	defer reset()
+	patchVerbosity(false)
+	log := patchOutput()
+	fake := &FakeTT{}
+	fixture := NewFixture(fake)
+	fixture.Errorf("%s%s%s", "1", "2", "3")
+	fixture.Finalize()
+
+	if !fake.failed {
+		t.Error("Test should have been marked as failed.")
+	}
+	if output := log.String(); !strings.Contains(output, "123") {
+		t.Errorf("Expected string containing: '123' Got: '%s'", output)
 	}
 }
 

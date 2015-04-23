@@ -164,9 +164,9 @@ We use a script that runs our tests automatically whenever a `*.go` file changes
 - [X] unit test the gunit package
 - [X] extend scantest to run gunit
 - [X] better README
+- [X] t.Error?
 - [ ] should the gunit command be at the root instead?
 - [ ] remove 'Test' from output?
 - [ ] apostrophes in contractions
 - [ ] focus? (technically the -run flag achieves this)
-- [ ] t.Error?
 - [ ] extend goconvey to run go generate
