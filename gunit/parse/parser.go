@@ -8,8 +8,7 @@ import (
 //////////////////////////////////////////////////////////////////////////////
 
 func Fixtures(code string) ([]*Fixture, error) {
-	fileset := token.NewFileSet()
-	file, err := parser.ParseFile(fileset, "", code, 0)
+	file, err := parser.ParseFile(token.NewFileSet(), "", code, 0)
 	if err != nil {
 		return nil, err
 	}
