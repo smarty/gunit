@@ -2,6 +2,40 @@ package parse
 
 const malformedTestCode = "This isn't really a go file."
 
+const malformedMissingPointerOnEmbeddedStruct = `package parse
+
+import (
+	"github.com/smartystreets/assertions/should"
+	"github.com/smartystreets/gunit"
+)
+
+type BowlingGameScoringTests struct {
+	gunit.Fixture // It's missing the pointer asterisk! It should be: *gunit.Fixture
+
+	game *Game
+}
+
+func (self *BowlingGameScoringTests) TestAfterAllGutterBallsTheScoreShouldBeZero() {}
+`
+
+const malformedMissingPointerOnReceiver = `package parse
+
+import (
+	"github.com/smartystreets/assertions/should"
+	"github.com/smartystreets/gunit"
+)
+
+type BowlingGameScoringTests struct {
+	gunit.Fixture // It's missing the pointer asterisk! It should be: '*gunit.Fixture'
+
+	game *Game
+}
+
+func (self BowlingGameScoringTests) TestAfterAllGutterBallsTheScoreShouldBeZero() {
+	// we are missing the pointer asterisk on the reciever type. Should be: '(self *BowlingGameScoringTests)'
+}
+`
+
 const comprehensiveTestCode = `package parse
 
 import (
