@@ -15,7 +15,6 @@ func (self *FixtureValidator) Visit(node ast.Node) ast.Visitor {
 	}
 	pointer, isPointer := field.Type.(*ast.StarExpr)
 	if !isPointer {
-		// return a different 'Visitor' that looks for the no-pointer version and calls back to this one...
 		return self
 	}
 	selector, isSelector := pointer.X.(*ast.SelectorExpr)
