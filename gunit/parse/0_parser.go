@@ -1,6 +1,7 @@
 package parse
 
 import (
+	"fmt"
 	"go/parser"
 	"go/token"
 )
@@ -8,10 +9,13 @@ import (
 //////////////////////////////////////////////////////////////////////////////
 
 func Fixtures(code string) ([]*Fixture, error) {
-	file, err := parser.ParseFile(token.NewFileSet(), "", code, 0)
+	fileset := token.NewFileSet()
+	file, err := parser.ParseFile(fileset, "", code, 0)
 	if err != nil {
 		return nil, err
 	}
+
+	// ast.Print(fileset, file)
 
 	collection := NewFixtureCollector().Collect(file)
 	collection = NewFixtureMethodFinder(collection).Find(file)
@@ -19,6 +23,9 @@ func Fixtures(code string) ([]*Fixture, error) {
 
 	fixtures := []*Fixture{}
 	for _, fixture := range collection {
+		if fixture.InvalidNonPointer {
+			return nil, fmt.Errorf("The fixture struct '%s' must embed *gunit.Fixture, not gunit.Fixture.", fixture.StructName)
+		}
 		fixtures = append(fixtures, fixture)
 	}
 	return fixtures, nil

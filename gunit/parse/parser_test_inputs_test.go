@@ -186,10 +186,6 @@ type SkipFixture struct {
 //////////////////////////////////////////////////////////////////////////////
 // These types shouldn't be parsed as fixtures:
 
-type TestFixtureNoPointer struct {
-	gunit.Fixture
-}
-
 type TestFixtureWrongTestCase struct {
 	*blah.Fixture
 }
@@ -199,10 +195,6 @@ type TestFixtureWrongPackage struct {
 
 type Hah interface {
 	Hi() string
-}
-
-type NoPointerFixture struct {
-	gunit.Fixture
 }
 
 type BlahFixture struct {

@@ -11,6 +11,8 @@ type Fixture struct {
 	TestTeardownName string
 
 	TestCases []TestCase
+
+	InvalidNonPointer bool
 }
 
 type TestCase struct {
@@ -18,4 +20,6 @@ type TestCase struct {
 	Name       string
 	StructName string
 	Skipped    bool
+
+	InvalidNonPointer bool
 }
