@@ -97,9 +97,6 @@ func (self *BowlingGameScoringTests) TestNotVoid_ShouldNOTBeCollected() int {
 	return -1
 	// This should not be collected (it's not void)
 }
-func (self BowlingGameScoringTests) TestNotPointerReceiver_ShouldNOTBeCollected() {
-	// This should not be collected (it doesn't have a pointer receiver)
-}
 
 //////////////////////////////////////////////////////////////////////////////
 

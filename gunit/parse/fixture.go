@@ -10,7 +10,8 @@ type Fixture struct {
 	TestSetupName    string
 	TestTeardownName string
 
-	TestCases []TestCase
+	TestCases        []TestCase
+	InvalidTestCases []string
 
 	InvalidNonPointer bool
 }
