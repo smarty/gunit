@@ -45,12 +45,9 @@ func listFixtures(collection map[string]*Fixture) ([]*Fixture, error) {
 
 func accountForErrors(errorMessage *bytes.Buffer, fixture *Fixture) {
 	if fixture.InvalidNonPointer {
-		errorMessage.WriteString(fmt.Sprintf("The fixture struct '%s' must embed `*gunit.Fixture` (pointer), not `gunit.Fixture`.\n", fixture.StructName))
-	}
-	if len(fixture.InvalidTestCases) > 0 {
-		errorMessage.WriteString("\nEncountered the following incorrectly declared test methods:")
+		errorMessage.WriteString(fmt.Sprintf("\n- The fixture struct '%s' must embed `*gunit.Fixture` (pointer), not `gunit.Fixture`.", fixture.StructName))
 	}
 	for _, methodName := range fixture.InvalidTestCases {
-		errorMessage.WriteString(fmt.Sprintf("\n- %s.%s (must be declared with a pointer receiver)", fixture.StructName, methodName))
+		errorMessage.WriteString(fmt.Sprintf("\n- %s.%s must be declared with a pointer receiver.", fixture.StructName, methodName))
 	}
 }
