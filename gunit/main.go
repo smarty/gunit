@@ -76,14 +76,14 @@ func parseFixtures(pkg *build.Package) []*parse.Fixture {
 		fixtures = append(fixtures, batch...)
 	}
 
-	if len(fixtures) == 0 {
-		os.Exit(0)
-	}
-
 	return fixtures
 }
 
 func generateTestFileContents(pkg *build.Package, fixtures []*parse.Fixture) []byte {
+	if len(fixtures) == 0 {
+		return nil
+	}
+
 	checksum, err := generate.Checksum(pkg.Dir)
 	if err != nil {
 		log.Fatal(err)
@@ -97,6 +97,9 @@ func generateTestFileContents(pkg *build.Package, fixtures []*parse.Fixture) []b
 }
 
 func writeTestFile(pkg *build.Package, code []byte) {
+	if len(code) == 0 {
+		return
+	}
 	err := ioutil.WriteFile(filepath.Join(pkg.Dir, generate.GeneratedFilename), code, 0644)
 	if err != nil {
 		log.Fatal(err)
