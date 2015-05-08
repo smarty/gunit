@@ -26,7 +26,7 @@ import (
 )
 
 type BowlingGameScoringTests struct {
-	gunit.Fixture // It's missing the pointer asterisk! It should be: '*gunit.Fixture'
+	*gunit.Fixture // It's missing the pointer asterisk! It should be: '*gunit.Fixture'
 
 	game *Game
 }
