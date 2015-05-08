@@ -106,12 +106,24 @@ func generateTestFileContents(pkg *build.Package, fixtures []*parse.Fixture) []b
 }
 
 func writeTestFile(pkg *build.Package, code []byte) {
+	filename := filepath.Join(pkg.Dir, generate.GeneratedFilename)
+
 	if len(code) == 0 {
+		removeExistingGeneratedFile(filename)
 		return
 	}
 
-	err := ioutil.WriteFile(filepath.Join(pkg.Dir, generate.GeneratedFilename), code, 0644)
+	err := ioutil.WriteFile(filename, code, 0644)
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func removeExistingGeneratedFile(filename string) {
+	if _, err := os.Stat(filename); err == nil {
+		err := os.Remove(filename)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
