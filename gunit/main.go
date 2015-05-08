@@ -3,6 +3,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"go/build"
 	"io/ioutil"
@@ -59,10 +60,13 @@ func resolveImportPath() string {
 
 func parseFixtures(pkg *build.Package) []*parse.Fixture {
 	fixtures := []*parse.Fixture{}
+	badFixtures := new(bytes.Buffer)
+
 	for _, item := range pkg.TestGoFiles {
 		if item == generate.GeneratedFilename {
 			continue
 		}
+
 		source, err := ioutil.ReadFile(filepath.Join(pkg.Dir, item))
 		if err != nil {
 			log.Fatal(err)
@@ -70,10 +74,14 @@ func parseFixtures(pkg *build.Package) []*parse.Fixture {
 
 		batch, err := parse.Fixtures(string(source))
 		if err != nil {
-			log.Fatal(err)
+			badFixtures.WriteString(err.Error())
 		}
 
 		fixtures = append(fixtures, batch...)
+	}
+
+	if badFixtures.Len() > 0 {
+		log.Fatal("The following incorrectly defined fixtures and/or test methods were found:" + badFixtures.String())
 	}
 
 	return fixtures
@@ -88,6 +96,7 @@ func generateTestFileContents(pkg *build.Package, fixtures []*parse.Fixture) []b
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	generated, err := generate.TestFile(pkg.Name, fixtures, checksum)
 	if err != nil {
 		log.Fatal(err)
@@ -100,6 +109,7 @@ func writeTestFile(pkg *build.Package, code []byte) {
 	if len(code) == 0 {
 		return
 	}
+
 	err := ioutil.WriteFile(filepath.Join(pkg.Dir, generate.GeneratedFilename), code, 0644)
 	if err != nil {
 		log.Fatal(err)
