@@ -15,9 +15,17 @@ func TestParseFileWithValidFixturesAndConstructs(t *testing.T) {
 }
 
 func TestParseFileWithMalformedSourceCode(t *testing.T) {
-	test := &FixtureParsingFixture{t: t, input: malformedTestCode}
-	test.ParseFixtures()
-	test.AssertErrorWasReturned()
+	test1 := &FixtureParsingFixture{t: t, input: malformedTestCode}
+	test1.ParseFixtures()
+	test1.AssertErrorWasReturned()
+
+	test2 := &FixtureParsingFixture{t: t, input: malformedMissingPointerOnEmbeddedStruct}
+	test2.ParseFixtures()
+	test2.AssertErrorWasReturned()
+
+	test3 := &FixtureParsingFixture{t: t, input: malformedMissingPointerOnReceiver}
+	test3.ParseFixtures()
+	test3.AssertErrorWasReturned()
 }
 
 //////////////////////////////////////////////////////////////////////////////

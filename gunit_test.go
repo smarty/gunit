@@ -1,3 +1,5 @@
+// These tests demonstrate the very ugliness this project aims to eliminate.
+// Lots of duplicate setup logic, etc...
 package gunit
 
 import (

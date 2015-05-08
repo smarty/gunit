@@ -24,9 +24,19 @@ func (self *FixtureMethodFinder) Visit(node ast.Node) ast.Visitor {
 		return self
 	}
 
-	fixture := self.resolveFixture(function)
-	if fixture == nil {
-		return self
+	if function.Recv.NumFields() == 0 {
+		return nil
+	}
+
+	receiver, isPointer := function.Recv.List[0].Type.(*ast.StarExpr)
+	if !isPointer {
+		return &FixtureMethodInvalidator{function: function.Name.Name, fixtures: self.fixtures}
+	}
+
+	fixtureName := receiver.X.(*ast.Ident).Name
+	fixture, functionMatchesFixture := self.fixtures[fixtureName]
+	if !functionMatchesFixture {
+		return nil
 	}
 
 	if !isExportedAndVoidAndNiladic(function) {
@@ -35,22 +45,6 @@ func (self *FixtureMethodFinder) Visit(node ast.Node) ast.Visitor {
 
 	attach(function, fixture)
 	return nil
-}
-
-func (self *FixtureMethodFinder) resolveFixture(function *ast.FuncDecl) *Fixture {
-	if function.Recv.NumFields() == 0 {
-		return nil
-	}
-	receiver, isPointer := function.Recv.List[0].Type.(*ast.StarExpr)
-	if !isPointer {
-		return nil
-	}
-	fixtureName := receiver.X.(*ast.Ident).Name
-	fixture, functionMatchesFixture := self.fixtures[fixtureName]
-	if !functionMatchesFixture {
-		return nil
-	}
-	return fixture
 }
 
 func isExportedAndVoidAndNiladic(function *ast.FuncDecl) bool {
@@ -88,4 +82,33 @@ func attach(function *ast.FuncDecl, fixture *Fixture) {
 			Skipped:    true,
 		})
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+type FixtureMethodInvalidator struct {
+	function string
+	fixtures map[string]*Fixture
+}
+
+func (self *FixtureMethodInvalidator) Visit(node ast.Node) ast.Visitor {
+	receiverList, isReceiverList := node.(*ast.FieldList)
+	if !isReceiverList {
+		return nil
+	}
+
+	if receiverList.NumFields() != 1 {
+		return nil
+	}
+
+	receiver := receiverList.List[0]
+
+	fixtureName := receiver.Type.(*ast.Ident).Name
+	fixture, functionMatchesFixture := self.fixtures[fixtureName]
+	if !functionMatchesFixture {
+		return nil
+	}
+
+	fixture.InvalidTestCases = append(fixture.InvalidTestCases, self.function)
+	return nil
 }

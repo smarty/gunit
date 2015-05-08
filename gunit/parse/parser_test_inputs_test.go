@@ -2,6 +2,40 @@ package parse
 
 const malformedTestCode = "This isn't really a go file."
 
+const malformedMissingPointerOnEmbeddedStruct = `package parse
+
+import (
+	"github.com/smartystreets/assertions/should"
+	"github.com/smartystreets/gunit"
+)
+
+type BowlingGameScoringTests struct {
+	gunit.Fixture // It's missing the pointer asterisk! It should be: *gunit.Fixture
+
+	game *Game
+}
+
+func (self *BowlingGameScoringTests) TestAfterAllGutterBallsTheScoreShouldBeZero() {}
+`
+
+const malformedMissingPointerOnReceiver = `package parse
+
+import (
+	"github.com/smartystreets/assertions/should"
+	"github.com/smartystreets/gunit"
+)
+
+type BowlingGameScoringTests struct {
+	*gunit.Fixture // It's missing the pointer asterisk! It should be: '*gunit.Fixture'
+
+	game *Game
+}
+
+func (self BowlingGameScoringTests) TestAfterAllGutterBallsTheScoreShouldBeZero() {
+	// we are missing the pointer asterisk on the reciever type. Should be: '(self *BowlingGameScoringTests)'
+}
+`
+
 const comprehensiveTestCode = `package parse
 
 import (
@@ -62,9 +96,6 @@ func (self *BowlingGameScoringTests) TestNotNiladic_ShouldNotBeCollected(a int) 
 func (self *BowlingGameScoringTests) TestNotVoid_ShouldNOTBeCollected() int {
 	return -1
 	// This should not be collected (it's not void)
-}
-func (self BowlingGameScoringTests) TestNotPointerReceiver_ShouldNOTBeCollected() {
-	// This should not be collected (it doesn't have a pointer receiver)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -152,10 +183,6 @@ type SkipFixture struct {
 //////////////////////////////////////////////////////////////////////////////
 // These types shouldn't be parsed as fixtures:
 
-type TestFixtureNoPointer struct {
-	gunit.Fixture
-}
-
 type TestFixtureWrongTestCase struct {
 	*blah.Fixture
 }
@@ -165,10 +192,6 @@ type TestFixtureWrongPackage struct {
 
 type Hah interface {
 	Hi() string
-}
-
-type NoPointerFixture struct {
-	gunit.Fixture
 }
 
 type BlahFixture struct {

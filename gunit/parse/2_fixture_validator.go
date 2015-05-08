@@ -15,8 +15,9 @@ func (self *FixtureValidator) Visit(node ast.Node) ast.Visitor {
 	}
 	pointer, isPointer := field.Type.(*ast.StarExpr)
 	if !isPointer {
-		return self
+		return &NonPointerFixtureValidator{Parent: self.Parent, FixtureName: self.FixtureName}
 	}
+
 	selector, isSelector := pointer.X.(*ast.SelectorExpr)
 	if !isSelector {
 		return self
@@ -26,5 +27,25 @@ func (self *FixtureValidator) Visit(node ast.Node) ast.Visitor {
 		return self
 	}
 	self.Parent.Validate(self.FixtureName)
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+type NonPointerFixtureValidator struct {
+	Parent      *FixtureCollector
+	FixtureName string
+}
+
+func (self *NonPointerFixtureValidator) Visit(node ast.Node) ast.Visitor {
+	selector, isSelector := node.(*ast.SelectorExpr)
+	if !isSelector {
+		return nil
+	}
+	gunit, isGunit := selector.X.(*ast.Ident)
+	if selector.Sel.Name != "Fixture" || !isGunit || gunit.Name != "gunit" {
+		return nil
+	}
+	self.Parent.Invalidate(self.FixtureName)
 	return nil
 }

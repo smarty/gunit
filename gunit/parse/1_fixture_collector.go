@@ -41,3 +41,8 @@ func (self *FixtureCollector) Validate(fixture string) {
 		self.fixtures[fixture].Skipped = true
 	}
 }
+
+func (self *FixtureCollector) Invalidate(fixture string) {
+	self.candidates[fixture].InvalidNonPointer = true
+	self.Validate(fixture)
+}
