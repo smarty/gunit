@@ -1,5 +1,7 @@
 package examples
 
+//go:generate gunit
+
 import (
 	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
