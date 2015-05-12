@@ -15,7 +15,7 @@ func Checksum(directory string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	goContents, err := ReadFiles(directory, SelectGoFiles(listing))
+	goContents, err := ReadFiles(directory, SelectGoTestFiles(listing))
 	if err != nil {
 		return "", err
 	}
@@ -23,12 +23,12 @@ func Checksum(directory string) (string, error) {
 	return hex.EncodeToString(hash[:]), nil
 }
 
-func SelectGoFiles(files []os.FileInfo) []os.FileInfo {
+func SelectGoTestFiles(files []os.FileInfo) []os.FileInfo {
 	filtered := []os.FileInfo{}
 	for _, file := range files {
 		if file.IsDir() {
 			continue
-		} else if !strings.HasSuffix(file.Name(), ".go") {
+		} else if !strings.HasSuffix(file.Name(), "_test.go") {
 			continue
 		} else if file.Name() == GeneratedFilename {
 			continue

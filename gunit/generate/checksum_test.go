@@ -8,18 +8,19 @@ import (
 
 func TestSelectGoFiles(t *testing.T) {
 	files := []os.FileInfo{
-		NewFakeFile("yes.go", 5, 0644, time.Now(), false),
+		NewFakeFile("yes_test.go", 5, 0644, time.Now(), false),
 		NewFakeFile(GeneratedFilename, 123, 0644, time.Now(), false),
+		NewFakeFile("no.go", 6, 0644, time.Now(), false),
 		NewFakeFile("no.txt", 6, 0644, time.Now(), false),
 		NewFakeFile("no", 1, 0644, time.Now(), true),
 	}
 
-	actual := SelectGoFiles(files)
+	actual := SelectGoTestFiles(files)
 	if len(actual) != 1 {
 		t.Errorf("Expected only one file, got: %d", len(actual))
 		t.FailNow()
 	}
-	if name := actual[0].Name(); name != "yes.go" {
+	if name := actual[0].Name(); name != "yes_test.go" {
 		t.Errorf("Expected 'yes.go' as the only file. Got '%s'", name)
 	}
 }
