@@ -56,9 +56,10 @@ import (
 
 func TestA(t *testing.T) {
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 	fixture.Skip("Fixture 'A' has no test cases.")
+
+	fixture.Finalize()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -126,9 +127,10 @@ var testFunction_TestCases = []TestFunction_TestCase{
 
 func TestA(t *testing.T) {
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 	fixture.Skip("Fixture 'A' has no test cases.")
+
+	fixture.Finalize()
 }
 
 `,
@@ -146,10 +148,11 @@ func TestA(t *testing.T) {
 
 func TestB(t *testing.T) {
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 	test0 := &B{Fixture: fixture}
 	test0.RunTestCase__(test0.TestB1, "Test b1")
+
+	fixture.Finalize()
 }
 
 func (self *B) RunTestCase__(test func(), description string) {
@@ -176,13 +179,14 @@ func (self *B) RunTestCase__(test func(), description string) {
 
 func TestC(t *testing.T) {
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 	test0 := &C{Fixture: fixture}
 	test0.RunTestCase__(test0.TestC1, "Test c1")
 
 	test1 := &C{Fixture: fixture}
 	test1.RunTestCase__(test1.TestC2, "Test c2")
+
+	fixture.Finalize()
 }
 
 func (self *C) RunTestCase__(test func(), description string) {
@@ -208,13 +212,14 @@ func (self *C) RunTestCase__(test func(), description string) {
 
 func TestD(t *testing.T) {
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 	test0 := &D{Fixture: fixture}
 	test0.RunTestCase__(test0.TestD1, "Test d1")
 
 	test1 := &D{Fixture: fixture}
 	test1.RunTestCase__(test1.TestD2, "Test d2")
+
+	fixture.Finalize()
 }
 
 func (self *D) RunTestCase__(test func(), description string) {
@@ -242,13 +247,14 @@ func (self *D) RunTestCase__(test func(), description string) {
 
 func TestE(t *testing.T) {
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 	test0 := &E{Fixture: fixture}
 	test0.RunTestCase__(test0.TestE1, "Test e1")
 
 	test1 := &E{Fixture: fixture}
 	test1.RunTestCase__(test1.TestE2, "Test e2")
+
+	fixture.Finalize()
 }
 
 func (self *E) RunTestCase__(test func(), description string) {
@@ -278,13 +284,14 @@ func TestF(t *testing.T) {
 	SetupF()
 
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 	test0 := &F{Fixture: fixture}
 	test0.RunTestCase__(test0.TestF1, "Test f1")
 
 	test1 := &F{Fixture: fixture}
 	test1.RunTestCase__(test1.TestF2, "Test f2")
+
+	fixture.Finalize()
 }
 
 func (self *F) RunTestCase__(test func(), description string) {
@@ -312,13 +319,14 @@ func TestG(t *testing.T) {
 	defer TeardownG()
 
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 	test0 := &G{Fixture: fixture}
 	test0.RunTestCase__(test0.TestG1, "Test g1")
 
 	test1 := &G{Fixture: fixture}
 	test1.RunTestCase__(test1.TestG2, "Test g2")
+
+	fixture.Finalize()
 }
 
 func (self *G) RunTestCase__(test func(), description string) {
@@ -348,13 +356,14 @@ func TestH(t *testing.T) {
 	SetupH()
 
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 	test0 := &H{Fixture: fixture}
 	test0.RunTestCase__(test0.TestH1, "Test h1")
 
 	test1 := &H{Fixture: fixture}
 	test1.RunTestCase__(test1.TestH2, "Test h2")
+
+	fixture.Finalize()
 }
 
 func (self *H) RunTestCase__(test func(), description string) {
@@ -400,12 +409,13 @@ func TestI(t *testing.T) {
 
 func TestJ(t *testing.T) {
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 	fixture.Skip("Skipping test case: 'Test j1'")
 
 	test1 := &J{Fixture: fixture}
 	test1.RunTestCase__(test1.TestJ2, "Test j2")
+
+	fixture.Finalize()
 }
 
 func (self *J) RunTestCase__(test func(), description string) {

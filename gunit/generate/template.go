@@ -21,14 +21,15 @@ func Test{{.StructName}}(t *testing.T) { {{if .FixtureTeardownName}}
 
 {{end}}
 	fixture := gunit.NewFixture(t)
-	defer fixture.Finalize()
 
 {{range .TestCases}}{{if .Skipped}}
 	fixture.Skip("Skipping test case: '{{.Name | sentence}}'"){{else}}
 	test{{.Index}} := &{{.StructName}}{Fixture: fixture}
 	test{{.Index}}.RunTestCase__(test{{.Index}}.{{.Name}}, "{{.Name | sentence}}"){{end}}
 {{else}}	fixture.Skip("Fixture '{{.StructName}}' has no test cases.")
-{{end}}}
+{{end}}
+	fixture.Finalize()
+}
 
 {{if .TestCases}}func (self *{{.StructName}}) RunTestCase__(test func(), description string) {
 	self.Describe(description){{if .TestTeardownName}}
