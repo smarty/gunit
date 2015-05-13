@@ -89,6 +89,11 @@ func (self *Fixture) Finalize() {
 	if verbose() || self.t.Failed() {
 		io.WriteString(out, strings.TrimRight(self.log.String(), "\t"))
 	}
+
+	if r := recover(); r != nil { // TODO: unit test
+		panic(r)
+	}
+
 	if self.skipped {
 		self.t.SkipNow()
 	}
