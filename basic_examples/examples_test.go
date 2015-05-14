@@ -38,6 +38,7 @@ func (self *ExampleFixture) TestWithAssertions() {
 	// to perform assertions:
 	self.So(42, should.Equal, 42)
 	self.So("Hello, World!", should.ContainSubstring, "World")
+	self.Ok(1 == 1, "One should equal one")
 }
 
 func (self *ExampleFixture) SkipTestWithNothing() {

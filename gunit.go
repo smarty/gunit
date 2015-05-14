@@ -5,6 +5,7 @@
 //
 // - Fixture // (as an embedded field on your xUnit-style struct)
 // - Fixture.So(...) // (as a convenient assertion method: So(expected, should.Equal, actual))
+// - Fixture.Ok(...) // (as a convenient boolean assertion method: Ok(condition, optionalMessage))
 // - Fixture.Error(...) // (works just like *testing.T.Error(...))
 // - Fixture.Errorf(...) // (works just like *testing.T.Errorf(...))
 //
@@ -54,6 +55,16 @@ func (self *Fixture) So(actual interface{}, assert func(actual interface{}, expe
 	if ok, failure := assertions.So(actual, assert, expected...); !ok {
 		self.t.Fail()
 		self.reportFailure(failure)
+	}
+}
+
+func (self *Fixture) Ok(condition bool, messages ...string) {
+	if !condition {
+		if len(messages) == 0 {
+			messages = append(messages, "Expected condition to be true, was false instead.")
+		}
+		self.t.Fail()
+		self.reportFailure(strings.Join(messages, ", "))
 	}
 }
 
