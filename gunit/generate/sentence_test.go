@@ -28,11 +28,17 @@ var cases []Case = []Case{
 	Case{"99Bottles", "99 bottles", false},
 	Case{"May5", "May 5", false},
 	Case{"BFG9000", "BFG 9000", false},
-	Case{"TestB", "Test b", false},
-	Case{"TestBB", "Test bb", false},
-	Case{"TestB1", "Test b 1", false},
-	Case{"TestHTTPResponseToSmartyResponseHTTP200ValidJSONBody", "Test http response to smarty response http 200 valid json body", false},
 	Case{"The_quick_brown_fox_jumps_over_the_lazy_dog", "The quick brown fox jumps over the lazy dog", false},
+	Case{"HTTPResponseToSmartyResponseHTTP200ValidJSONBody", "HTTP response to smarty response http 200 valid json body", false},
+
+	// These tests make sure the prefix 'Test' never begins a sentence.
+	Case{"TestB", "B", false},
+	Case{"TestBB", "BB", false},
+	Case{"TestB1", "B 1", false},
+
+	// These tests remove the first occurence of 'Test' in a skipped test case.
+	Case{"SkipTestB", "Skip b", false},
+	Case{"SkipTestBB", "Skip bb", false},
 }
 
 type Case struct {
