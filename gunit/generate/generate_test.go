@@ -150,7 +150,7 @@ func TestB(t *testing.T) {
 	fixture := gunit.NewFixture(t)
 
 	test0 := &B{Fixture: fixture}
-	test0.RunTestCase__(test0.TestB1, "Test b1")
+	test0.RunTestCase__(test0.TestB1, "Test b 1")
 
 	fixture.Finalize()
 }
@@ -181,10 +181,10 @@ func TestC(t *testing.T) {
 	fixture := gunit.NewFixture(t)
 
 	test0 := &C{Fixture: fixture}
-	test0.RunTestCase__(test0.TestC1, "Test c1")
+	test0.RunTestCase__(test0.TestC1, "Test c 1")
 
 	test1 := &C{Fixture: fixture}
-	test1.RunTestCase__(test1.TestC2, "Test c2")
+	test1.RunTestCase__(test1.TestC2, "Test c 2")
 
 	fixture.Finalize()
 }
@@ -214,10 +214,10 @@ func TestD(t *testing.T) {
 	fixture := gunit.NewFixture(t)
 
 	test0 := &D{Fixture: fixture}
-	test0.RunTestCase__(test0.TestD1, "Test d1")
+	test0.RunTestCase__(test0.TestD1, "Test d 1")
 
 	test1 := &D{Fixture: fixture}
-	test1.RunTestCase__(test1.TestD2, "Test d2")
+	test1.RunTestCase__(test1.TestD2, "Test d 2")
 
 	fixture.Finalize()
 }
@@ -249,10 +249,10 @@ func TestE(t *testing.T) {
 	fixture := gunit.NewFixture(t)
 
 	test0 := &E{Fixture: fixture}
-	test0.RunTestCase__(test0.TestE1, "Test e1")
+	test0.RunTestCase__(test0.TestE1, "Test e 1")
 
 	test1 := &E{Fixture: fixture}
-	test1.RunTestCase__(test1.TestE2, "Test e2")
+	test1.RunTestCase__(test1.TestE2, "Test e 2")
 
 	fixture.Finalize()
 }
@@ -286,10 +286,10 @@ func TestF(t *testing.T) {
 	fixture := gunit.NewFixture(t)
 
 	test0 := &F{Fixture: fixture}
-	test0.RunTestCase__(test0.TestF1, "Test f1")
+	test0.RunTestCase__(test0.TestF1, "Test f 1")
 
 	test1 := &F{Fixture: fixture}
-	test1.RunTestCase__(test1.TestF2, "Test f2")
+	test1.RunTestCase__(test1.TestF2, "Test f 2")
 
 	fixture.Finalize()
 }
@@ -321,10 +321,10 @@ func TestG(t *testing.T) {
 	fixture := gunit.NewFixture(t)
 
 	test0 := &G{Fixture: fixture}
-	test0.RunTestCase__(test0.TestG1, "Test g1")
+	test0.RunTestCase__(test0.TestG1, "Test g 1")
 
 	test1 := &G{Fixture: fixture}
-	test1.RunTestCase__(test1.TestG2, "Test g2")
+	test1.RunTestCase__(test1.TestG2, "Test g 2")
 
 	fixture.Finalize()
 }
@@ -358,10 +358,10 @@ func TestH(t *testing.T) {
 	fixture := gunit.NewFixture(t)
 
 	test0 := &H{Fixture: fixture}
-	test0.RunTestCase__(test0.TestH1, "Test h1")
+	test0.RunTestCase__(test0.TestH1, "Test h 1")
 
 	test1 := &H{Fixture: fixture}
-	test1.RunTestCase__(test1.TestH2, "Test h2")
+	test1.RunTestCase__(test1.TestH2, "Test h 2")
 
 	fixture.Finalize()
 }
@@ -388,8 +388,8 @@ func (self *H) RunTestCase__(test func(), description string) {
 		expected: `
 
 func TestI(t *testing.T) {
-	t.Skip("('I') Skipping test case: 'Test i1'")
-	t.Skip("('I') Skipping test case: 'Test i2'")
+	t.Skip("('I') Skipping test case: 'Test i 1'")
+	t.Skip("('I') Skipping test case: 'Test i 2'")
 }
 `,
 		description: "Skipping a fixture marks all test cases as skipped",
@@ -410,10 +410,10 @@ func TestI(t *testing.T) {
 func TestJ(t *testing.T) {
 	fixture := gunit.NewFixture(t)
 
-	fixture.Skip("Skipping test case: 'Test j1'")
+	fixture.Skip("Skipping test case: 'Test j 1'")
 
 	test1 := &J{Fixture: fixture}
-	test1.RunTestCase__(test1.TestJ2, "Test j2")
+	test1.RunTestCase__(test1.TestJ2, "Test j 2")
 
 	fixture.Finalize()
 }

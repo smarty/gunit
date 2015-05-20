@@ -3,60 +3,40 @@ package generate
 import "testing"
 
 func TestIdentifierToSentence(t *testing.T) {
-	for i, test := range sentenceCases {
+	for i, test := range cases {
 		if test.SKIP {
-			continue
-		}
-		actual := toSentence(test.input)
-		if actual != test.expected {
-			t.Errorf("Case #%d:\nInput:    [%s]\nExpected: [%s]\nActual:   [%s]", i, test.input, test.expected, actual)
+			t.Log("?? Skipping case #", i)
 		} else {
-			t.Logf("✔ Case #%d OK '%s' --> '%s'", i, test.input, test.expected)
+			if result := toSentence(test.input); result != test.expected {
+				t.Errorf("\nExpected: '%s' \nActual:   '%s'", test.expected, result)
+			} else {
+				t.Logf("'%s' -> '%s'", test.input, result)
+			}
 		}
 	}
 }
 
-type SentenceTestCase struct {
+var cases []Case = []Case{
+	Case{"lowercase", "Lowercase", false},
+	Case{"Class", "Class", false},
+	Case{"MyClass", "My class", false},
+	Case{"HTML", "HTML", false},
+	Case{"PDFLoader", "PDF loader", false},
+	Case{"AString", "A string", false},
+	Case{"SimpleXMLParser", "Simple xml parser", false},
+	Case{"GL11Version", "GL 11 version", false},
+	Case{"99Bottles", "99 bottles", false},
+	Case{"May5", "May 5", false},
+	Case{"BFG9000", "BFG 9000", false},
+	Case{"TestB", "Test b", false},
+	Case{"TestBB", "Test bb", false},
+	Case{"TestB1", "Test b 1", false},
+	Case{"TestHTTPResponseToSmartyResponseHTTP200ValidJSONBody", "Test http response to smarty response http 200 valid json body", false},
+	Case{"The_quick_brown_fox_jumps_over_the_lazy_dog", "The quick brown fox jumps over the lazy dog", false},
+}
+
+type Case struct {
 	input    string
 	expected string
 	SKIP     bool
-}
-
-var sentenceCases = []SentenceTestCase{
-	{
-		input:    "Hello",
-		expected: "Hello",
-	},
-	{
-		input:    "HelloWorld",
-		expected: "Hello world",
-	},
-	{
-		input:    "ILikeIceCream",
-		expected: "I like ice cream",
-	},
-	{
-		input:    "HTTPIsGreat",
-		expected: "HTTP is great",
-	},
-	{
-		input:    "DoYouLikeHTTP",
-		expected: "Do you like http",
-	},
-	{
-		input:    "Hello_world",
-		expected: "Hello world",
-	},
-	{
-		input:    "WeHaveAnHTTP_API",
-		expected: "We have an http api",
-	},
-	{
-		input:    "TheQuickBrownFoxJumpsOverTheLazyDog",
-		expected: "The quick brown fox jumps over the lazy dog",
-	},
-	{
-		input:    "The_quick_brown_fox_jumps_over_the_lazy_dog",
-		expected: "The quick brown fox jumps over the lazy dog",
-	},
 }

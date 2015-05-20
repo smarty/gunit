@@ -1,176 +1,47 @@
 package generate
 
 import (
-	"bytes"
+	"regexp"
 	"strings"
-	"unicode"
 )
 
 // TODO: implement apostrophe insertion for known contractions (http://www.enchantedlearning.com/grammar/contractions/list.shtml)
+
+var (
+	// These regexes allow us to insert a space...
+	first  = regexp.MustCompile("([A-Z][a-z]+)") // ...at conventional word boundaries (HelloWorld -> Hello World),
+	second = regexp.MustCompile("([A-Z]+)")      // ...between word and uppercase acronym (TestHTTP -> Test HTTP),
+	third  = regexp.MustCompile("([^A-Za-z ]+)") // ...and between uppercase acronyms and numerics (HTTP200 -> HTTP 200).
+	// Reference: http://stackoverflow.com/a/8837360/605022
+)
 
 // toSentence turns identifiers (pascal-cased or underscored) into sentences.
 // It replaces underscores with spaces (ie. 'Super_awesome' -> 'super awesome').
 // It inserts spaces at casing boundaries (id. 'SuperAwesome' -> 'Super awesome').
 // It counts UPPERCASE acronyms as words (ie. 'ILikeHTTP' -> 'I like http').
-func toSentence(identifier string) string {
-	var (
-		sentence = &bytes.Buffer{}
-		current  = NewWordBuffer()
-	)
-
-	for _, c := range identifier {
-		if !current.Accept(c) {
-			sentence.WriteString(current.String())
-			current.Next()
-		}
+func toSentence(input string) string {
+	input = breakWordsApart(input)
+	input = removeMultipleSpaces(input)
+	input = strings.TrimSpace(input)
+	return titleCaseSentence(input)
+}
+func breakWordsApart(input string) string {
+	input = strings.Replace(input, "_", " ", -1)
+	input = first.ReplaceAllString(input, " $1")
+	input = second.ReplaceAllString(input, " $1")
+	return third.ReplaceAllString(input, " $1")
+}
+func removeMultipleSpaces(input string) string {
+	for strings.Contains(input, "  ") {
+		input = strings.Replace(input, "  ", " ", -1)
 	}
-	sentence.WriteString(current.String())
-	return strings.TrimSpace(sentence.String())
+	return input
 }
-
-//////////////////////////////////////////////////////////////////////////////
-
-type word struct {
-	firstWord bool
-	current   []rune
-	next      []rune
-}
-
-func NewWordBuffer() *word {
-	return &word{firstWord: true}
-}
-
-// Accept decides what to do with the incoming (next) letter. It returns false if
-// the word is complete and a new word should be started, by calling Next().
-func (self *word) Accept(in rune) bool {
-	if NewFirstCharacterSpecification(self.current).IsSatisfiedBy(in) {
-		self.current = append(self.current, in)
-
-	} else if NewSecondCharacterSpecification(self.current).IsSatisfiedBy(in) {
-		self.current = append(self.current, in)
-
-	} else if isUnderscoreWordBoundary(in) {
-		return false
-
-	} else if NewNextCharacterInWordSpecification(self.current).IsSatisfiedBy(in) {
-		self.current = append(self.current, in)
-
-	} else if NewWordBoundarySpecification(self.current).IsSatisfiedBy(in) {
-		self.next = append(self.next, in)
-		return false
-
-	} else if NewAcronymEndedSpecification(self.current).IsSatisfiedBy(in) {
-		self.chopAcronym(in)
-		return false
+func titleCaseSentence(input string) string {
+	words := strings.Split(input, " ")
+	first := []string{strings.Title(words[0])}
+	for _, word := range words[1:] {
+		first = append(first, strings.ToLower(word))
 	}
-
-	return true
+	return strings.Join(first, " ")
 }
-
-func (self *word) chopAcronym(in rune) {
-	last := len(self.current) - 1
-	self.next = append(self.next, self.current[last], in)
-	self.current = self.current[:last]
-}
-
-// Spits out the currently assembed word.
-func (self *word) String() string {
-	if self.firstWord {
-		return strings.Title(string(self.current))
-	}
-	return " " + strings.ToLower(string(self.current))
-}
-
-// Replaces the current word with any characters gathered for the next word.
-func (self *word) Next() {
-	self.firstWord = false
-	self.current, self.next = self.next, nil
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-func upper(r rune) bool { return unicode.IsUpper(r) }
-func lower(r rune) bool { return unicode.IsLower(r) }
-
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-
-type FirstCharacterSpecification struct{ word []rune }
-
-func NewFirstCharacterSpecification(word []rune) *FirstCharacterSpecification {
-	return &FirstCharacterSpecification{word: word}
-}
-func (self *FirstCharacterSpecification) IsSatisfiedBy(character rune) bool {
-	return len(self.word) == 0
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-type SecondCharacterSpecification struct{ word []rune }
-
-func NewSecondCharacterSpecification(word []rune) *SecondCharacterSpecification {
-	return &SecondCharacterSpecification{word: word}
-}
-
-func (self *SecondCharacterSpecification) IsSatisfiedBy(character rune) bool {
-	if len(self.word) != 1 {
-		return false
-	}
-	if upper(character) {
-		return false
-	}
-	return true
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-type NextCharacterInWordSpecification struct {
-	word              []rune
-	previousCharacter rune
-}
-
-func NewNextCharacterInWordSpecification(word []rune) *NextCharacterInWordSpecification {
-	last := len(word) - 1
-	return &NextCharacterInWordSpecification{
-		word:              word,
-		previousCharacter: word[last],
-	}
-}
-func (self *NextCharacterInWordSpecification) IsSatisfiedBy(character rune) bool {
-	return upper(character) == upper(self.previousCharacter)
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-func isUnderscoreWordBoundary(c rune) bool {
-	return c == '_'
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-type WordBoundarySpecification struct{ word []rune }
-
-func NewWordBoundarySpecification(word []rune) *WordBoundarySpecification {
-	return &WordBoundarySpecification{word: word}
-}
-
-func (self *WordBoundarySpecification) IsSatisfiedBy(character rune) bool {
-	last := len(self.word) - 1
-	return upper(character) && lower(self.word[last])
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-type AcronymEndedSpecification struct{ word []rune }
-
-func NewAcronymEndedSpecification(word []rune) *AcronymEndedSpecification {
-	return &AcronymEndedSpecification{word: word}
-}
-
-func (self *AcronymEndedSpecification) IsSatisfiedBy(character rune) bool {
-	last := len(self.word) - 1
-	penultimate := len(self.word) - 2
-	return upper(self.word[last]) && upper(self.word[penultimate]) && !upper(character)
-}
-
-//////////////////////////////////////////////////////////////////////////////
