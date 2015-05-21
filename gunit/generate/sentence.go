@@ -35,10 +35,13 @@ func removeTestPrefix(input string) string {
 	return input
 }
 func breakWordsApart(input string) string {
+	input = strings.Replace(input, "__", ", ", -1)
 	input = strings.Replace(input, "_", " ", -1)
 	input = first.ReplaceAllString(input, " $1")
 	input = second.ReplaceAllString(input, " $1")
-	return third.ReplaceAllString(input, " $1")
+	input = third.ReplaceAllString(input, " $1")
+	input = strings.Replace(input, " , ", ", ", -1)
+	return input
 }
 func removeMultipleSpaces(input string) string {
 	for strings.Contains(input, "  ") {

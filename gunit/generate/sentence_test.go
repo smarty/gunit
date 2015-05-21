@@ -28,6 +28,7 @@ var cases []Case = []Case{
 	Case{"99Bottles", "99 bottles", false},
 	Case{"May5", "May 5", false},
 	Case{"BFG9000", "BFG 9000", false},
+	Case{"WhenSomethingHappens__ThenSomethingElseShouldHappen", "When something happens, then something else should happen", false},
 	Case{"The_quick_brown_fox_jumps_over_the_lazy_dog", "The quick brown fox jumps over the lazy dog", false},
 	Case{"HTTPResponseToSmartyResponseHTTP200ValidJSONBody", "HTTP response to smarty response http 200 valid json body", false},
 
