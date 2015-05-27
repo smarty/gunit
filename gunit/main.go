@@ -19,7 +19,7 @@ import (
 var importPath string
 
 func init() {
-	log.SetFlags(log.Lshortfile)
+	logger = log.New(os.Stderr, "", log.Lshortfile)
 	flag.StringVar(&importPath, "package", "", "The import path of the package for which a gunit test file will be generated.")
 	flag.Parse()
 }
@@ -33,11 +33,8 @@ func main() {
 
 func resolvePackage() *build.Package {
 	importPath := resolveImportPath()
-
 	pkg, err := build.Import(importPath, "", build.AllowBinary)
-	if err != nil {
-		log.Fatal(err)
-	}
+	fatal(err)
 	return pkg
 }
 func resolveImportPath() string {
@@ -47,13 +44,11 @@ func resolveImportPath() string {
 
 	gopath := os.Getenv("GOPATH")
 	if gopath == "" {
-		log.Fatal("$GOPATH environment variable required.")
+		logger.Fatal("$GOPATH environment variable required.")
 	}
 
 	working, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
+	fatal(err)
 
 	return strings.Replace(working, gopath+"/src/", "", 1)
 }
@@ -68,9 +63,7 @@ func parseFixtures(pkg *build.Package) []*parse.Fixture {
 		}
 
 		source, err := ioutil.ReadFile(filepath.Join(pkg.Dir, item))
-		if err != nil {
-			log.Fatal(err)
-		}
+		fatal(err)
 
 		batch, err := parse.Fixtures(string(source))
 		if err != nil {
@@ -81,7 +74,7 @@ func parseFixtures(pkg *build.Package) []*parse.Fixture {
 	}
 
 	if badFixtures.Len() > 0 {
-		log.Fatal("The following incorrectly defined fixtures and/or test methods were found:" + badFixtures.String())
+		logger.Fatal("The following incorrectly defined fixtures and/or test methods were found:" + badFixtures.String())
 	}
 
 	return fixtures
@@ -93,14 +86,10 @@ func generateTestFileContents(pkg *build.Package, fixtures []*parse.Fixture) []b
 	}
 
 	checksum, err := generate.Checksum(pkg.Dir)
-	if err != nil {
-		log.Fatal(err)
-	}
+	fatal(err)
 
 	generated, err := generate.TestFile(pkg.Name, fixtures, checksum)
-	if err != nil {
-		log.Fatal(err)
-	}
+	fatal(err)
 
 	return generated
 }
@@ -114,16 +103,21 @@ func writeTestFile(pkg *build.Package, code []byte) {
 	}
 
 	err := ioutil.WriteFile(filename, code, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
+	fatal(err)
 }
 
 func removeExistingGeneratedFile(filename string) {
 	if _, err := os.Stat(filename); err == nil {
 		err := os.Remove(filename)
-		if err != nil {
-			log.Fatal(err)
-		}
+		fatal(err)
 	}
 }
+
+func fatal(err error) {
+	if err != nil {
+		logger.Output(2, err.Error())
+		os.Exit(1)
+	}
+}
+
+var logger *log.Logger
