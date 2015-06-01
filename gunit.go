@@ -79,9 +79,22 @@ func (self *Fixture) Errorf(format string, args ...interface{}) {
 }
 
 func (self *Fixture) reportFailure(failure string) {
-	_, file, line, _ := runtime.Caller(2) // 0: reportFailre + 1: Error/Errorf/So + 2: func Test...
+	_, file, line, _ := runtime.Caller(2) // 0: reportFailure + 1: Error/Errorf/So/Ok + 2: func Test...
 	self.log.WriteString(fmt.Sprintf("\tX FAILED: %s:%d\n", file, line))
-	fmt.Fprint(self.log, "\t\t"+strings.Replace(failure, "\n", "\n\t\t", -1)+"\n")
+	self.print(failure)
+}
+
+func (self *Fixture) Print(a ...interface{}) (n int, err error) {
+	return self.print(fmt.Sprint(a...))
+}
+func (self *Fixture) Printf(format string, a ...interface{}) (n int, err error) {
+	return self.print(fmt.Sprintf(format, a...))
+}
+func (self *Fixture) Println(a ...interface{}) (n int, err error) {
+	return self.print(fmt.Sprintln(a...))
+}
+func (self *Fixture) print(message string) (n int, err error) {
+	return fmt.Fprint(self.log, "\t\t"+strings.Replace(message, "\n", "\n\t\t", -1)+"\n")
 }
 
 // Describe is called by generated code.
