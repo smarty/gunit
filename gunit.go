@@ -84,15 +84,22 @@ func (self *Fixture) reportFailure(failure string) {
 	self.print(failure)
 }
 
+// Print is analogous to fmt.Print and is ideal for printing in the middle of a test case.
 func (self *Fixture) Print(a ...interface{}) (n int, err error) {
 	return self.print(fmt.Sprint(a...))
 }
+
+// Printf is analogous to fmt.Printf and is ideal for printing in the middle of a test case.
 func (self *Fixture) Printf(format string, a ...interface{}) (n int, err error) {
 	return self.print(fmt.Sprintf(format, a...))
 }
+
+// Println is analogous to fmt.Println and is ideal for printing in the middle of a test case.
 func (self *Fixture) Println(a ...interface{}) (n int, err error) {
 	return self.print(fmt.Sprintln(a...))
 }
+
+// print ensures that the necessary indentation is prepended to every line of each printed message.
 func (self *Fixture) print(message string) (n int, err error) {
 	return fmt.Fprint(self.log, "\t\t"+strings.Replace(message, "\n", "\n\t\t", -1)+"\n")
 }
