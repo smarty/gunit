@@ -86,9 +86,12 @@ func TestSoPasses(t *testing.T) {
 	defer reset()
 	log, fake, fixture := setup(false)
 
-	fixture.So(true, should.BeTrue)
+	result := fixture.So(true, should.BeTrue)
 	fixture.Finalize()
 
+	if !result {
+		t.Errorf("Expected true result, got false")
+	}
 	if log.Len() > 0 {
 		t.Errorf("Unexpected ouput: '%s'", log.String())
 	}
@@ -101,9 +104,12 @@ func TestSoFailsAndLogs(t *testing.T) {
 	defer reset()
 	log, fake, fixture := setup(false)
 
-	fixture.So(true, should.BeFalse)
+	result := fixture.So(true, should.BeFalse)
 	fixture.Finalize()
 
+	if result {
+		t.Errorf("Expected false result, got true")
+	}
 	if output := log.String(); !strings.Contains(output, "Expected:") {
 		t.Errorf("Unexpected ouput: '%s'", log.String())
 	}

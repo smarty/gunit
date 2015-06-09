@@ -54,11 +54,13 @@ func NewFixture(t TT) *Fixture {
 // So is a convenience method for reporting assertion failure messages,
 // say from the assertion functions found in github.com/smartystreets/assertions/should.
 // Example: self.So(actual, should.Equal, expected)
-func (self *Fixture) So(actual interface{}, assert func(actual interface{}, expected ...interface{}) string, expected ...interface{}) {
-	if ok, failure := assertions.So(actual, assert, expected...); !ok {
+func (self *Fixture) So(actual interface{}, assert func(actual interface{}, expected ...interface{}) string, expected ...interface{}) bool {
+	ok, failure := assertions.So(actual, assert, expected...)
+	if !ok {
 		self.t.Fail()
 		self.reportFailure(failure)
 	}
+	return ok
 }
 
 func (self *Fixture) Ok(condition bool, messages ...string) {
