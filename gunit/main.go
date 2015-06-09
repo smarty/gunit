@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -50,7 +51,7 @@ func resolveImportPath() string {
 	working, err := os.Getwd()
 	fatal(err)
 
-	return strings.Replace(working, gopath+"/src/", "", 1)
+	return strings.Replace(working, path.Join(gopath, "src")+"/", "", 1)
 }
 
 func parseFixtures(pkg *build.Package) []*parse.Fixture {
