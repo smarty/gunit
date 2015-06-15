@@ -1,10 +1,7 @@
-// These tests demonstrate the very ugliness this project aims to eliminate.
-// Lots of duplicate setup logic, etc...
 package gunit
 
 import (
 	"bytes"
-	"os"
 	"strings"
 	"testing"
 
@@ -12,207 +9,235 @@ import (
 )
 
 func TestFinalizeAfterNoActions(t *testing.T) {
-	defer reset()
-	log, fake, fixture := setup(false)
+	test := Setup(false)
 
-	fixture.Finalize()
+	test.fixture.Finalize()
 
-	if fake.failed {
+	if test.fakeT.failed {
 		t.Error("Fake should not have been marked as failed.")
 	}
-	if fake.skipped {
+	if test.fakeT.skipped {
 		t.Error("Fake should not have been marked as skipped.")
 	}
-	if log.Len() > 0 {
-		t.Errorf("Output was not blank: '%s'", log.String())
+	if test.out.Len() > 0 {
+		t.Errorf("Output was not blank: '%s'", test.out.String())
 	}
 }
 
 func TestFinalizeAfterPass_NotVerbose(t *testing.T) {
-	defer reset()
-	log, _, fixture := setup(false)
+	test := Setup(false)
 
-	fixture.Describe("Hello")
-	fixture.Finalize()
+	test.fixture.Describe("Hello")
+	test.fixture.Finalize()
 
-	if output := strings.TrimSpace(log.String()); output != "" {
-		t.Errorf("Unexpected output: '%s'", log.String())
+	if output := strings.TrimSpace(test.out.String()); output != "" {
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 }
 
 func TestFinalizeAfterPass_Verbose(t *testing.T) {
-	defer reset()
-	log, _, fixture := setup(true)
+	test := Setup(true)
 
-	fixture.Describe("Hello")
-	fixture.Finalize()
+	test.fixture.Describe("Hello")
+	test.fixture.Finalize()
 
-	if output := strings.TrimSpace(log.String()); output != "- Hello" {
-		t.Errorf("Unexpected output: '%s'", log.String())
+	if output := strings.TrimSpace(test.out.String()); output != "- Hello" {
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 }
 
 func TestFinalizeAfterFailure(t *testing.T) {
-	defer reset()
-	log, fake, fixture := setup(false)
+	test := Setup(false)
 
-	fixture.Describe("Hello")
-	fake.Fail()
+	test.fixture.Describe("Hello")
+	test.fakeT.Fail()
 
-	fixture.Finalize()
+	test.fixture.Finalize()
 
-	if output := strings.TrimSpace(log.String()); output != "- Hello" {
+	if output := strings.TrimSpace(test.out.String()); output != "- Hello" {
 		t.Errorf("Unexpected output: '%s'", output)
 	}
 }
 
 func TestFinalizeAfterSkip_NotVerbose(t *testing.T) {
-	defer reset()
-	log, fake, fixture := setup(false)
+	test := Setup(false)
 
-	fixture.Skip("Hello")
+	test.fixture.Skip("Hello")
 
-	fixture.Finalize()
+	test.fixture.Finalize()
 
-	if !fake.skipped {
+	if !test.fakeT.skipped {
 		t.Error("SkipNow() was not called.")
 	}
-	if log.Len() > 0 {
-		t.Errorf("Unexpected output: '%s'", log.String())
+	if test.out.Len() > 0 {
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 }
 
 func TestSoPasses(t *testing.T) {
-	defer reset()
-	log, fake, fixture := setup(false)
+	test := Setup(false)
 
-	result := fixture.So(true, should.BeTrue)
-	fixture.Finalize()
+	result := test.fixture.So(true, should.BeTrue)
+	test.fixture.Finalize()
 
 	if !result {
 		t.Errorf("Expected true result, got false")
 	}
-	if log.Len() > 0 {
-		t.Errorf("Unexpected ouput: '%s'", log.String())
+	if test.out.Len() > 0 {
+		t.Errorf("Unexpected ouput: '%s'", test.out.String())
 	}
-	if fake.failed {
+	if test.fakeT.failed {
 		t.Error("Test was erroneously marked as failed.")
 	}
 }
 
 func TestSoFailsAndLogs(t *testing.T) {
-	defer reset()
-	log, fake, fixture := setup(false)
+	test := Setup(false)
 
-	result := fixture.So(true, should.BeFalse)
-	fixture.Finalize()
+	result := test.fixture.So(true, should.BeFalse)
+	test.fixture.Finalize()
 
 	if result {
 		t.Errorf("Expected false result, got true")
 	}
-	if output := log.String(); !strings.Contains(output, "Expected:") {
-		t.Errorf("Unexpected ouput: '%s'", log.String())
+	if output := test.out.String(); !strings.Contains(output, "Expected:") {
+		t.Errorf("Unexpected ouput: '%s'", test.out.String())
 	}
-	if !fake.failed {
+	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
 	}
 }
 
 func TestOkPasses(t *testing.T) {
-	defer reset()
-	log, fake, fixture := setup(false)
+	test := Setup(false)
 
-	fixture.Ok(true)
-	fixture.Finalize()
+	test.fixture.Ok(true)
+	test.fixture.Finalize()
 
-	if log.Len() > 0 {
-		t.Errorf("Unexpected ouput: '%s'", log.String())
+	if test.out.Len() > 0 {
+		t.Errorf("Unexpected ouput: '%s'", test.out.String())
 	}
-	if fake.failed {
+	if test.fakeT.failed {
 		t.Error("Test was erroneously marked as failed.")
 	}
 }
 
 func TestOkFailsAndLogs(t *testing.T) {
-	defer reset()
-	log, fake, fixture := setup(false)
+	test := Setup(false)
 
-	fixture.Ok(false)
-	fixture.Finalize()
+	test.fixture.Ok(false)
+	test.fixture.Finalize()
 
-	if output := log.String(); !strings.Contains(output, "Expected condition to be true, was false instead.") {
-		t.Errorf("Unexpected ouput: '%s'", log.String())
+	if output := test.out.String(); !strings.Contains(output, "Expected condition to be true, was false instead.") {
+		t.Errorf("Unexpected ouput: '%s'", test.out.String())
 	}
-	if !fake.failed {
+	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
 	}
 }
 
 func TestOkWithCustomMessageFailsAndLogs(t *testing.T) {
-	defer reset()
-	log, fake, fixture := setup(false)
+	test := Setup(false)
 
-	fixture.Ok(false, "gophers!")
-	fixture.Finalize()
+	test.fixture.Ok(false, "gophers!")
+	test.fixture.Finalize()
 
-	if output := log.String(); !strings.Contains(output, "gophers!") {
-		t.Errorf("Unexpected ouput: '%s'", log.String())
+	if output := test.out.String(); !strings.Contains(output, "gophers!") {
+		t.Errorf("Unexpected ouput: '%s'", test.out.String())
 	}
-	if !fake.failed {
+	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
 	}
 }
 
 func TestErrorFailsAndLogs(t *testing.T) {
-	defer reset()
-	log, fake, fixture := setup(false)
+	test := Setup(false)
 
-	fixture.Error("1", "2", "3")
-	fixture.Finalize()
+	test.fixture.Error("1", "2", "3")
+	test.fixture.Finalize()
 
-	if !fake.failed {
+	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
 	}
-	if output := log.String(); !strings.Contains(output, "123") {
+	if output := test.out.String(); !strings.Contains(output, "123") {
 		t.Errorf("Expected string containing: '123' Got: '%s'", output)
 	}
 }
 
 func TestErrorfFailsAndLogs(t *testing.T) {
-	defer reset()
-	log, fake, fixture := setup(false)
+	test := Setup(false)
 
-	fixture.Errorf("%s%s%s", "1", "2", "3")
-	fixture.Finalize()
+	test.fixture.Errorf("%s%s%s", "1", "2", "3")
+	test.fixture.Finalize()
 
-	if !fake.failed {
+	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
 	}
-	if output := log.String(); !strings.Contains(output, "123") {
+	if output := test.out.String(); !strings.Contains(output, "123") {
 		t.Errorf("Expected string containing: '123' Got: '%s'", output)
+	}
+}
+
+func TestFixturePrinting(t *testing.T) {
+	test := Setup(true)
+
+	test.fixture.Print("Print")
+	test.fixture.Println("Println")
+	test.fixture.Printf("Printf")
+	test.fixture.Finalize()
+
+	output := test.out.String()
+	if !strings.Contains(output, "Print\n") {
+		t.Error("Expected to see 'Print' in the output.")
+	}
+	if !strings.Contains(output, "Println") {
+		t.Error("Expected to see 'Println' in the output.")
+	}
+	if !strings.Contains(output, "Printf") {
+		t.Error("Expected to see 'Printf' in the output.")
+	}
+	if t.Failed() {
+		t.Logf("Actual output: \n%s\n", output)
+	}
+}
+
+func TestPanicIsRecoveredAndPrintedByFinalize(t *testing.T) {
+	test := Setup(false)
+
+	var freakOut = func() {
+		defer test.fixture.Finalize()
+		panic("GOPHERS!")
+	}
+
+	freakOut()
+
+	output := test.out.String()
+	if !strings.Contains(output, "PANIC: GOPHERS!") {
+		t.Errorf("Expected string containing: 'PANIC: GOPHERS!' Got: '%s'", output)
+	}
+	if !strings.Contains(output, "github.com/smartystreets/gunit.(*Fixture).Finalize") {
+		t.Error("Expected string containing stack trace information...")
+	}
+	if !strings.Contains(output, "* (Additional tests may have been skipped as a result of the panic shown above.)") {
+		t.Error("Expected string containing warning about additional tests not being run.")
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-func setup(verbosity bool) (log *bytes.Buffer, fake *FakeTT, fixture *Fixture) {
-	patchVerbosity(verbosity)
-	log = patchOutput()
-	fake = &FakeTT{}
-	fixture = NewFixture(fake)
-	return log, fake, fixture
+type FixtureTestState struct {
+	fixture *Fixture
+	fakeT   *FakeTT
+	out     *bytes.Buffer
+	verbose bool
 }
-func patchVerbosity(verbosity bool) {
-	verbose = func() bool { return verbosity }
-}
-func patchOutput() *bytes.Buffer {
-	output := &bytes.Buffer{}
-	out = output
-	return output
-}
-func reset() {
-	out = os.Stdout
-	verbose = testing.Verbose
+
+func Setup(verbose bool) *FixtureTestState {
+	this := &FixtureTestState{}
+	this.fakeT = &FakeTT{}
+	this.out = &bytes.Buffer{}
+	this.fixture = NewFixture(this.fakeT, this.out, verbose)
+	return this
 }
 
 //////////////////////////////////////////////////////////////////////////////

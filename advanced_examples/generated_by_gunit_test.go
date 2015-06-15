@@ -5,6 +5,7 @@
 package examples
 
 import (
+	"os"
 	"testing"
 
 	"github.com/smartystreets/gunit"
@@ -13,7 +14,8 @@ import (
 ///////////////////////////////////////////////////////////////////////////////
 
 func TestBowlingGameScoringTests(t *testing.T) {
-	fixture := gunit.NewFixture(t)
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	defer fixture.Finalize()
 
 	test0 := &BowlingGameScoringTests{Fixture: fixture}
 	test0.RunTestCase__(test0.TestAfterAllGutterBallsTheScoreShouldBeZero, "After all gutter balls the score should be zero")
@@ -29,8 +31,6 @@ func TestBowlingGameScoringTests(t *testing.T) {
 
 	test4 := &BowlingGameScoringTests{Fixture: fixture}
 	test4.RunTestCase__(test4.TestPerfectGame, "Perfect game")
-
-	fixture.Finalize()
 }
 
 func (self *BowlingGameScoringTests) RunTestCase__(test func(), description string) {
@@ -42,7 +42,8 @@ func (self *BowlingGameScoringTests) RunTestCase__(test func(), description stri
 ///////////////////////////////////////////////////////////////////////////////
 
 func TestEnvironmentControllerFixture(t *testing.T) {
-	fixture := gunit.NewFixture(t)
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	defer fixture.Finalize()
 
 	test0 := &EnvironmentControllerFixture{Fixture: fixture}
 	test0.RunTestCase__(test0.TestEverythingTurnedOffAtStartup, "Everything turned off at startup")
@@ -61,8 +62,6 @@ func TestEnvironmentControllerFixture(t *testing.T) {
 
 	test5 := &EnvironmentControllerFixture{Fixture: fixture}
 	test5.RunTestCase__(test5.TestLowAlarmOnIfAtThreshold, "Low alarm on if at threshold")
-
-	fixture.Finalize()
 }
 
 func (self *EnvironmentControllerFixture) RunTestCase__(test func(), description string) {

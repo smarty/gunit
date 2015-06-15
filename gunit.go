@@ -25,7 +25,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"testing"
 
 	"github.com/smartystreets/assertions"
 	"github.com/smartystreets/gunit/gunit/generate"
@@ -43,12 +42,14 @@ type TT interface {
 type Fixture struct {
 	t       TT
 	log     *bytes.Buffer
+	out     io.Writer
+	verbose bool
 	skipped bool
 }
 
 // NewFixture is called by generated code.
-func NewFixture(t TT) *Fixture {
-	return &Fixture{t: t, log: &bytes.Buffer{}}
+func NewFixture(t TT, out io.Writer, verbose bool) *Fixture {
+	return &Fixture{t: t, log: &bytes.Buffer{}, out: out, verbose: verbose}
 }
 
 // So is a convenience method for reporting assertion failure messages,
@@ -122,17 +123,26 @@ func (self *Fixture) Skip(message string) {
 
 // Finalize is called by generated code.
 func (self *Fixture) Finalize() {
-	if verbose() || self.t.Failed() {
-		io.WriteString(out, strings.TrimRight(self.log.String(), "\t"))
+	if r := recover(); r != nil {
+		self.recover(r)
 	}
 
-	if r := recover(); r != nil { // TODO: unit test
-		panic(r)
+	if self.verbose || self.t.Failed() {
+		io.WriteString(self.out, strings.TrimRight(self.log.String(), "\t"))
 	}
 
 	if self.skipped {
 		self.t.SkipNow()
 	}
+}
+
+func (self *Fixture) recover(r interface{}) {
+	self.Println("X PANIC:", r)
+	buffer := make([]byte, 1024*16)
+	runtime.Stack(buffer, false)
+	self.Println(strings.TrimSpace(string(buffer)))
+	self.Println("* (Additional tests may have been skipped as a result of the panic shown above.)")
+	self.t.Fail()
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -156,6 +166,3 @@ func exit(message string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, message, args...)
 	os.Exit(1)
 }
-
-var verbose = testing.Verbose
-var out io.Writer = os.Stdout
