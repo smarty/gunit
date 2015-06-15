@@ -7,8 +7,11 @@ const GeneratedFilename = "generated_by_gunit_test.go"
 //////////////////////////////////////////////////////////////////////////////
 
 var rawSkippedFixture = strings.TrimSpace(`
-func Test{{.StructName}}(t *testing.T) { {{range .TestCases}}
-	t.Skip("('{{.StructName}}') Skipping test case: '{{.Name | sentence}}'") {{end}}
+func Test{{.StructName}}(t *testing.T) { 
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	defer fixture.Finalize()
+	{{range .TestCases}}
+	fixture.Skip("Skipping test case: '{{.Name | sentence}}'") {{end}}
 }
 `)
 

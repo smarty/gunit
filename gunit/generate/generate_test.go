@@ -380,8 +380,11 @@ func (self *H) RunTestCase__(test func(), description string) {
 		expected: `
 
 func TestI(t *testing.T) {
-	t.Skip("('I') Skipping test case: 'I 1'")
-	t.Skip("('I') Skipping test case: 'I 2'")
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	defer fixture.Finalize()
+
+	fixture.Skip("Skipping test case: 'I 1'")
+	fixture.Skip("Skipping test case: 'I 2'")
 }
 `,
 		description: "Skipping a fixture marks all test cases as skipped",
