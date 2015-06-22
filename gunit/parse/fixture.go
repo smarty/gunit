@@ -17,10 +17,11 @@ type Fixture struct {
 }
 
 type TestCase struct {
-	Index      int
-	Name       string
-	StructName string
-	Skipped    bool
+	Index       int
+	Name        string
+	StructName  string
+	Skipped     bool
+	LongRunning bool
 
 	InvalidNonPointer bool
 }

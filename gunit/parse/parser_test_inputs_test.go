@@ -77,6 +77,16 @@ func (self *BowlingGameScoringTests) TestAfterAllOnesTheScoreShouldBeTwenty() {
 
 func (self *BowlingGameScoringTests) SkipTestASpareDeservesABonus()      {}
 
+func (self *BowlingGameScoringTests) LongTestPerfectGame() {
+	self.rollMany(12, 10)
+	self.So(self.game.Score(), should.Equal, 300)
+}
+
+func (self *BowlingGameScoringTests) SkipLongTestPerfectGame() {
+	self.rollMany(12, 10)
+	self.So(self.game.Score(), should.Equal, 300)
+}
+
 func (self *BowlingGameScoringTests) rollMany(times, pins int) {
 	for x := 0; x < times; x++ {
 		self.game.Roll(pins)

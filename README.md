@@ -73,6 +73,11 @@ func (self *ExampleFixture) SkipTestWithNothing() {
 	// Because this method's name starts with 'Skip', it will be skipped.
 }
 
+func (self *ExampleFixture) LongTestSlowOperation() {
+	// Because this method's name starts with 'Long', it will be skipped if `go test` is run with the `short` flag.
+	time.Sleep(time.Hour)
+	So(true, should.BeTrue)
+}
 ```
 
 -------------------------

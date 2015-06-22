@@ -81,6 +81,23 @@ func attach(function *ast.FuncDecl, fixture *Fixture) {
 			StructName: fixture.StructName,
 			Skipped:    true,
 		})
+
+	} else if strings.HasPrefix(name, "LongTest") {
+		fixture.TestCases = append(fixture.TestCases, TestCase{
+			Index:       len(fixture.TestCases),
+			Name:        name,
+			StructName:  fixture.StructName,
+			LongRunning: true,
+		})
+
+	} else if strings.HasPrefix(name, "SkipLongTest") {
+		fixture.TestCases = append(fixture.TestCases, TestCase{
+			Index:       len(fixture.TestCases),
+			Name:        name,
+			StructName:  fixture.StructName,
+			LongRunning: true,
+			Skipped:     true,
+		})
 	}
 }
 

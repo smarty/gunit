@@ -29,11 +29,15 @@ func Test{{.StructName}}(t *testing.T) { {{if .FixtureTeardownName}}
 {{range .TestCases}}{{if .Skipped}}
 	fixture.Skip("Skipping test case: '{{.Name | sentence}}'"){{else}}
 	test{{.Index}} := &{{.StructName}}{Fixture: fixture}
-	test{{.Index}}.RunTestCase__(test{{.Index}}.{{.Name}}, "{{.Name | sentence}}"){{end}}
+	test{{.Index}}.RunTestCase__(test{{.Index}}.{{.Name}}, "{{.Name | sentence}}", {{.LongRunning}}){{end}}
 {{else}}	fixture.Skip("Fixture '{{.StructName}}' has no test cases.")
 {{end}}}
 
-{{if .TestCases}}func (self *{{.StructName}}) RunTestCase__(test func(), description string) {
+{{if .TestCases}}func (self *{{.StructName}}) RunTestCase__(test func(), description string, longRunning bool) {
+	if longRunning && testing.Short() {
+		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		return
+	}
 	self.Describe(description){{if .TestTeardownName}}
 	defer self.{{.TestTeardownName}}(){{end}}{{if .TestSetupName}}
 	self.{{.TestSetupName}}(){{end}}
@@ -54,6 +58,7 @@ const header = `////////////////////////////////////////////////////////////////
 package %s
 
 import (
+	"fmt"
 	"os"
 	"testing"
 

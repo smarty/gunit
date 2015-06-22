@@ -40,6 +40,15 @@ var cases []Case = []Case{
 	// These tests remove the first occurence of 'Test' in a skipped test case.
 	Case{"SkipTestB", "Skip b", false},
 	Case{"SkipTestBB", "Skip bb", false},
+
+	// These tests remove the first occurence of 'LongTest' in a long-running test case.
+	Case{"LongTestB", "B", false},
+	Case{"LongTestBB", "BB", false},
+	Case{"LongTestB1", "B 1", false},
+
+	// These tests remove the first occurence of 'Test' in a skipped long-running test case.
+	Case{"SkipLongTestB", "Skip long b", false},
+	Case{"SkipLongTestBB", "Skip long bb", false},
 }
 
 type Case struct {

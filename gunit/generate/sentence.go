@@ -20,17 +20,21 @@ var (
 // It inserts spaces at casing boundaries (id. 'SuperAwesome' -> 'Super awesome').
 // It counts UPPERCASE acronyms as words (ie. 'ILikeHTTP' -> 'I like http').
 func toSentence(input string) string {
-	input = removeTestPrefix(input)
+	input = removeTestAndLongPrefix(input)
 	input = breakWordsApart(input)
 	input = removeMultipleSpaces(input)
 	input = strings.TrimSpace(input)
 	return titleCaseSentence(input)
 }
-func removeTestPrefix(input string) string {
+func removeTestAndLongPrefix(input string) string {
 	if strings.HasPrefix(input, "Test") {
 		input = input[len("Test"):]
 	} else if strings.HasPrefix(input, "SkipTest") {
 		input = input[:len("Test")] + input[len("SkipTest"):]
+	} else if strings.HasPrefix(input, "LongTest") {
+		input = input[len("LongTest"):]
+	} else if strings.HasPrefix(input, "SkipLongTest") {
+		input = input[:len("SkipLong")] + input[len("SkipLongTest"):]
 	}
 	return input
 }

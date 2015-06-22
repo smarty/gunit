@@ -47,6 +47,7 @@ const expectedFileOutput = `////////////////////////////////////////////////////
 package blah
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -150,10 +151,14 @@ func TestB(t *testing.T) {
 	defer fixture.Finalize()
 
 	test0 := &B{Fixture: fixture}
-	test0.RunTestCase__(test0.TestB1, "B 1")
+	test0.RunTestCase__(test0.TestB1, "B 1", false)
 }
 
-func (self *B) RunTestCase__(test func(), description string) {
+func (self *B) RunTestCase__(test func(), description string, longRunning bool) {
+	if longRunning && testing.Short() {
+		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		return
+	}
 	self.Describe(description)
 	test()
 }
@@ -180,13 +185,17 @@ func TestC(t *testing.T) {
 	defer fixture.Finalize()
 
 	test0 := &C{Fixture: fixture}
-	test0.RunTestCase__(test0.TestC1, "C 1")
+	test0.RunTestCase__(test0.TestC1, "C 1", false)
 
 	test1 := &C{Fixture: fixture}
-	test1.RunTestCase__(test1.TestC2, "C 2")
+	test1.RunTestCase__(test1.TestC2, "C 2", false)
 }
 
-func (self *C) RunTestCase__(test func(), description string) {
+func (self *C) RunTestCase__(test func(), description string, longRunning bool) {
+	if longRunning && testing.Short() {
+		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		return
+	}
 	self.Describe(description)
 	self.SetupC_()
 	test()
@@ -212,13 +221,17 @@ func TestD(t *testing.T) {
 	defer fixture.Finalize()
 
 	test0 := &D{Fixture: fixture}
-	test0.RunTestCase__(test0.TestD1, "D 1")
+	test0.RunTestCase__(test0.TestD1, "D 1", false)
 
 	test1 := &D{Fixture: fixture}
-	test1.RunTestCase__(test1.TestD2, "D 2")
+	test1.RunTestCase__(test1.TestD2, "D 2", false)
 }
 
-func (self *D) RunTestCase__(test func(), description string) {
+func (self *D) RunTestCase__(test func(), description string, longRunning bool) {
+	if longRunning && testing.Short() {
+		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		return
+	}
 	self.Describe(description)
 	defer self.TeardownD_()
 	test()
@@ -246,13 +259,17 @@ func TestE(t *testing.T) {
 	defer fixture.Finalize()
 
 	test0 := &E{Fixture: fixture}
-	test0.RunTestCase__(test0.TestE1, "E 1")
+	test0.RunTestCase__(test0.TestE1, "E 1", false)
 
 	test1 := &E{Fixture: fixture}
-	test1.RunTestCase__(test1.TestE2, "E 2")
+	test1.RunTestCase__(test1.TestE2, "E 2", false)
 }
 
-func (self *E) RunTestCase__(test func(), description string) {
+func (self *E) RunTestCase__(test func(), description string, longRunning bool) {
+	if longRunning && testing.Short() {
+		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		return
+	}
 	self.Describe(description)
 	defer self.TeardownE_()
 	self.SetupE_()
@@ -282,13 +299,17 @@ func TestF(t *testing.T) {
 	defer fixture.Finalize()
 
 	test0 := &F{Fixture: fixture}
-	test0.RunTestCase__(test0.TestF1, "F 1")
+	test0.RunTestCase__(test0.TestF1, "F 1", false)
 
 	test1 := &F{Fixture: fixture}
-	test1.RunTestCase__(test1.TestF2, "F 2")
+	test1.RunTestCase__(test1.TestF2, "F 2", false)
 }
 
-func (self *F) RunTestCase__(test func(), description string) {
+func (self *F) RunTestCase__(test func(), description string, longRunning bool) {
+	if longRunning && testing.Short() {
+		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		return
+	}
 	self.Describe(description)
 	test()
 }
@@ -316,13 +337,17 @@ func TestG(t *testing.T) {
 	defer fixture.Finalize()
 
 	test0 := &G{Fixture: fixture}
-	test0.RunTestCase__(test0.TestG1, "G 1")
+	test0.RunTestCase__(test0.TestG1, "G 1", false)
 
 	test1 := &G{Fixture: fixture}
-	test1.RunTestCase__(test1.TestG2, "G 2")
+	test1.RunTestCase__(test1.TestG2, "G 2", false)
 }
 
-func (self *G) RunTestCase__(test func(), description string) {
+func (self *G) RunTestCase__(test func(), description string, longRunning bool) {
+	if longRunning && testing.Short() {
+		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		return
+	}
 	self.Describe(description)
 	test()
 }
@@ -352,13 +377,17 @@ func TestH(t *testing.T) {
 	defer fixture.Finalize()
 
 	test0 := &H{Fixture: fixture}
-	test0.RunTestCase__(test0.TestH1, "H 1")
+	test0.RunTestCase__(test0.TestH1, "H 1", false)
 
 	test1 := &H{Fixture: fixture}
-	test1.RunTestCase__(test1.TestH2, "H 2")
+	test1.RunTestCase__(test1.TestH2, "H 2", false)
 }
 
-func (self *H) RunTestCase__(test func(), description string) {
+func (self *H) RunTestCase__(test func(), description string, longRunning bool) {
+	if longRunning && testing.Short() {
+		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		return
+	}
 	self.Describe(description)
 	test()
 }
@@ -409,10 +438,48 @@ func TestJ(t *testing.T) {
 	fixture.Skip("Skipping test case: 'J 1'")
 
 	test1 := &J{Fixture: fixture}
-	test1.RunTestCase__(test1.TestJ2, "J 2")
+	test1.RunTestCase__(test1.TestJ2, "J 2", false)
 }
 
-func (self *J) RunTestCase__(test func(), description string) {
+func (self *J) RunTestCase__(test func(), description string, longRunning bool) {
+	if longRunning && testing.Short() {
+		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		return
+	}
+	self.Describe(description)
+	test()
+}
+`,
+		description: "Skipped test case alongside non-skipped test case",
+	},
+
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+	{
+		input: &parse.Fixture{
+			StructName: "K",
+			TestCases: []parse.TestCase{
+				{Index: 0, Name: "TestK1", StructName: "K", LongRunning: true, Skipped: false},
+				{Index: 1, Name: "TestK2", StructName: "K", LongRunning: true, Skipped: true},
+			},
+		},
+		expected: `
+
+func TestK(t *testing.T) {
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	defer fixture.Finalize()
+
+	test0 := &K{Fixture: fixture}
+	test0.RunTestCase__(test0.TestK1, "K 1", true)
+
+	fixture.Skip("Skipping test case: 'K 2'")
+}
+
+func (self *K) RunTestCase__(test func(), description string, longRunning bool) {
+	if longRunning && testing.Short() {
+		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		return
+	}
 	self.Describe(description)
 	test()
 }
