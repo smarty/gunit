@@ -47,7 +47,6 @@ const expectedFileOutput = `////////////////////////////////////////////////////
 package blah
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -156,7 +155,7 @@ func TestB(t *testing.T) {
 
 func (self *B) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)
@@ -193,7 +192,7 @@ func TestC(t *testing.T) {
 
 func (self *C) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)
@@ -229,7 +228,7 @@ func TestD(t *testing.T) {
 
 func (self *D) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)
@@ -267,7 +266,7 @@ func TestE(t *testing.T) {
 
 func (self *E) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)
@@ -307,7 +306,7 @@ func TestF(t *testing.T) {
 
 func (self *F) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)
@@ -345,7 +344,7 @@ func TestG(t *testing.T) {
 
 func (self *G) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)
@@ -385,7 +384,7 @@ func TestH(t *testing.T) {
 
 func (self *H) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)
@@ -443,7 +442,7 @@ func TestJ(t *testing.T) {
 
 func (self *J) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)
@@ -477,7 +476,7 @@ func TestK(t *testing.T) {
 
 func (self *K) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)

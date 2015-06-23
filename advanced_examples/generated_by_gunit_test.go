@@ -5,7 +5,6 @@
 package examples
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -19,7 +18,7 @@ func TestBowlingGameScoringTests(t *testing.T) {
 	defer fixture.Finalize()
 
 	test0 := &BowlingGameScoringTests{Fixture: fixture}
-	test0.RunTestCase__(test0.LongTestAfterAllGutterBallsTheScoreShouldBeZero, "After all gutter balls the score should be zero", true)
+	test0.RunTestCase__(test0.TestAfterAllGutterBallsTheScoreShouldBeZero, "After all gutter balls the score should be zero", false)
 
 	test1 := &BowlingGameScoringTests{Fixture: fixture}
 	test1.RunTestCase__(test1.TestAfterAllOnesTheScoreShouldBeTwenty, "After all ones the score should be twenty", false)
@@ -36,7 +35,7 @@ func TestBowlingGameScoringTests(t *testing.T) {
 
 func (self *BowlingGameScoringTests) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)
@@ -71,7 +70,7 @@ func TestEnvironmentControllerFixture(t *testing.T) {
 
 func (self *EnvironmentControllerFixture) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description)
@@ -82,7 +81,7 @@ func (self *EnvironmentControllerFixture) RunTestCase__(test func(), description
 ///////////////////////////////////////////////////////////////////////////////
 
 func init() {
-	gunit.Validate("7a6857fd82f2b5304a2d0b1c973cd3fd")
+	gunit.Validate("0a085d3a3201a50b682d18a273aa68de")
 }
 
 ///////////////////////////////////////////////////////////////////////////////

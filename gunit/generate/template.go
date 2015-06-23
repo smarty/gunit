@@ -35,7 +35,7 @@ func Test{{.StructName}}(t *testing.T) { {{if .FixtureTeardownName}}
 
 {{if .TestCases}}func (self *{{.StructName}}) RunTestCase__(test func(), description string, longRunning bool) {
 	if longRunning && testing.Short() {
-		self.Skip(fmt.Sprintf("Skipping long-running test case: '%s'", description))
+		self.Skip("Skipping long-running test case: '" + description + "'")
 		return
 	}
 	self.Describe(description){{if .TestTeardownName}}
@@ -58,7 +58,6 @@ const header = `////////////////////////////////////////////////////////////////
 package %s
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
