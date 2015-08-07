@@ -13,69 +13,83 @@ import (
 
 ///////////////////////////////////////////////////////////////////////////////
 
-func TestBowlingGameScoringTests(t *testing.T) {
+func TestBowlingGameScoringTests_TestAfterAllGutterBallsTheScoreShouldBeZero(t *testing.T) {
 	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
-	defer fixture.Finalize()
-
-	test0 := &BowlingGameScoringTests{Fixture: fixture}
-	test0.RunTestCase__(test0.TestAfterAllGutterBallsTheScoreShouldBeZero, "After all gutter balls the score should be zero", false)
-
-	test1 := &BowlingGameScoringTests{Fixture: fixture}
-	test1.RunTestCase__(test1.TestAfterAllOnesTheScoreShouldBeTwenty, "After all ones the score should be twenty", false)
-
-	test2 := &BowlingGameScoringTests{Fixture: fixture}
-	test2.RunTestCase__(test2.TestSpareReceivesSingleRollBonus, "Spare receives single roll bonus", false)
-
-	test3 := &BowlingGameScoringTests{Fixture: fixture}
-	test3.RunTestCase__(test3.TestStrikeRecievesDoubleRollBonus, "Strike recieves double roll bonus", false)
-
-	test4 := &BowlingGameScoringTests{Fixture: fixture}
-	test4.RunTestCase__(test4.TestPerfectGame, "Perfect game", false)
+	test := &BowlingGameScoringTests{Fixture: fixture}
+	test.Setup()
+	test.TestAfterAllGutterBallsTheScoreShouldBeZero()
 }
 
-func (self *BowlingGameScoringTests) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	self.Setup()
-	test()
+func TestBowlingGameScoringTests_TestAfterAllOnesTheScoreShouldBeTwenty(t *testing.T) {
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	test := &BowlingGameScoringTests{Fixture: fixture}
+	test.Setup()
+	test.TestAfterAllOnesTheScoreShouldBeTwenty()
+}
+
+func TestBowlingGameScoringTests_TestSpareReceivesSingleRollBonus(t *testing.T) {
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	test := &BowlingGameScoringTests{Fixture: fixture}
+	test.Setup()
+	test.TestSpareReceivesSingleRollBonus()
+}
+
+func TestBowlingGameScoringTests_TestStrikeRecievesDoubleRollBonus(t *testing.T) {
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	test := &BowlingGameScoringTests{Fixture: fixture}
+	test.Setup()
+	test.TestStrikeRecievesDoubleRollBonus()
+}
+
+func TestBowlingGameScoringTests_TestPerfectGame(t *testing.T) {
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	test := &BowlingGameScoringTests{Fixture: fixture}
+	test.Setup()
+	test.TestPerfectGame()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-func TestEnvironmentControllerFixture(t *testing.T) {
+func TestEnvironmentControllerFixture_TestEverythingTurnedOffAtStartup(t *testing.T) {
 	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
-	defer fixture.Finalize()
-
-	test0 := &EnvironmentControllerFixture{Fixture: fixture}
-	test0.RunTestCase__(test0.TestEverythingTurnedOffAtStartup, "Everything turned off at startup", false)
-
-	test1 := &EnvironmentControllerFixture{Fixture: fixture}
-	test1.RunTestCase__(test1.TestEverythingOffWhenComfortable, "Everything off when comfortable", false)
-
-	test2 := &EnvironmentControllerFixture{Fixture: fixture}
-	test2.RunTestCase__(test2.TestCoolerAndBlowerWhenHot, "Cooler and blower when hot", false)
-
-	test3 := &EnvironmentControllerFixture{Fixture: fixture}
-	test3.RunTestCase__(test3.TestHeaterAndBlowerWhenCold, "Heater and blower when cold", false)
-
-	test4 := &EnvironmentControllerFixture{Fixture: fixture}
-	test4.RunTestCase__(test4.TestHighAlarmOnIfAtThreshold, "High alarm on if at threshold", false)
-
-	test5 := &EnvironmentControllerFixture{Fixture: fixture}
-	test5.RunTestCase__(test5.TestLowAlarmOnIfAtThreshold, "Low alarm on if at threshold", false)
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestEverythingTurnedOffAtStartup()
 }
 
-func (self *EnvironmentControllerFixture) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	self.Setup()
-	test()
+func TestEnvironmentControllerFixture_TestEverythingOffWhenComfortable(t *testing.T) {
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestEverythingOffWhenComfortable()
+}
+
+func TestEnvironmentControllerFixture_TestCoolerAndBlowerWhenHot(t *testing.T) {
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestCoolerAndBlowerWhenHot()
+}
+
+func TestEnvironmentControllerFixture_TestHeaterAndBlowerWhenCold(t *testing.T) {
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestHeaterAndBlowerWhenCold()
+}
+
+func TestEnvironmentControllerFixture_TestHighAlarmOnIfAtThreshold(t *testing.T) {
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestHighAlarmOnIfAtThreshold()
+}
+
+func TestEnvironmentControllerFixture_TestLowAlarmOnIfAtThreshold(t *testing.T) {
+	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestLowAlarmOnIfAtThreshold()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
