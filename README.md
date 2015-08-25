@@ -38,7 +38,7 @@ import (
 type ExampleFixture struct {
 	*gunit.Fixture // Required: Embedding this type is what makes the magic happen.
 
-	// Declare useful state here (probably the stuff being testing, any fakes, etc...).
+	// Declare useful state here (probably the stuff being tested, any fakes, etc...).
 }
 
 func SetupExampleFixture() {
@@ -52,7 +52,7 @@ func TeardownExampleFixture() {
 
 func (self *ExampleFixture) SetupStuff() {
 	// This optional method will be executed before each "Test"
-	// method becuase it starts with "Setup".
+	// method (because it starts with "Setup").
 }
 func (self *ExampleFixture) TeardownStuff() {
 	// This optional method will be executed after each "Test"
