@@ -24,8 +24,6 @@ func Fixtures(code string) ([]*Fixture, error) {
 func findAndListFixtures(file *ast.File) ([]*Fixture, error) {
 	collection := NewFixtureCollector().Collect(file)
 	collection = NewFixtureMethodFinder(collection).Find(file)
-	collection = NewFixtureSetupTeardownFinder(collection).Find(file)
-
 	return listFixtures(collection)
 }
 

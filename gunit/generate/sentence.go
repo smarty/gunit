@@ -5,8 +5,6 @@ import (
 	"strings"
 )
 
-// TODO: implement apostrophe insertion for known contractions (http://www.enchantedlearning.com/grammar/contractions/list.shtml)
-
 var (
 	// These regexes allow us to insert a space...
 	first  = regexp.MustCompile("([A-Z][a-z]+)") // ...at conventional word boundaries (HelloWorld -> Hello World),
@@ -24,7 +22,10 @@ func toSentence(input string) string {
 	input = breakWordsApart(input)
 	input = removeMultipleSpaces(input)
 	input = strings.TrimSpace(input)
-	return titleCaseSentence(input)
+	input = strings.ToLower(input)
+	input = strings.Replace(input, " ", "_", -1)
+	input = strings.Replace(input, ",", "__", -1)
+	return input
 }
 func removeTestAndLongPrefix(input string) string {
 	if strings.HasPrefix(input, "Test") {
@@ -52,12 +53,4 @@ func removeMultipleSpaces(input string) string {
 		input = strings.Replace(input, "  ", " ", -1)
 	}
 	return input
-}
-func titleCaseSentence(input string) string {
-	words := strings.Split(input, " ")
-	first := []string{strings.Title(words[0])}
-	for _, word := range words[1:] {
-		first = append(first, strings.ToLower(word))
-	}
-	return strings.Join(first, " ")
 }

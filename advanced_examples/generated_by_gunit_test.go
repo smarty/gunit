@@ -5,7 +5,6 @@
 package examples
 
 import (
-	"os"
 	"testing"
 
 	"github.com/smartystreets/gunit"
@@ -13,36 +12,42 @@ import (
 
 ///////////////////////////////////////////////////////////////////////////////
 
-func TestBowlingGameScoringTests_TestAfterAllGutterBallsTheScoreShouldBeZero(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_BowlingGameScoringTests__after_all_gutter_balls_the_score_should_be_zero(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &BowlingGameScoringTests{Fixture: fixture}
 	test.Setup()
 	test.TestAfterAllGutterBallsTheScoreShouldBeZero()
 }
-
-func TestBowlingGameScoringTests_TestAfterAllOnesTheScoreShouldBeTwenty(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_BowlingGameScoringTests__after_all_ones_the_score_should_be_twenty(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &BowlingGameScoringTests{Fixture: fixture}
 	test.Setup()
 	test.TestAfterAllOnesTheScoreShouldBeTwenty()
 }
-
-func TestBowlingGameScoringTests_TestSpareReceivesSingleRollBonus(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_BowlingGameScoringTests__spare_receives_single_roll_bonus(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &BowlingGameScoringTests{Fixture: fixture}
 	test.Setup()
 	test.TestSpareReceivesSingleRollBonus()
 }
-
-func TestBowlingGameScoringTests_TestStrikeRecievesDoubleRollBonus(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_BowlingGameScoringTests__strike_recieves_double_roll_bonus(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &BowlingGameScoringTests{Fixture: fixture}
 	test.Setup()
 	test.TestStrikeRecievesDoubleRollBonus()
 }
-
-func TestBowlingGameScoringTests_TestPerfectGame(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_BowlingGameScoringTests__perfect_game(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &BowlingGameScoringTests{Fixture: fixture}
 	test.Setup()
 	test.TestPerfectGame()
@@ -50,43 +55,50 @@ func TestBowlingGameScoringTests_TestPerfectGame(t *testing.T) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-func TestEnvironmentControllerFixture_TestEverythingTurnedOffAtStartup(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_EnvironmentControllerFixture__everything_turned_off_at_startup(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
 	test.Setup()
 	test.TestEverythingTurnedOffAtStartup()
 }
-
-func TestEnvironmentControllerFixture_TestEverythingOffWhenComfortable(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_EnvironmentControllerFixture__everything_off_when_comfortable(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
 	test.Setup()
 	test.TestEverythingOffWhenComfortable()
 }
-
-func TestEnvironmentControllerFixture_TestCoolerAndBlowerWhenHot(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_EnvironmentControllerFixture__cooler_and_blower_when_hot(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
 	test.Setup()
 	test.TestCoolerAndBlowerWhenHot()
 }
-
-func TestEnvironmentControllerFixture_TestHeaterAndBlowerWhenCold(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_EnvironmentControllerFixture__heater_and_blower_when_cold(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
 	test.Setup()
 	test.TestHeaterAndBlowerWhenCold()
 }
-
-func TestEnvironmentControllerFixture_TestHighAlarmOnIfAtThreshold(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_EnvironmentControllerFixture__high_alarm_on_if_at_threshold(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
 	test.Setup()
 	test.TestHighAlarmOnIfAtThreshold()
 }
-
-func TestEnvironmentControllerFixture_TestLowAlarmOnIfAtThreshold(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_EnvironmentControllerFixture__low_alarm_on_if_at_threshold(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
 	test.Setup()
 	test.TestLowAlarmOnIfAtThreshold()

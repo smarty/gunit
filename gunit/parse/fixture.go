@@ -1,12 +1,7 @@
 package parse
 
 type Fixture struct {
-	Skipped    bool
 	StructName string
-
-	// TODO: remove these Fixture-level fields.
-	FixtureSetupName    string
-	FixtureTeardownName string
 
 	TestSetupName    string
 	TestTeardownName string

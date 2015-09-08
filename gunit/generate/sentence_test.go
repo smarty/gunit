@@ -17,38 +17,37 @@ func TestIdentifierToSentence(t *testing.T) {
 }
 
 var cases []Case = []Case{
-	Case{"lowercase", "Lowercase", false},
-	Case{"Class", "Class", false},
-	Case{"MyClass", "My class", false},
-	Case{"HTML", "HTML", false},
-	Case{"PDFLoader", "PDF loader", false},
-	Case{"AString", "A string", false},
-	Case{"SimpleXMLParser", "Simple xml parser", false},
-	Case{"GL11Version", "GL 11 version", false},
-	Case{"99Bottles", "99 bottles", false},
-	Case{"May5", "May 5", false},
-	Case{"BFG9000", "BFG 9000", false},
-	Case{"WhenSomethingHappens__ThenSomethingElseShouldHappen", "When something happens, then something else should happen", false},
-	Case{"The_quick_brown_fox_jumps_over_the_lazy_dog", "The quick brown fox jumps over the lazy dog", false},
-	Case{"HTTPResponseToSmartyResponseHTTP200ValidJSONBody", "HTTP response to smarty response http 200 valid json body", false},
+	Case{"lowercase", "lowercase", false},
+	Case{"Class", "class", false},
+	Case{"MyClass", "my_class", false},
+	Case{"HTML", "html", false},
+	Case{"PDFLoader", "pdf_loader", false},
+	Case{"AString", "a_string", false},
+	Case{"SimpleXMLParser", "simple_xml_parser", false},
+	Case{"GL11Version", "gl_11_version", false},
+	Case{"99Bottles", "99_bottles", false},
+	Case{"May5", "may_5", false},
+	Case{"BFG9000", "bfg_9000", false},
+	Case{"The_quick_brown_fox_jumps_over_the_lazy_dog", "the_quick_brown_fox_jumps_over_the_lazy_dog", false},
+	Case{"HTTPResponseToSmartyResponseHTTP200ValidJSONBody", "http_response_to_smarty_response_http_200_valid_json_body", false},
 
 	// These tests make sure the prefix 'Test' never begins a sentence.
-	Case{"TestB", "B", false},
-	Case{"TestBB", "BB", false},
-	Case{"TestB1", "B 1", false},
+	Case{"TestB", "b", false},
+	Case{"TestBB", "bb", false},
+	Case{"TestB1", "b_1", false},
 
 	// These tests remove the first occurence of 'Test' in a skipped test case.
-	Case{"SkipTestB", "Skip b", false},
-	Case{"SkipTestBB", "Skip bb", false},
+	Case{"SkipTestB", "skip_b", false},
+	Case{"SkipTestBB", "skip_bb", false},
 
 	// These tests remove the first occurence of 'LongTest' in a long-running test case.
-	Case{"LongTestB", "B", false},
-	Case{"LongTestBB", "BB", false},
-	Case{"LongTestB1", "B 1", false},
+	Case{"LongTestB", "b", false},
+	Case{"LongTestBB", "bb", false},
+	Case{"LongTestB1", "b_1", false},
 
 	// These tests remove the first occurence of 'Test' in a skipped long-running test case.
-	Case{"SkipLongTestB", "Skip long b", false},
-	Case{"SkipLongTestBB", "Skip long bb", false},
+	Case{"SkipLongTestB", "skip_long_b", false},
+	Case{"SkipLongTestBB", "skip_long_bb", false},
 }
 
 type Case struct {

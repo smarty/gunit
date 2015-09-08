@@ -2,6 +2,7 @@ package gunit
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -187,7 +188,7 @@ func TestFixturePrinting(t *testing.T) {
 	test.fixture.Finalize()
 
 	output := test.out.String()
-	if !strings.Contains(output, "Print\n") {
+	if !strings.Contains(output, "Print") {
 		t.Error("Expected to see 'Print' in the output.")
 	}
 	if !strings.Contains(output, "Println") {
@@ -234,19 +235,23 @@ type FixtureTestState struct {
 
 func Setup(verbose bool) *FixtureTestState {
 	this := &FixtureTestState{}
-	this.fakeT = &FakeTT{}
 	this.out = &bytes.Buffer{}
-	this.fixture = NewFixture(this.fakeT, this.out, verbose)
+	this.fakeT = &FakeTT{log: this.out}
+	this.fixture = NewFixture(this.fakeT, verbose)
 	return this
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 type FakeTT struct {
+	log     *bytes.Buffer
 	failed  bool
 	skipped bool
 }
 
+func (self *FakeTT) Log(args ...interface{}) {
+	fmt.Fprint(self.log, args...)
+}
 func (self *FakeTT) Fail()        { self.failed = true }
 func (self *FakeTT) Failed() bool { return self.failed }
 func (self *FakeTT) SkipNow()     { self.skipped = true }

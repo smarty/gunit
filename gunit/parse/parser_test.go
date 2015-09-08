@@ -87,9 +87,7 @@ func (self *FixtureParsingFixture) AssertErrorWasReturned() {
 var (
 	expected = map[string]*Fixture{
 		"BowlingGameScoringTests": {
-			StructName:          "BowlingGameScoringTests",
-			FixtureSetupName:    "SetupBowlingGameScoringTests",
-			FixtureTeardownName: "TeardownBowlingGameScoringTests",
+			StructName: "BowlingGameScoringTests",
 			TestCases: []TestCase{
 				TestCase{
 					Index:      0,
@@ -124,10 +122,6 @@ var (
 			},
 			TestSetupName:    "SetupTheGame",
 			TestTeardownName: "TeardownTheGame",
-		},
-		"SkipFixture": {
-			StructName: "SkipFixture",
-			Skipped:    true,
 		},
 	}
 )

@@ -6,29 +6,21 @@ const GeneratedFilename = "generated_by_gunit_test.go"
 
 //////////////////////////////////////////////////////////////////////////////
 
-var rawSkippedFixture = strings.TrimSpace(`
-{{range .TestCases}}
-func Test{{.StructName}}_{{.Name}}(t *testing.T) {
-	t.SkipNow()
-}
-{{end}}
-`)
-
-//////////////////////////////////////////////////////////////////////////////
-
 var rawTestFunction = strings.TrimSpace(`
 {{range .TestCases}}
-func Test{{$.StructName}}_{{.Name}}(t *testing.T) { {{if $.Skipped}}
-	t.SkipNow()
-	{{end}}{{if .LongRunning}}
+func Test_{{$.StructName}}__{{sentence .Name}}(t *testing.T) { {{if .LongRunning}}
 	if testing.Short() {
 		t.Skip("Skipping long-running test case.")
 	}{{end}}
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
 	test := &{{$.StructName}}{Fixture: fixture}{{if $.TestTeardownName}}
 	defer test.{{$.TestTeardownName}}(){{end}}{{if $.TestSetupName}}
 	test.{{$.TestSetupName}}(){{end}}
 	test.{{.Name}}()
+} {{else}} func Test_{{$.StructName}}(t *testing.T) {
+	t.Skip("Fixture '{{$.StructName}}' has no test cases.")
 }
 {{end}}
 `)
@@ -46,7 +38,6 @@ const header = `////////////////////////////////////////////////////////////////
 package %s
 
 import (
-	"os"
 	"testing"
 
 	"github.com/smartystreets/gunit"

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"go/format"
+	"log"
 	"text/template"
 
 	"github.com/smartystreets/gunit/gunit/parse"
@@ -14,7 +15,7 @@ func TestFile(packageName string, fixtures []*parse.Fixture, checksum string) ([
 	buffer := bytes.NewBufferString(fmt.Sprintf(header, packageName))
 	buffer.WriteString("\n///////////////////////////////////////////////////////////////////////////////\n\n")
 	for _, fixture := range fixtures {
-		function, err := TestFunction(fixture)
+		function, err := TestCases(fixture)
 		if err != nil {
 			return nil, err
 		}
@@ -25,23 +26,15 @@ func TestFile(packageName string, fixtures []*parse.Fixture, checksum string) ([
 	return format.Source(buffer.Bytes())
 }
 
-// TestFunction generates a test function based solely on whether the fixture has test cases that are Skipped or not.
-func TestFunction(fixture *parse.Fixture) ([]byte, error) {
-	if fixture.Skipped {
-		return executeTemplate(skippedFixtureTemplate, fixture)
-	}
-	return executeTemplate(testFixtureTemplate, fixture)
-}
-
-func executeTemplate(template *template.Template, data interface{}) ([]byte, error) {
+func TestCases(fixture *parse.Fixture) ([]byte, error) {
 	writer := &bytes.Buffer{}
-	template.Execute(writer, data)
+	err := testFixtureTemplate.Execute(writer, fixture)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
 	return format.Source(writer.Bytes())
 }
-
-var skippedFixtureTemplate = template.Must(template.
-	New("testFunction").Funcs(map[string]interface{}{"sentence": toSentence}).
-	Parse(rawSkippedFixture))
 
 var testFixtureTemplate = template.Must(template.
 	New("testFunction").Funcs(map[string]interface{}{"sentence": toSentence}).
