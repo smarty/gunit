@@ -13,15 +13,6 @@ type ExampleFixture struct {
 	// Declare useful state here (probably the stuff being testing, any fakes, etc...).
 }
 
-func SetupExampleFixture() {
-	// This optional, fixture-level setup function will be run once,
-	// before any "Test" methods on the ExampleFixture are executed.
-}
-func TeardownExampleFixture() {
-	// This optional, fixture-level function will be run once,
-	// after all "Test" methods on the ExampleFixture have been executed.
-}
-
 func (self *ExampleFixture) SetupStuff() {
 	// This optional method will be executed before each "Test"
 	// method becuase it starts with "Setup".

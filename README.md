@@ -41,15 +41,6 @@ type ExampleFixture struct {
 	// Declare useful state here (probably the stuff being tested, any fakes, etc...).
 }
 
-func SetupExampleFixture() {
-	// This optional, fixture-level setup function will be run once,
-	// before any "Test" methods on the ExampleFixture are executed.
-}
-func TeardownExampleFixture() {
-	// This optional, fixture-level function will be run once,
-	// after all "Test" methods on the ExampleFixture have been executed.
-}
-
 func (self *ExampleFixture) SetupStuff() {
 	// This optional method will be executed before each "Test"
 	// method (because it starts with "Setup").
@@ -112,24 +103,26 @@ import (
 
 ///////////////////////////////////////////////////////////////////////////////
 
-func TestExampleFixture(t *testing.T) {
-	defer TeardownExampleFixture()
-	SetupExampleFixture()
-
-	fixture := gunit.NewFixture(t)
+func Test_ExampleFixture__with_assertions(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
-
-	test0 := &ExampleFixture{Fixture: fixture}
-	test0.RunTestCase__(test0.TestWithAssertions, "Test with assertions")
-
-	fixture.Skip("Skipping test case: 'Skip test with nothing'")
+	test := &ExampleFixture{Fixture: fixture}
+	defer test.TeardownStuff()
+	test.SetupStuff()
+	test.TestWithAssertions()
 }
 
-func (self *ExampleFixture) RunTestCase__(test func(), description string) {
-	self.Describe(description)
-	defer self.TeardownStuff()
-	self.SetupStuff()
-	test()
+func Test_ExampleFixture__skip_with_nothing(t *testing.T) {
+	t.Skip("Skipping test case: 'SkipTestWithNothing'")
+
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &ExampleFixture{Fixture: fixture}
+	defer test.TeardownStuff()
+	test.SetupStuff()
+	test.SkipTestWithNothing()
 }
 
 ///////////////////////////////////////////////////////////////////////////////

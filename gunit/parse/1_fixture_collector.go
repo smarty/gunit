@@ -1,9 +1,6 @@
 package parse
 
-import (
-	"go/ast"
-	"strings"
-)
+import "go/ast"
 
 type FixtureCollector struct {
 	candidates map[string]*Fixture
@@ -36,10 +33,6 @@ func (self *FixtureCollector) Visit(node ast.Node) ast.Visitor {
 func (self *FixtureCollector) Validate(fixture string) {
 	self.fixtures[fixture] = self.candidates[fixture]
 	delete(self.candidates, fixture)
-
-	if strings.HasPrefix(fixture, "Skip") {
-		self.fixtures[fixture].Skipped = true
-	}
 }
 
 func (self *FixtureCollector) Invalidate(fixture string) {

@@ -5,7 +5,6 @@
 package examples
 
 import (
-	"os"
 	"testing"
 
 	"github.com/smartystreets/gunit"
@@ -13,69 +12,96 @@ import (
 
 ///////////////////////////////////////////////////////////////////////////////
 
-func TestBowlingGameScoringTests(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_BowlingGameScoringTests__after_all_gutter_balls_the_score_should_be_zero(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
-
-	test0 := &BowlingGameScoringTests{Fixture: fixture}
-	test0.RunTestCase__(test0.TestAfterAllGutterBallsTheScoreShouldBeZero, "After all gutter balls the score should be zero", false)
-
-	test1 := &BowlingGameScoringTests{Fixture: fixture}
-	test1.RunTestCase__(test1.TestAfterAllOnesTheScoreShouldBeTwenty, "After all ones the score should be twenty", false)
-
-	test2 := &BowlingGameScoringTests{Fixture: fixture}
-	test2.RunTestCase__(test2.TestSpareReceivesSingleRollBonus, "Spare receives single roll bonus", false)
-
-	test3 := &BowlingGameScoringTests{Fixture: fixture}
-	test3.RunTestCase__(test3.TestStrikeRecievesDoubleRollBonus, "Strike recieves double roll bonus", false)
-
-	test4 := &BowlingGameScoringTests{Fixture: fixture}
-	test4.RunTestCase__(test4.TestPerfectGame, "Perfect game", false)
+	test := &BowlingGameScoringTests{Fixture: fixture}
+	test.Setup()
+	test.TestAfterAllGutterBallsTheScoreShouldBeZero()
 }
-
-func (self *BowlingGameScoringTests) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	self.Setup()
-	test()
+func Test_BowlingGameScoringTests__after_all_ones_the_score_should_be_twenty(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &BowlingGameScoringTests{Fixture: fixture}
+	test.Setup()
+	test.TestAfterAllOnesTheScoreShouldBeTwenty()
+}
+func Test_BowlingGameScoringTests__spare_receives_single_roll_bonus(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &BowlingGameScoringTests{Fixture: fixture}
+	test.Setup()
+	test.TestSpareReceivesSingleRollBonus()
+}
+func Test_BowlingGameScoringTests__strike_recieves_double_roll_bonus(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &BowlingGameScoringTests{Fixture: fixture}
+	test.Setup()
+	test.TestStrikeRecievesDoubleRollBonus()
+}
+func Test_BowlingGameScoringTests__perfect_game(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &BowlingGameScoringTests{Fixture: fixture}
+	test.Setup()
+	test.TestPerfectGame()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-func TestEnvironmentControllerFixture(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_EnvironmentControllerFixture__everything_turned_off_at_startup(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
-
-	test0 := &EnvironmentControllerFixture{Fixture: fixture}
-	test0.RunTestCase__(test0.TestEverythingTurnedOffAtStartup, "Everything turned off at startup", false)
-
-	test1 := &EnvironmentControllerFixture{Fixture: fixture}
-	test1.RunTestCase__(test1.TestEverythingOffWhenComfortable, "Everything off when comfortable", false)
-
-	test2 := &EnvironmentControllerFixture{Fixture: fixture}
-	test2.RunTestCase__(test2.TestCoolerAndBlowerWhenHot, "Cooler and blower when hot", false)
-
-	test3 := &EnvironmentControllerFixture{Fixture: fixture}
-	test3.RunTestCase__(test3.TestHeaterAndBlowerWhenCold, "Heater and blower when cold", false)
-
-	test4 := &EnvironmentControllerFixture{Fixture: fixture}
-	test4.RunTestCase__(test4.TestHighAlarmOnIfAtThreshold, "High alarm on if at threshold", false)
-
-	test5 := &EnvironmentControllerFixture{Fixture: fixture}
-	test5.RunTestCase__(test5.TestLowAlarmOnIfAtThreshold, "Low alarm on if at threshold", false)
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestEverythingTurnedOffAtStartup()
 }
-
-func (self *EnvironmentControllerFixture) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	self.Setup()
-	test()
+func Test_EnvironmentControllerFixture__everything_off_when_comfortable(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestEverythingOffWhenComfortable()
+}
+func Test_EnvironmentControllerFixture__cooler_and_blower_when_hot(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestCoolerAndBlowerWhenHot()
+}
+func Test_EnvironmentControllerFixture__heater_and_blower_when_cold(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestHeaterAndBlowerWhenCold()
+}
+func Test_EnvironmentControllerFixture__high_alarm_on_if_at_threshold(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestHighAlarmOnIfAtThreshold()
+}
+func Test_EnvironmentControllerFixture__low_alarm_on_if_at_threshold(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &EnvironmentControllerFixture{Fixture: fixture}
+	test.Setup()
+	test.TestLowAlarmOnIfAtThreshold()
 }
 
 ///////////////////////////////////////////////////////////////////////////////

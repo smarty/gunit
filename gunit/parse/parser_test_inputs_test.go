@@ -43,14 +43,6 @@ import (
 	"github.com/smartystreets/gunit"
 )
 
-func SetupBowlingGameScoringTests()    {}
-func TeardownBowlingGameScoringTests() {}
-
-func Setup_BLAHBLAH_BowlingGameScoringTests()    {} // should NOT match
-func Teardown_BLAHBLAH_BowlingGameScoringTests() {} // should NOT match
-func Setup()                                     {} // should NOT match (not specific to a fixture)
-func Teardown()                                  {} // should NOT match (not specific to a fixture)
-
 type BowlingGameScoringTests struct {
 	*gunit.Fixture
 
@@ -183,12 +175,6 @@ const (
 	// maxThrowsPerGame is the maximum number of throws possible in a single game.
 	maxThrowsPerGame = 21
 )
-
-//////////////////////////////////////////////////////////////////////////////
-
-type SkipFixture struct {
-	*gunit.Fixture
-}
 
 //////////////////////////////////////////////////////////////////////////////
 // These types shouldn't be parsed as fixtures:

@@ -20,7 +20,6 @@ package gunit
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -32,6 +31,7 @@ import (
 
 // TT represents the functional subset from *testing.T needed by Fixture.
 type TT interface {
+	Log(args ...interface{})
 	Fail()
 	Failed() bool
 	SkipNow()
@@ -42,14 +42,12 @@ type TT interface {
 type Fixture struct {
 	t       TT
 	log     *bytes.Buffer
-	out     io.Writer
 	verbose bool
-	skipped bool
 }
 
 // NewFixture is called by generated code.
-func NewFixture(t TT, out io.Writer, verbose bool) *Fixture {
-	return &Fixture{t: t, log: &bytes.Buffer{}, out: out, verbose: verbose}
+func NewFixture(t TT, verbose bool) *Fixture {
+	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
 }
 
 // So is a convenience method for reporting assertion failure messages,
@@ -86,8 +84,8 @@ func (self *Fixture) Errorf(format string, args ...interface{}) {
 
 func (self *Fixture) reportFailure(failure string) {
 	_, file, line, _ := runtime.Caller(2) // 0: reportFailure + 1: Error/Errorf/So/Ok + 2: func Test...
-	self.log.WriteString(fmt.Sprintf("\tX FAILED: %s:%d\n", file, line))
-	self.print(failure)
+	self.log.WriteString(fmt.Sprintf("%s:%d\n", file, line))
+	self.Print(failure + "\n\n")
 }
 
 // Print is analogous to fmt.Print and is ideal for printing in the middle of a test case.
@@ -107,18 +105,7 @@ func (self *Fixture) Println(a ...interface{}) (n int, err error) {
 
 // print ensures that the necessary indentation is prepended to every line of each printed message.
 func (self *Fixture) print(message string) (n int, err error) {
-	return fmt.Fprint(self.log, "\t\t"+strings.Replace(message, "\n", "\n\t\t", -1)+"\n")
-}
-
-// Describe is called by generated code.
-func (self *Fixture) Describe(test string) {
-	fmt.Fprintln(self.log, "\t- "+test)
-}
-
-// Skip is called by generated code.
-func (self *Fixture) Skip(message string) {
-	fmt.Fprintln(self.log, "\t? "+message)
-	self.skipped = true
+	return fmt.Fprint(self.log, message)
 }
 
 // Finalize is called by generated code.
@@ -127,12 +114,8 @@ func (self *Fixture) Finalize() {
 		self.recover(r)
 	}
 
-	if self.verbose || self.t.Failed() {
-		io.WriteString(self.out, strings.TrimRight(self.log.String(), "\t"))
-	}
-
-	if self.skipped {
-		self.t.SkipNow()
+	if self.t.Failed() || (self.verbose && self.log.Len() > 0) {
+		self.t.Log("\n" + self.log.String() + "\n")
 	}
 }
 

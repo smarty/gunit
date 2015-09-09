@@ -2,6 +2,7 @@ package gunit
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -24,53 +25,15 @@ func TestFinalizeAfterNoActions(t *testing.T) {
 	}
 }
 
-func TestFinalizeAfterPass_NotVerbose(t *testing.T) {
-	test := Setup(false)
-
-	test.fixture.Describe("Hello")
-	test.fixture.Finalize()
-
-	if output := strings.TrimSpace(test.out.String()); output != "" {
-		t.Errorf("Unexpected output: '%s'", test.out.String())
-	}
-}
-
-func TestFinalizeAfterPass_Verbose(t *testing.T) {
-	test := Setup(true)
-
-	test.fixture.Describe("Hello")
-	test.fixture.Finalize()
-
-	if output := strings.TrimSpace(test.out.String()); output != "- Hello" {
-		t.Errorf("Unexpected output: '%s'", test.out.String())
-	}
-}
-
 func TestFinalizeAfterFailure(t *testing.T) {
 	test := Setup(false)
 
-	test.fixture.Describe("Hello")
 	test.fakeT.Fail()
 
 	test.fixture.Finalize()
 
-	if output := strings.TrimSpace(test.out.String()); output != "- Hello" {
+	if output := strings.TrimSpace(test.out.String()); strings.Contains(output, "Failure") {
 		t.Errorf("Unexpected output: '%s'", output)
-	}
-}
-
-func TestFinalizeAfterSkip_NotVerbose(t *testing.T) {
-	test := Setup(false)
-
-	test.fixture.Skip("Hello")
-
-	test.fixture.Finalize()
-
-	if !test.fakeT.skipped {
-		t.Error("SkipNow() was not called.")
-	}
-	if test.out.Len() > 0 {
-		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 }
 
@@ -187,7 +150,7 @@ func TestFixturePrinting(t *testing.T) {
 	test.fixture.Finalize()
 
 	output := test.out.String()
-	if !strings.Contains(output, "Print\n") {
+	if !strings.Contains(output, "Print") {
 		t.Error("Expected to see 'Print' in the output.")
 	}
 	if !strings.Contains(output, "Println") {
@@ -234,19 +197,23 @@ type FixtureTestState struct {
 
 func Setup(verbose bool) *FixtureTestState {
 	this := &FixtureTestState{}
-	this.fakeT = &FakeTT{}
 	this.out = &bytes.Buffer{}
-	this.fixture = NewFixture(this.fakeT, this.out, verbose)
+	this.fakeT = &FakeTT{log: this.out}
+	this.fixture = NewFixture(this.fakeT, verbose)
 	return this
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 type FakeTT struct {
+	log     *bytes.Buffer
 	failed  bool
 	skipped bool
 }
 
+func (self *FakeTT) Log(args ...interface{}) {
+	fmt.Fprint(self.log, args...)
+}
 func (self *FakeTT) Fail()        { self.failed = true }
 func (self *FakeTT) Failed() bool { return self.failed }
 func (self *FakeTT) SkipNow()     { self.skipped = true }
