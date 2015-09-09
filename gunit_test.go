@@ -25,53 +25,15 @@ func TestFinalizeAfterNoActions(t *testing.T) {
 	}
 }
 
-func TestFinalizeAfterPass_NotVerbose(t *testing.T) {
-	test := Setup(false)
-
-	test.fixture.Describe("Hello")
-	test.fixture.Finalize()
-
-	if output := strings.TrimSpace(test.out.String()); output != "" {
-		t.Errorf("Unexpected output: '%s'", test.out.String())
-	}
-}
-
-func TestFinalizeAfterPass_Verbose(t *testing.T) {
-	test := Setup(true)
-
-	test.fixture.Describe("Hello")
-	test.fixture.Finalize()
-
-	if output := strings.TrimSpace(test.out.String()); output != "- Hello" {
-		t.Errorf("Unexpected output: '%s'", test.out.String())
-	}
-}
-
 func TestFinalizeAfterFailure(t *testing.T) {
 	test := Setup(false)
 
-	test.fixture.Describe("Hello")
 	test.fakeT.Fail()
 
 	test.fixture.Finalize()
 
-	if output := strings.TrimSpace(test.out.String()); output != "- Hello" {
+	if output := strings.TrimSpace(test.out.String()); strings.Contains(output, "Failure") {
 		t.Errorf("Unexpected output: '%s'", output)
-	}
-}
-
-func TestFinalizeAfterSkip_NotVerbose(t *testing.T) {
-	test := Setup(false)
-
-	test.fixture.Skip("Hello")
-
-	test.fixture.Finalize()
-
-	if !test.fakeT.skipped {
-		t.Error("SkipNow() was not called.")
-	}
-	if test.out.Len() > 0 {
-		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 }
 

@@ -8,10 +8,12 @@ const GeneratedFilename = "generated_by_gunit_test.go"
 
 var rawTestFunction = strings.TrimSpace(`
 {{range .TestCases}}
-func Test_{{$.StructName}}__{{sentence .Name}}(t *testing.T) { {{if .LongRunning}}
-	if testing.Short() {
+func Test_{{$.StructName}}__{{sentence .Name}}(t *testing.T) { {{if .Skipped}}
+	t.Skip("Skipping test case: '{{.Name}}'")
+	{{else if .LongRunning}}if testing.Short() {
 		t.Skip("Skipping long-running test case.")
-	}{{end}}
+	}
+	{{end}}
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
@@ -19,7 +21,9 @@ func Test_{{$.StructName}}__{{sentence .Name}}(t *testing.T) { {{if .LongRunning
 	defer test.{{$.TestTeardownName}}(){{end}}{{if $.TestSetupName}}
 	test.{{$.TestSetupName}}(){{end}}
 	test.{{.Name}}()
-} {{else}} func Test_{{$.StructName}}(t *testing.T) {
+}
+{{else}}
+func Test_{{$.StructName}}(t *testing.T) {
 	t.Skip("Fixture '{{$.StructName}}' has no test cases.")
 }
 {{end}}

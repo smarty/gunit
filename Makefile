@@ -5,16 +5,16 @@
 default: test
 
 test: build
-	go test ./...
+	go generate ./...
+	go test -v ./...
 
 build:
 	go build ./...
-	go generate ./...
 
 cover:
 	go build
 	go test -coverprofile=coverage.out
 	go tool cover -html=coverage.out
 
-install:
+install: build
 	go install github.com/smartystreets/gunit/gunit

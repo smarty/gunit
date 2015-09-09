@@ -72,8 +72,11 @@ func init() {
 //////////////////////////////////////////////////////////////////////////////
 
 func TestGenerateTestCases(t *testing.T) {
-	t.Skip("skipped for now...")
-	for i, test := range testFunction_TestCases {
+	for _, test := range testFunction_TestCases {
+		if test.SKIP {
+			t.Log("Skipping:", test.description)
+			continue
+		}
 		function, err := TestCases(test.input)
 		if err == nil && test.err {
 			t.Error("Expected a parse error but got nil.")
@@ -86,7 +89,7 @@ func TestGenerateTestCases(t *testing.T) {
 		actual := strings.TrimSpace(string(function))
 		expected := strings.TrimSpace(test.expected)
 		if actual != expected {
-			t.Errorf("FAILED: Case #%d\nExpected:\n%s\n\nActual:\n%s", i, expected, actual)
+			t.Errorf("FAILED: '%s'\nExpected:\n%s\n\nActual:\n%s", test.description, expected, actual)
 		} else {
 			t.Log("✔ " + test.description)
 		}
@@ -123,7 +126,7 @@ var testFunction_TestCases = []TestFunction_TestCase{
 		expected: `
 
 func Test_A(t *testing.T) {
-	fixture.Skip("Fixture 'A' has no test cases.")
+	t.Skip("Fixture 'A' has no test cases.")
 }
 
 `,
@@ -139,21 +142,12 @@ func Test_A(t *testing.T) {
 		},
 		expected: `
 
-func TestB(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_B__b_1(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
-
-	test0 := &B{Fixture: fixture}
-	test0.RunTestCase__(test0.TestB1, "B 1", false)
-}
-
-func (self *B) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	test()
+	test := &B{Fixture: fixture}
+	test.TestB1()
 }
 
 `,
@@ -173,26 +167,24 @@ func (self *B) RunTestCase__(test func(), description string, longRunning bool) 
 		},
 		expected: `
 
-func TestC(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_C__c_1(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
-
-	test0 := &C{Fixture: fixture}
-	test0.RunTestCase__(test0.TestC1, "C 1", false)
-
-	test1 := &C{Fixture: fixture}
-	test1.RunTestCase__(test1.TestC2, "C 2", false)
+	test := &C{Fixture: fixture}
+	test.SetupC_()
+	test.TestC1()
 }
 
-func (self *C) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	self.SetupC_()
-	test()
+func Test_C__c_2(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &C{Fixture: fixture}
+	test.SetupC_()
+	test.TestC2()
 }
+
 `,
 		description: "A fixture with two test cases and a setup",
 	},
@@ -209,26 +201,24 @@ func (self *C) RunTestCase__(test func(), description string, longRunning bool) 
 		},
 		expected: `
 
-func TestD(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_D__d_1(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
-
-	test0 := &D{Fixture: fixture}
-	test0.RunTestCase__(test0.TestD1, "D 1", false)
-
-	test1 := &D{Fixture: fixture}
-	test1.RunTestCase__(test1.TestD2, "D 2", false)
+	test := &D{Fixture: fixture}
+	defer test.TeardownD_()
+	test.TestD1()
 }
 
-func (self *D) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	defer self.TeardownD_()
-	test()
+func Test_D__d_2(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &D{Fixture: fixture}
+	defer test.TeardownD_()
+	test.TestD2()
 }
+
 `,
 		description: "A fixture with a two test cases and a teardown",
 	},
@@ -247,134 +237,28 @@ func (self *D) RunTestCase__(test func(), description string, longRunning bool) 
 		},
 		expected: `
 
-func TestE(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_E__e_1(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
-
-	test0 := &E{Fixture: fixture}
-	test0.RunTestCase__(test0.TestE1, "E 1", false)
-
-	test1 := &E{Fixture: fixture}
-	test1.RunTestCase__(test1.TestE2, "E 2", false)
+	test := &E{Fixture: fixture}
+	defer test.TeardownE_()
+	test.SetupE_()
+	test.TestE1()
 }
 
-func (self *E) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	defer self.TeardownE_()
-	self.SetupE_()
-	test()
+func Test_E__e_2(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &E{Fixture: fixture}
+	defer test.TeardownE_()
+	test.SetupE_()
+	test.TestE2()
 }
+
 `,
 		description: "A fixture with two test cases, a setup and a teardown",
-	},
-
-	/////////////////////////////////////////////////////////////////////////////////////////////
-
-	{
-		input: &parse.Fixture{
-			StructName: "F",
-			TestCases: []parse.TestCase{
-				{Index: 0, Name: "TestF1", StructName: "F"},
-				{Index: 1, Name: "TestF2", StructName: "F"},
-			},
-		},
-		expected: `
-
-func TestF(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
-	defer fixture.Finalize()
-
-	test0 := &F{Fixture: fixture}
-	test0.RunTestCase__(test0.TestF1, "F 1", false)
-
-	test1 := &F{Fixture: fixture}
-	test1.RunTestCase__(test1.TestF2, "F 2", false)
-}
-
-func (self *F) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	test()
-}
-`,
-		description: "One-time fixture setup",
-	},
-
-	/////////////////////////////////////////////////////////////////////////////////////////////
-
-	{
-		input: &parse.Fixture{
-			StructName: "G",
-			TestCases: []parse.TestCase{
-				{Index: 0, Name: "TestG1", StructName: "G"},
-				{Index: 1, Name: "TestG2", StructName: "G"},
-			},
-		},
-		expected: `
-
-func TestG(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
-	defer fixture.Finalize()
-
-	test0 := &G{Fixture: fixture}
-	test0.RunTestCase__(test0.TestG1, "G 1", false)
-
-	test1 := &G{Fixture: fixture}
-	test1.RunTestCase__(test1.TestG2, "G 2", false)
-}
-
-func (self *G) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	test()
-}
-`,
-		description: "One-time fixture teardown",
-	},
-
-	/////////////////////////////////////////////////////////////////////////////////////////////
-
-	{
-		input: &parse.Fixture{
-			StructName: "H",
-			TestCases: []parse.TestCase{
-				{Index: 0, Name: "TestH1", StructName: "H"},
-				{Index: 1, Name: "TestH2", StructName: "H"},
-			},
-		},
-		expected: `
-
-func TestH(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
-	defer fixture.Finalize()
-
-	test0 := &H{Fixture: fixture}
-	test0.RunTestCase__(test0.TestH1, "H 1", false)
-
-	test1 := &H{Fixture: fixture}
-	test1.RunTestCase__(test1.TestH2, "H 2", false)
-}
-
-func (self *H) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	test()
-}
-`,
-		description: "One-time fixture setup and teardown",
 	},
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
@@ -388,13 +272,24 @@ func (self *H) RunTestCase__(test func(), description string, longRunning bool) 
 			},
 		},
 		expected: `
+func Test_I__i_1(t *testing.T) {
+	t.Skip("Skipping test case: 'TestI1'")
 
-func TestI(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
+	test := &I{Fixture: fixture}
+	test.TestI1()
+}
 
-	fixture.Skip("Skipping test case: 'I 1'")
-	fixture.Skip("Skipping test case: 'I 2'")
+func Test_I__i_2(t *testing.T) {
+	t.Skip("Skipping test case: 'TestI2'")
+
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &I{Fixture: fixture}
+	test.TestI2()
 }
 `,
 		description: "Skipping a fixture marks all test cases as skipped",
@@ -412,24 +307,24 @@ func TestI(t *testing.T) {
 		},
 		expected: `
 
-func TestJ(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_J__j_1(t *testing.T) {
+	t.Skip("Skipping test case: 'TestJ1'")
+
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
-
-	fixture.Skip("Skipping test case: 'J 1'")
-
-	test1 := &J{Fixture: fixture}
-	test1.RunTestCase__(test1.TestJ2, "J 2", false)
+	test := &J{Fixture: fixture}
+	test.TestJ1()
 }
 
-func (self *J) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	test()
+func Test_J__j_2(t *testing.T) {
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &J{Fixture: fixture}
+	test.TestJ2()
 }
+
 `,
 		description: "Skipped test case alongside non-skipped test case",
 	},
@@ -446,26 +341,29 @@ func (self *J) RunTestCase__(test func(), description string, longRunning bool) 
 		},
 		expected: `
 
-func TestK(t *testing.T) {
-	fixture := gunit.NewFixture(t, os.Stdout, testing.Verbose())
+func Test_K__k_1(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping long-running test case.")
+	}
+
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
-
-	test0 := &K{Fixture: fixture}
-	test0.RunTestCase__(test0.TestK1, "K 1", true)
-
-	fixture.Skip("Skipping test case: 'K 2'")
+	test := &K{Fixture: fixture}
+	test.TestK1()
 }
 
-func (self *K) RunTestCase__(test func(), description string, longRunning bool) {
-	if longRunning && testing.Short() {
-		self.Skip("Skipping long-running test case: '" + description + "'")
-		return
-	}
-	self.Describe(description)
-	test()
+func Test_K__k_2(t *testing.T) {
+	t.Skip("Skipping test case: 'TestK2'")
+
+	t.Parallel()
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &K{Fixture: fixture}
+	test.TestK2()
 }
 `,
-		description: "Skipped test case alongside non-skipped test case",
+		description: "Skipped long-running test case alongside non-skipped long-running test case",
 	},
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
