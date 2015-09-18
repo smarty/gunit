@@ -8,7 +8,7 @@ import (
 
 func FormatFailureLine(line int, code string) string {
 	lines := strings.Split(code, "\n")
-	return fmt.Sprintf("Line %d:  %s\n", line, strings.TrimSpace(string(lines[line-1])))
+	return fmt.Sprintf("Line %d:  %s\n", line, strings.TrimSpace(string(lines[line])))
 }
 
 func FormatFailureContext(lineNumber int, code string) string {
