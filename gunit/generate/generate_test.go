@@ -9,7 +9,7 @@ import (
 
 func TestGenerateTestFileFails(t *testing.T) {
 	fixtures := []*parse.Fixture{{StructName: "Not a valid struct name (spaces and parens!)"}}
-	file, err := TestFile("blah", fixtures, "")
+	file, err := TestFile("blah", fixtures, "", nil)
 	if err == nil {
 		t.Error("Expected a generate error, got nil instead.")
 	}
@@ -20,7 +20,7 @@ func TestGenerateTestFileFails(t *testing.T) {
 
 func TestGenerateWithoutPackageNameFails(t *testing.T) {
 	fixtures := []*parse.Fixture{{StructName: "A"}}
-	file, err := TestFile("", fixtures, "")
+	file, err := TestFile("", fixtures, "", nil)
 	if err == nil {
 		t.Error("Expected a generate error, got nil instead.")
 	}
@@ -31,7 +31,7 @@ func TestGenerateWithoutPackageNameFails(t *testing.T) {
 
 func TestGenerateValidTestFile(t *testing.T) {
 	fixtures := []*parse.Fixture{{StructName: "A"}}
-	file, err := TestFile("blah", fixtures, "42")
+	file, err := TestFile("blah", fixtures, "42", map[string]string{"hello": "world"})
 	if err != nil {
 		t.Error("Unexpected err:", err)
 	}
@@ -59,6 +59,8 @@ func Test_A(t *testing.T) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+var __code__ = map[string]string{"hello": "world"}
 
 func init() {
 	gunit.Validate("42")
@@ -137,6 +139,7 @@ func Test_A(t *testing.T) {
 
 	{
 		input: &parse.Fixture{
+			Filename:   "file_test.go",
 			StructName: "B",
 			TestCases:  []parse.TestCase{{Index: 0, Name: "TestB1", StructName: "B"}},
 		},
@@ -144,7 +147,7 @@ func Test_A(t *testing.T) {
 
 func Test_B__b_1(t *testing.T) {
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &B{Fixture: fixture}
 	test.TestB1()
@@ -158,6 +161,7 @@ func Test_B__b_1(t *testing.T) {
 
 	{
 		input: &parse.Fixture{
+			Filename:      "file_test.go",
 			StructName:    "C",
 			TestSetupName: "SetupC_",
 			TestCases: []parse.TestCase{
@@ -169,7 +173,7 @@ func Test_B__b_1(t *testing.T) {
 
 func Test_C__c_1(t *testing.T) {
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &C{Fixture: fixture}
 	test.SetupC_()
@@ -178,7 +182,7 @@ func Test_C__c_1(t *testing.T) {
 
 func Test_C__c_2(t *testing.T) {
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &C{Fixture: fixture}
 	test.SetupC_()
@@ -192,6 +196,7 @@ func Test_C__c_2(t *testing.T) {
 
 	{
 		input: &parse.Fixture{
+			Filename:         "file_test.go",
 			StructName:       "D",
 			TestTeardownName: "TeardownD_",
 			TestCases: []parse.TestCase{
@@ -203,7 +208,7 @@ func Test_C__c_2(t *testing.T) {
 
 func Test_D__d_1(t *testing.T) {
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &D{Fixture: fixture}
 	defer test.TeardownD_()
@@ -212,7 +217,7 @@ func Test_D__d_1(t *testing.T) {
 
 func Test_D__d_2(t *testing.T) {
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &D{Fixture: fixture}
 	defer test.TeardownD_()
@@ -227,6 +232,7 @@ func Test_D__d_2(t *testing.T) {
 
 	{
 		input: &parse.Fixture{
+			Filename:         "file_test.go",
 			StructName:       "E",
 			TestSetupName:    "SetupE_",
 			TestTeardownName: "TeardownE_",
@@ -239,7 +245,7 @@ func Test_D__d_2(t *testing.T) {
 
 func Test_E__e_1(t *testing.T) {
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &E{Fixture: fixture}
 	defer test.TeardownE_()
@@ -249,7 +255,7 @@ func Test_E__e_1(t *testing.T) {
 
 func Test_E__e_2(t *testing.T) {
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &E{Fixture: fixture}
 	defer test.TeardownE_()
@@ -265,6 +271,7 @@ func Test_E__e_2(t *testing.T) {
 
 	{
 		input: &parse.Fixture{
+			Filename:   "file_test.go",
 			StructName: "I",
 			TestCases: []parse.TestCase{
 				{Index: 0, Name: "TestI1", StructName: "I", Skipped: true},
@@ -276,7 +283,7 @@ func Test_I__i_1(t *testing.T) {
 	t.Skip("Skipping test case: 'TestI1'")
 
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &I{Fixture: fixture}
 	test.TestI1()
@@ -286,7 +293,7 @@ func Test_I__i_2(t *testing.T) {
 	t.Skip("Skipping test case: 'TestI2'")
 
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &I{Fixture: fixture}
 	test.TestI2()
@@ -299,6 +306,7 @@ func Test_I__i_2(t *testing.T) {
 
 	{
 		input: &parse.Fixture{
+			Filename:   "file_test.go",
 			StructName: "J",
 			TestCases: []parse.TestCase{
 				{Index: 0, Name: "TestJ1", StructName: "J", Skipped: true},
@@ -311,7 +319,7 @@ func Test_J__j_1(t *testing.T) {
 	t.Skip("Skipping test case: 'TestJ1'")
 
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &J{Fixture: fixture}
 	test.TestJ1()
@@ -319,7 +327,7 @@ func Test_J__j_1(t *testing.T) {
 
 func Test_J__j_2(t *testing.T) {
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &J{Fixture: fixture}
 	test.TestJ2()
@@ -333,6 +341,7 @@ func Test_J__j_2(t *testing.T) {
 
 	{
 		input: &parse.Fixture{
+			Filename:   "file_test.go",
 			StructName: "K",
 			TestCases: []parse.TestCase{
 				{Index: 0, Name: "TestK1", StructName: "K", LongRunning: true, Skipped: false},
@@ -347,7 +356,7 @@ func Test_K__k_1(t *testing.T) {
 	}
 
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &K{Fixture: fixture}
 	test.TestK1()
@@ -357,7 +366,7 @@ func Test_K__k_2(t *testing.T) {
 	t.Skip("Skipping test case: 'TestK2'")
 
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
+	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["file_test.go"])
 	defer fixture.Finalize()
 	test := &K{Fixture: fixture}
 	test.TestK2()

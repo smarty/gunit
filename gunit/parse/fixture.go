@@ -1,6 +1,7 @@
 package parse
 
 type Fixture struct {
+	Filename   string
 	StructName string
 
 	TestSetupName    string

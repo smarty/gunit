@@ -58,12 +58,12 @@ func parseFixtures(pkg *build.Package) []*parse.Fixture {
 	fixtures := []*parse.Fixture{}
 	badFixtures := new(bytes.Buffer)
 
-	for _, item := range pkg.TestGoFiles {
-		if item == generate.GeneratedFilename {
+	for _, filename := range pkg.TestGoFiles {
+		if filename == generate.GeneratedFilename {
 			continue
 		}
 
-		source, err := ioutil.ReadFile(filepath.Join(pkg.Dir, item))
+		source, err := ioutil.ReadFile(filepath.Join(pkg.Dir, filename))
 		fatal(err)
 
 		batch, err := parse.Fixtures(string(source))
@@ -71,7 +71,10 @@ func parseFixtures(pkg *build.Package) []*parse.Fixture {
 			badFixtures.WriteString(err.Error())
 		}
 
-		fixtures = append(fixtures, batch...)
+		for _, fixture := range batch {
+			fixture.Filename = filename
+			fixtures = append(fixtures, fixture)
+		}
 	}
 
 	if badFixtures.Len() > 0 {
@@ -89,7 +92,10 @@ func generateTestFileContents(pkg *build.Package, fixtures []*parse.Fixture) []b
 	checksum, err := generate.Checksum(pkg.Dir)
 	fatal(err)
 
-	generated, err := generate.TestFile(pkg.Name, fixtures, checksum)
+	code, err := generate.CodeListing(pkg.Dir)
+	fatal(err)
+
+	generated, err := generate.TestFile(pkg.Name, fixtures, checksum, code)
 	fatal(err)
 
 	return generated

@@ -19,6 +19,7 @@ package gunit
 
 import (
 	"bytes"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -43,11 +44,17 @@ type Fixture struct {
 	t       TT
 	log     *bytes.Buffer
 	verbose bool
+	context string
 }
 
 // NewFixture is called by generated code.
-func NewFixture(t TT, verbose bool) *Fixture {
-	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
+func NewFixture(t TT, verbose bool, code string) *Fixture {
+	context := ""
+	decoded, err := hex.DecodeString(code)
+	if err == nil {
+		context = "\n" + string(decoded)
+	}
+	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}, context: context}
 }
 
 // So is a convenience method for reporting assertion failure messages,
@@ -84,7 +91,12 @@ func (self *Fixture) Errorf(format string, args ...interface{}) {
 
 func (self *Fixture) reportFailure(failure string) {
 	_, file, line, _ := runtime.Caller(2) // 0: reportFailure + 1: Error/Errorf/So/Ok + 2: func Test...
-	self.log.WriteString(fmt.Sprintf("%s:%d\n", file, line))
+	self.log.WriteString(fmt.Sprintf("%s\n", file))
+	if self.verbose {
+		self.log.WriteString(FormatFailureContext(line, self.context))
+	} else {
+		self.log.WriteString(FormatFailureLine(line, self.context))
+	}
 	self.Print(failure + "\n\n")
 }
 
