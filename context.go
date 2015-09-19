@@ -19,7 +19,6 @@ func FormatFailureContext(lineNumber int, code string) string {
 	}
 	for x := lineNumber - 1; x > 0; x-- {
 		line := lines[x]
-		fmt.Println("L:", line)
 		if strings.HasPrefix(line, "func (") {
 			failure = insert(failure, format(line, strconv.Itoa(x)))
 			break
