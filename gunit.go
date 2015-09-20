@@ -161,3 +161,16 @@ func exit(message string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, message, args...)
 	os.Exit(1)
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+func init() {
+	working, err := os.Getwd()
+	if err != nil {
+		exit("Could not resolve working directory. Error: %s\n", err)
+	}
+	_, err = os.Stat(filepath.Join(working, generate.GeneratedFilename))
+	if err != nil {
+		exit("Having written one or more gunit Fixtures in this package, please run `gunit` and try again.\n")
+	}
+}
