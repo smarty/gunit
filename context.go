@@ -8,10 +8,15 @@ import (
 
 func FormatFailureContext(lineNumber int, code string) string {
 	lines := strings.Split(code, "\n")
+	if len(lines) == 0 || lineNumber >= len(lines) {
+		return ""
+	}
+
 	failure := []string{formatFailure(lines[lineNumber], lineNumber)}
 	if len(lines) > lineNumber {
 		failure = append(failure, format(lines[lineNumber+1], strconv.Itoa(lineNumber+1)))
 	}
+
 	for x := lineNumber - 1; x > 0; x-- {
 		line := lines[x]
 		if strings.HasPrefix(line, "func (") {
