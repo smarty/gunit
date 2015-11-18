@@ -91,7 +91,7 @@ func (self *Fixture) Errorf(format string, args ...interface{}) {
 
 func (self *Fixture) reportFailure(failure string) {
 	_, file, line, _ := runtime.Caller(2) // 0: reportFailure + 1: Error/Errorf/So/Ok + 2: func Test...
-	self.log.WriteString(fmt.Sprintf("%s\n", file))
+	self.log.WriteString(fmt.Sprintf("%s:%d\n", file, line))
 	self.log.WriteString(FormatFailureContext(line, self.context))
 	self.Print(failure + "\n\n")
 }
