@@ -5,6 +5,7 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"go/build"
 	"io/ioutil"
 	"log"
@@ -58,7 +59,7 @@ func parseFixtures(pkg *build.Package) []*parse.Fixture {
 	fixtures := []*parse.Fixture{}
 	badFixtures := new(bytes.Buffer)
 
-	for _, filename := range pkg.TestGoFiles {
+	for _, filename := range append(pkg.TestGoFiles, pkg.XTestGoFiles...) {
 		if filename == generate.GeneratedFilename {
 			continue
 		}
@@ -95,7 +96,12 @@ func generateTestFileContents(pkg *build.Package, fixtures []*parse.Fixture) []b
 	code, err := generate.CodeListing(pkg.Dir)
 	fatal(err)
 
-	generated, err := generate.TestFile(pkg.Name, fixtures, checksum, code)
+	importName := pkg.Name
+	if len(pkg.XTestGoFiles) > 0 {
+		importName = fmt.Sprintf("%s_test", importName)
+	}
+
+	generated, err := generate.TestFile(importName, fixtures, checksum, code)
 	fatal(err)
 
 	return generated
