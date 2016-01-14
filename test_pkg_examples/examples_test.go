@@ -1,6 +1,6 @@
 package pkg_example_test
 
-//go:generate gunit -suffix 1
+//go:generate gunit
 
 import (
 	"github.com/smartystreets/assertions/should"
