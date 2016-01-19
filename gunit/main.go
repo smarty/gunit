@@ -92,10 +92,7 @@ func generateTestFileContents(pkg *build.Package, fixtures []*parse.Fixture) []b
 	checksum, err := generate.Checksum(pkg.Dir)
 	fatal(err)
 
-	code, err := generate.CodeListing(pkg.Dir)
-	fatal(err)
-
-	generated, err := generate.TestFile(pkg.Name, fixtures, checksum, code)
+	generated, err := generate.TestFile(pkg.Name, fixtures, checksum)
 	fatal(err)
 
 	return generated

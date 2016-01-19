@@ -204,7 +204,7 @@ func Setup(verbose bool) *FixtureTestState {
 	this := &FixtureTestState{}
 	this.out = &bytes.Buffer{}
 	this.fakeT = &FakeTT{log: this.out}
-	this.fixture = NewFixture(this.fakeT, verbose, "")
+	this.fixture = NewFixture(this.fakeT, verbose)
 	return this
 }
 

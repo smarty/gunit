@@ -15,7 +15,7 @@ func Test_{{$.StructName}}__{{sentence .Name}}(t *testing.T) { {{if .Skipped}}
 	}
 	{{end}}
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose(), __code__["{{$.Filename}}"])
+	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &{{$.StructName}}{Fixture: fixture}{{if $.TestTeardownName}}
 	defer test.{{$.TestTeardownName}}(){{end}}{{if $.TestSetupName}}
@@ -49,8 +49,6 @@ import (
 `
 
 const footer = `
-
-var __code__ = %#v
 
 func init() {
 	gunit.Validate("%s")
