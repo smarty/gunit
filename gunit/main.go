@@ -51,7 +51,17 @@ func resolveImportPath() string {
 	working, err := os.Getwd()
 	fatal(err)
 
-	return strings.Replace(working, path.Join(gopath, "src")+"/", "", 1)
+	dirs := strings.Split(gopath, ":")
+	for _, dir := range dirs {
+		srcDir := path.Join(dir, "src") + "/"
+		packageName := strings.Replace(working, srcDir, "", 1)
+		if packageName != working {
+			return packageName
+		}
+	}
+
+	logger.Fatal("Cannot determine package name from current directory; must run gunit from within a package")
+	panic("Not reachable")
 }
 
 func parseFixtures(pkg *build.Package) []*parse.Fixture {
