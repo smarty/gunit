@@ -191,6 +191,20 @@ func TestPanicIsRecoveredAndPrintedByFinalize(t *testing.T) {
 	}
 }
 
+func TestFailed(t *testing.T) {
+	test := Setup(false)
+
+	if test.fixture.Failed() {
+		t.Error("Expected Failed() to return false, got true instead.")
+	}
+
+	test.fixture.Error("HI")
+
+	if !test.fixture.Failed() {
+		t.Error("Expected Failed() to return true, got false instead.")
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 type FixtureTestState struct {

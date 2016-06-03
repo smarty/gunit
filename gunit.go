@@ -119,6 +119,11 @@ func (self *Fixture) Finalize() {
 	}
 }
 
+// Failed is analogous to *testing.T.Failed().
+func (self *Fixture) Failed() bool {
+	return self.t.Failed()
+}
+
 func (self *Fixture) recover(r interface{}) {
 	self.Println("X PANIC:", r)
 	buffer := make([]byte, 1024*16)
