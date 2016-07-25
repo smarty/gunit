@@ -55,6 +55,7 @@ import (
 ///////////////////////////////////////////////////////////////////////////////
 
 func Test_A(t *testing.T) {
+	t.Parallel()
 	t.Skip("Fixture 'A' has no test cases.")
 }
 
@@ -126,6 +127,7 @@ var testFunction_TestCases = []TestFunction_TestCase{
 		expected: `
 
 func Test_A(t *testing.T) {
+	t.Parallel()
 	t.Skip("Fixture 'A' has no test cases.")
 }
 
@@ -278,10 +280,12 @@ func Test_E__TestE2(t *testing.T) {
 		},
 		expected: `
 func Test_I__TestI1(t *testing.T) {
+	t.Parallel()
 	t.SkipNow()
 }
 
 func Test_I__TestI2(t *testing.T) {
+	t.Parallel()
 	t.SkipNow()
 }
 `,
@@ -302,6 +306,7 @@ func Test_I__TestI2(t *testing.T) {
 		expected: `
 
 func Test_J__TestJ1(t *testing.T) {
+	t.Parallel()
 	t.SkipNow()
 }
 
@@ -331,12 +336,14 @@ func Test_J__TestJ2(t *testing.T) {
 		expected: `
 
 func Test_K__TestK1(t *testing.T) {
+	t.Parallel()
 	if testing.Short() {
 		t.SkipNow()
 	}
 }
 
 func Test_K__TestK2(t *testing.T) {
+	t.Parallel()
 	t.SkipNow()
 }
 `,
