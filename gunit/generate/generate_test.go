@@ -279,22 +279,10 @@ func Test_E__TestE2(t *testing.T) {
 		expected: `
 func Test_I__TestI1(t *testing.T) {
 	t.SkipNow()
-
-	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
-	defer fixture.Finalize()
-	test := &I{Fixture: fixture}
-	test.TestI1()
 }
 
 func Test_I__TestI2(t *testing.T) {
 	t.SkipNow()
-
-	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
-	defer fixture.Finalize()
-	test := &I{Fixture: fixture}
-	test.TestI2()
 }
 `,
 		description: "Skipping a fixture marks all test cases as skipped",
@@ -315,12 +303,6 @@ func Test_I__TestI2(t *testing.T) {
 
 func Test_J__TestJ1(t *testing.T) {
 	t.SkipNow()
-
-	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
-	defer fixture.Finalize()
-	test := &J{Fixture: fixture}
-	test.TestJ1()
 }
 
 func Test_J__TestJ2(t *testing.T) {
@@ -352,22 +334,10 @@ func Test_K__TestK1(t *testing.T) {
 	if testing.Short() {
 		t.SkipNow()
 	}
-
-	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
-	defer fixture.Finalize()
-	test := &K{Fixture: fixture}
-	test.TestK1()
 }
 
 func Test_K__TestK2(t *testing.T) {
 	t.SkipNow()
-
-	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
-	defer fixture.Finalize()
-	test := &K{Fixture: fixture}
-	test.TestK2()
 }
 `,
 		description: "Skipped long-running test case alongside non-skipped long-running test case",
