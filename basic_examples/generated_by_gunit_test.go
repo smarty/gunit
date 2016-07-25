@@ -12,7 +12,7 @@ import (
 
 ///////////////////////////////////////////////////////////////////////////////
 
-func Test_ExampleFixture__with_assertions(t *testing.T) {
+func Test_ExampleFixture__TestWithAssertions(t *testing.T) {
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
@@ -22,8 +22,8 @@ func Test_ExampleFixture__with_assertions(t *testing.T) {
 	test.TestWithAssertions()
 }
 
-func Test_ExampleFixture__skip_with_nothing(t *testing.T) {
-	t.Skip("Skipping test case: 'SkipTestWithNothing'")
+func Test_ExampleFixture__SkipTestWithNothing(t *testing.T) {
+	t.SkipNow()
 
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())

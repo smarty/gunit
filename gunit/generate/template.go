@@ -8,10 +8,10 @@ const GeneratedFilename = "generated_by_gunit_test.go"
 
 var rawTestFunction = strings.TrimSpace(`
 {{range .TestCases}}
-func Test_{{$.StructName}}__{{sentence .Name}}(t *testing.T) { {{if .Skipped}}
-	t.Skip("Skipping test case: '{{.Name}}'")
+func Test_{{$.StructName}}__{{.Name}}(t *testing.T) { {{if .Skipped}}
+	t.SkipNow()
 	{{else if .LongRunning}}if testing.Short() {
-		t.Skip("Skipping long-running test case.")
+		t.SkipNow()
 	}
 	{{end}}
 	t.Parallel()

@@ -36,6 +36,4 @@ func TestCases(fixture *parse.Fixture) ([]byte, error) {
 	return format.Source(writer.Bytes())
 }
 
-var testFixtureTemplate = template.Must(template.
-	New("testFunction").Funcs(map[string]interface{}{"sentence": toSentence}).
-	Parse(rawTestFunction))
+var testFixtureTemplate = template.Must(template.New("testFunction").Parse(rawTestFunction))

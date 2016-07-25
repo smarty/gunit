@@ -143,7 +143,7 @@ func Test_A(t *testing.T) {
 		},
 		expected: `
 
-func Test_B__b_1(t *testing.T) {
+func Test_B__TestB1(t *testing.T) {
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
@@ -169,7 +169,7 @@ func Test_B__b_1(t *testing.T) {
 		},
 		expected: `
 
-func Test_C__c_1(t *testing.T) {
+func Test_C__TestC1(t *testing.T) {
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
@@ -178,7 +178,7 @@ func Test_C__c_1(t *testing.T) {
 	test.TestC1()
 }
 
-func Test_C__c_2(t *testing.T) {
+func Test_C__TestC2(t *testing.T) {
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
@@ -204,7 +204,7 @@ func Test_C__c_2(t *testing.T) {
 		},
 		expected: `
 
-func Test_D__d_1(t *testing.T) {
+func Test_D__TestD1(t *testing.T) {
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
@@ -213,7 +213,7 @@ func Test_D__d_1(t *testing.T) {
 	test.TestD1()
 }
 
-func Test_D__d_2(t *testing.T) {
+func Test_D__TestD2(t *testing.T) {
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
@@ -241,7 +241,7 @@ func Test_D__d_2(t *testing.T) {
 		},
 		expected: `
 
-func Test_E__e_1(t *testing.T) {
+func Test_E__TestE1(t *testing.T) {
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
@@ -251,7 +251,7 @@ func Test_E__e_1(t *testing.T) {
 	test.TestE1()
 }
 
-func Test_E__e_2(t *testing.T) {
+func Test_E__TestE2(t *testing.T) {
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
@@ -277,8 +277,8 @@ func Test_E__e_2(t *testing.T) {
 			},
 		},
 		expected: `
-func Test_I__i_1(t *testing.T) {
-	t.Skip("Skipping test case: 'TestI1'")
+func Test_I__TestI1(t *testing.T) {
+	t.SkipNow()
 
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
@@ -287,8 +287,8 @@ func Test_I__i_1(t *testing.T) {
 	test.TestI1()
 }
 
-func Test_I__i_2(t *testing.T) {
-	t.Skip("Skipping test case: 'TestI2'")
+func Test_I__TestI2(t *testing.T) {
+	t.SkipNow()
 
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
@@ -313,8 +313,8 @@ func Test_I__i_2(t *testing.T) {
 		},
 		expected: `
 
-func Test_J__j_1(t *testing.T) {
-	t.Skip("Skipping test case: 'TestJ1'")
+func Test_J__TestJ1(t *testing.T) {
+	t.SkipNow()
 
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
@@ -323,7 +323,7 @@ func Test_J__j_1(t *testing.T) {
 	test.TestJ1()
 }
 
-func Test_J__j_2(t *testing.T) {
+func Test_J__TestJ2(t *testing.T) {
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
@@ -348,9 +348,9 @@ func Test_J__j_2(t *testing.T) {
 		},
 		expected: `
 
-func Test_K__k_1(t *testing.T) {
+func Test_K__TestK1(t *testing.T) {
 	if testing.Short() {
-		t.Skip("Skipping long-running test case.")
+		t.SkipNow()
 	}
 
 	t.Parallel()
@@ -360,8 +360,8 @@ func Test_K__k_1(t *testing.T) {
 	test.TestK1()
 }
 
-func Test_K__k_2(t *testing.T) {
-	t.Skip("Skipping test case: 'TestK2'")
+func Test_K__TestK2(t *testing.T) {
+	t.SkipNow()
 
 	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
