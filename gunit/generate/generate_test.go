@@ -83,7 +83,7 @@ func TestGenerateTestCases(t *testing.T) {
 			t.Error("Expected a parse error but got nil.")
 			continue
 		} else if err != nil && test.err {
-			t.Log("✔ " + test.description)
+			t.Log("OK: " + test.description)
 			continue
 		}
 
@@ -92,7 +92,7 @@ func TestGenerateTestCases(t *testing.T) {
 		if actual != expected {
 			t.Errorf("FAILED: '%s'\nExpected:\n%s\n\nActual:\n%s", test.description, expected, actual)
 		} else {
-			t.Log("✔ " + test.description)
+			t.Log("OK: " + test.description)
 		}
 	}
 }
