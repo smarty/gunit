@@ -23,15 +23,8 @@ func Test_ExampleFixture__TestWithAssertions(t *testing.T) {
 }
 
 func Test_ExampleFixture__SkipTestWithNothing(t *testing.T) {
-	t.SkipNow()
-
 	t.Parallel()
-	fixture := gunit.NewFixture(t, testing.Verbose())
-	defer fixture.Finalize()
-	test := &ExampleFixture{Fixture: fixture}
-	defer test.TeardownStuff()
-	test.SetupStuff()
-	test.SkipTestWithNothing()
+	t.SkipNow()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
