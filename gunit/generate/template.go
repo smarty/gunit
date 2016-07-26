@@ -13,7 +13,7 @@ func Test_{{$.StructName}}__{{.Name}}(t *testing.T) {
 	t.SkipNow(){{else if .LongRunning}}
 	if testing.Short() {
 		t.SkipNow()
-	}{{else}}
+	}{{end}}{{if not .Skipped}}
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &{{$.StructName}}{Fixture: fixture}{{if $.TestTeardownName}}

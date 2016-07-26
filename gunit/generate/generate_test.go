@@ -340,6 +340,10 @@ func Test_K__TestK1(t *testing.T) {
 	if testing.Short() {
 		t.SkipNow()
 	}
+	fixture := gunit.NewFixture(t, testing.Verbose())
+	defer fixture.Finalize()
+	test := &K{Fixture: fixture}
+	test.TestK1()
 }
 
 func Test_K__TestK2(t *testing.T) {
