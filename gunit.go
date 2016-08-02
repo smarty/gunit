@@ -83,14 +83,15 @@ func (self *Fixture) Errorf(format string, args ...interface{}) {
 }
 
 func (self *Fixture) reportFailure(failure string) {
-	for x := maxStackDepth; x >= gunitBoundaryStackDepth; x-- {
+	for x := maxStackDepth; x >= 0; x-- {
 		_, file, line, ok := runtime.Caller(x)
 		if !ok { // stack frame still too high
 			continue
 		}
-		if strings.HasSuffix(file, "_test.go") {
-			self.log.WriteString(fmt.Sprintf("%s:%d\n", file, line))
+		if !strings.HasSuffix(file, "_test.go") {
+			continue
 		}
+		self.log.WriteString(fmt.Sprintf("%s:%d\n", x, file, line))
 	}
 	self.Print(failure + "\n\n")
 }
@@ -175,7 +176,4 @@ func init() {
 	}
 }
 
-const (
-	maxStackDepth           = 24
-	gunitBoundaryStackDepth = 3 // 0: reportFailure + 1: Error/Errorf/So/Ok + 2: func Test... (generated) + 3: func (f *Fixture) Test...
-)
+const maxStackDepth = 24
