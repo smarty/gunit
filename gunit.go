@@ -91,7 +91,7 @@ func (self *Fixture) reportFailure(failure string) {
 		if !strings.HasSuffix(file, "_test.go") {
 			continue
 		}
-		self.log.WriteString(fmt.Sprintf("%s:%d\n", x, file, line))
+		self.log.WriteString(fmt.Sprintf("%s:%d\n", file, line))
 	}
 	self.Print(failure + "\n\n")
 }
