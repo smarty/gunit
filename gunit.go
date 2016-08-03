@@ -165,5 +165,3 @@ func init() {
 		exit("Having written one or more gunit Fixtures in this package, please run `gunit` and try again.\n")
 	}
 }
-
-const maxStackDepth = 24

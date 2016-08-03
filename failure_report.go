@@ -68,3 +68,5 @@ func (this FailureReport) String() string {
 	fmt.Fprintf(buffer, this.Failure)
 	return buffer.String() + "\n\n"
 }
+
+const maxStackDepth = 24
