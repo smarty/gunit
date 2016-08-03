@@ -20,13 +20,10 @@ package gunit
 import (
 	"bytes"
 	"fmt"
-	"os"
-	"path/filepath"
 	"runtime"
 	"strings"
 
 	"github.com/smartystreets/assertions"
-	"github.com/smartystreets/gunit/gunit/generate"
 )
 
 // TT represents the functional subset from *testing.T needed by Fixture.
