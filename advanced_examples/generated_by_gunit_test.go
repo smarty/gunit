@@ -13,7 +13,6 @@ import (
 ///////////////////////////////////////////////////////////////////////////////
 
 func Test_BowlingGameScoringTests__TestAfterAllGutterBallsTheScoreShouldBeZero(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &BowlingGameScoringTests{Fixture: fixture}
@@ -22,7 +21,6 @@ func Test_BowlingGameScoringTests__TestAfterAllGutterBallsTheScoreShouldBeZero(t
 }
 
 func Test_BowlingGameScoringTests__TestAfterAllOnesTheScoreShouldBeTwenty(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &BowlingGameScoringTests{Fixture: fixture}
@@ -31,7 +29,6 @@ func Test_BowlingGameScoringTests__TestAfterAllOnesTheScoreShouldBeTwenty(t *tes
 }
 
 func Test_BowlingGameScoringTests__TestSpareReceivesSingleRollBonus(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &BowlingGameScoringTests{Fixture: fixture}
@@ -40,7 +37,6 @@ func Test_BowlingGameScoringTests__TestSpareReceivesSingleRollBonus(t *testing.T
 }
 
 func Test_BowlingGameScoringTests__TestStrikeRecievesDoubleRollBonus(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &BowlingGameScoringTests{Fixture: fixture}
@@ -49,7 +45,6 @@ func Test_BowlingGameScoringTests__TestStrikeRecievesDoubleRollBonus(t *testing.
 }
 
 func Test_BowlingGameScoringTests__TestPerfectGame(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &BowlingGameScoringTests{Fixture: fixture}
@@ -60,7 +55,6 @@ func Test_BowlingGameScoringTests__TestPerfectGame(t *testing.T) {
 ///////////////////////////////////////////////////////////////////////////////
 
 func Test_EnvironmentControllerFixture__TestEverythingTurnedOffAtStartup(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
@@ -69,7 +63,6 @@ func Test_EnvironmentControllerFixture__TestEverythingTurnedOffAtStartup(t *test
 }
 
 func Test_EnvironmentControllerFixture__TestEverythingOffWhenComfortable(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
@@ -78,7 +71,6 @@ func Test_EnvironmentControllerFixture__TestEverythingOffWhenComfortable(t *test
 }
 
 func Test_EnvironmentControllerFixture__TestCoolerAndBlowerWhenHot(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
@@ -87,7 +79,6 @@ func Test_EnvironmentControllerFixture__TestCoolerAndBlowerWhenHot(t *testing.T)
 }
 
 func Test_EnvironmentControllerFixture__TestHeaterAndBlowerWhenCold(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
@@ -96,7 +87,6 @@ func Test_EnvironmentControllerFixture__TestHeaterAndBlowerWhenCold(t *testing.T
 }
 
 func Test_EnvironmentControllerFixture__TestHighAlarmOnIfAtThreshold(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}
@@ -105,7 +95,6 @@ func Test_EnvironmentControllerFixture__TestHighAlarmOnIfAtThreshold(t *testing.
 }
 
 func Test_EnvironmentControllerFixture__TestLowAlarmOnIfAtThreshold(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &EnvironmentControllerFixture{Fixture: fixture}

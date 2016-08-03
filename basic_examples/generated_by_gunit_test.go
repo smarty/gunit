@@ -13,7 +13,6 @@ import (
 ///////////////////////////////////////////////////////////////////////////////
 
 func Test_ExampleFixture__TestWithAssertions(t *testing.T) {
-	t.Parallel()
 	fixture := gunit.NewFixture(t, testing.Verbose())
 	defer fixture.Finalize()
 	test := &ExampleFixture{Fixture: fixture}
@@ -23,7 +22,6 @@ func Test_ExampleFixture__TestWithAssertions(t *testing.T) {
 }
 
 func Test_ExampleFixture__SkipTestWithNothing(t *testing.T) {
-	t.Parallel()
 	t.SkipNow()
 }
 
