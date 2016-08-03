@@ -110,7 +110,7 @@ func (self *Fixture) Finalize() {
 	}
 
 	if self.t.Failed() || (self.verbose && self.log.Len() > 0) {
-		self.t.Log("\n" + self.log.String() + "\n")
+		self.t.Log("\n" + strings.TrimSpace(self.log.String()) + "\n")
 	}
 }
 
