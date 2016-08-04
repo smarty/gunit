@@ -32,6 +32,7 @@ type TT interface {
 	Fail()
 	Failed() bool
 	SkipNow()
+	Parallel()
 }
 
 // Fixture keeps track of test status (failed, passed, skipped) and
@@ -45,6 +46,11 @@ type Fixture struct {
 // NewFixture is called by generated code.
 func NewFixture(t TT, verbose bool) *Fixture {
 	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
+}
+
+// Parallel is analogous to *testing.T.Parallel.
+func (self *Fixture) Parallel() {
+	self.t.Parallel()
 }
 
 // So is a convenience method for reporting assertion failure messages,

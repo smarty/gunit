@@ -205,6 +205,21 @@ func TestFailed(t *testing.T) {
 	}
 }
 
+func TestNotParallel(t *testing.T) {
+	test := Setup(false)
+	if test.fakeT.parallel {
+		t.Error("Expected parallel to be unset.")
+	}
+}
+
+func TestParallel(t *testing.T) {
+	test := Setup(false)
+	test.fixture.Parallel()
+	if !test.fakeT.parallel {
+		t.Error("Expected parallel to be set.")
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 type FixtureTestState struct {
@@ -225,9 +240,10 @@ func Setup(verbose bool) *FixtureTestState {
 //////////////////////////////////////////////////////////////////////////////
 
 type FakeTT struct {
-	log     *bytes.Buffer
-	failed  bool
-	skipped bool
+	log      *bytes.Buffer
+	failed   bool
+	skipped  bool
+	parallel bool
 }
 
 func (self *FakeTT) Log(args ...interface{}) {
@@ -236,5 +252,6 @@ func (self *FakeTT) Log(args ...interface{}) {
 func (self *FakeTT) Fail()        { self.failed = true }
 func (self *FakeTT) Failed() bool { return self.failed }
 func (self *FakeTT) SkipNow()     { self.skipped = true }
+func (self *FakeTT) Parallel()    { self.parallel = true }
 
 //////////////////////////////////////////////////////////////////////////////
