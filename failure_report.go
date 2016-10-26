@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"runtime"
 	"strings"
-
-	"github.com/smartystreets/gunit/gunit/generate"
 )
 
 type FailureReport struct {
@@ -30,9 +28,6 @@ func (this *FailureReport) ScanStack() {
 			continue
 		}
 		if !strings.HasSuffix(file, "_test.go") {
-			continue
-		}
-		if strings.HasSuffix(file, generate.GeneratedFilename) {
 			continue
 		}
 		name := runtime.FuncForPC(pc).Name() // example: bitbucket.org/smartystreets/project/package.(*SomeFixture).TestSomething

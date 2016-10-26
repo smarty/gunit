@@ -1,11 +1,15 @@
 package examples
 
-//go:generate gunit
-
 import (
+	"testing"
+
 	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
 )
+
+func TestExample(t *testing.T) {
+	gunit.Run(new(ExampleFixture), t)
+}
 
 type ExampleFixture struct {
 	*gunit.Fixture // Required: Embedding this type is what makes the magic happen.
@@ -15,7 +19,7 @@ type ExampleFixture struct {
 
 func (self *ExampleFixture) SetupStuff() {
 	// This optional method will be executed before each "Test"
-	// method becuase it starts with "Setup".
+	// method because it starts with "Setup".
 }
 func (self *ExampleFixture) TeardownStuff() {
 	// This optional method will be executed after each "Test"
@@ -34,4 +38,8 @@ func (self *ExampleFixture) TestWithAssertions() {
 
 func (self *ExampleFixture) SkipTestWithNothing() {
 	// Because this method's name starts with 'Skip', this will be skipped in the generated code.
+}
+
+func (self *ExampleFixture) LongTest() {
+	// Because this method's name starts with 'Long', it will be skipped if the -short flag is passed to `go test`.
 }
