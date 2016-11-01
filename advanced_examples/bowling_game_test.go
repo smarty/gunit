@@ -1,11 +1,15 @@
 package examples
 
-//go:generate gunit
-
 import (
+	"testing"
+
 	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
 )
+
+func TestBowlingGameScoring(t *testing.T) {
+	gunit.Run(new(BowlingGameScoringTests), t)
+}
 
 type BowlingGameScoringTests struct {
 	*gunit.Fixture
@@ -35,7 +39,7 @@ func (self *BowlingGameScoringTests) TestSpareReceivesSingleRollBonus() {
 	self.So(self.game.Score(), should.Equal, 21)
 }
 
-func (self *BowlingGameScoringTests) TestStrikeRecievesDoubleRollBonus() {
+func (self *BowlingGameScoringTests) TestStrikeReceivesDoubleRollBonus() {
 	self.rollStrike()
 	self.game.Roll(4)
 	self.game.Roll(3)

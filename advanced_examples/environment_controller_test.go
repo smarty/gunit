@@ -1,9 +1,15 @@
 package examples
 
 import (
+	"testing"
+
 	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
 )
+
+func TestEnvironmentController(t *testing.T) {
+	gunit.Run(new(EnvironmentControllerFixture), t)
+}
 
 type EnvironmentControllerFixture struct {
 	*gunit.Fixture
