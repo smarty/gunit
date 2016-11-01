@@ -19,34 +19,34 @@ func NewFakeHardware() *FakeHVAC {
 	}
 }
 
-func (self *FakeHVAC) ActivateHeater()               { self.state["heater"] = true }
-func (self *FakeHVAC) ActivateBlower()               { self.state["blower"] = true }
-func (self *FakeHVAC) ActivateCooler()               { self.state["cooler"] = true }
-func (self *FakeHVAC) ActivateHighTemperatureAlarm() { self.state["high"] = true }
-func (self *FakeHVAC) ActivateLowTemperatureAlarm()  { self.state["low"] = true }
+func (this *FakeHVAC) ActivateHeater()               { this.state["heater"] = true }
+func (this *FakeHVAC) ActivateBlower()               { this.state["blower"] = true }
+func (this *FakeHVAC) ActivateCooler()               { this.state["cooler"] = true }
+func (this *FakeHVAC) ActivateHighTemperatureAlarm() { this.state["high"] = true }
+func (this *FakeHVAC) ActivateLowTemperatureAlarm()  { this.state["low"] = true }
 
-func (self *FakeHVAC) DeactivateHeater()               { self.state["heater"] = false }
-func (self *FakeHVAC) DeactivateBlower()               { self.state["blower"] = false }
-func (self *FakeHVAC) DeactivateCooler()               { self.state["cooler"] = false }
-func (self *FakeHVAC) DeactivateHighTemperatureAlarm() { self.state["high"] = false }
-func (self *FakeHVAC) DeactivateLowTemperatureAlarm()  { self.state["low"] = false }
+func (this *FakeHVAC) DeactivateHeater()               { this.state["heater"] = false }
+func (this *FakeHVAC) DeactivateBlower()               { this.state["blower"] = false }
+func (this *FakeHVAC) DeactivateCooler()               { this.state["cooler"] = false }
+func (this *FakeHVAC) DeactivateHighTemperatureAlarm() { this.state["high"] = false }
+func (this *FakeHVAC) DeactivateLowTemperatureAlarm()  { this.state["low"] = false }
 
-func (self *FakeHVAC) IsHeating() bool            { return self.state["heater"] }
-func (self *FakeHVAC) IsBlowing() bool            { return self.state["blower"] }
-func (self *FakeHVAC) IsCooling() bool            { return self.state["cooler"] }
-func (self *FakeHVAC) HighTemperatureAlarm() bool { return self.state["high"] }
-func (self *FakeHVAC) LowTemperatureAlarm() bool  { return self.state["low"] }
+func (this *FakeHVAC) IsHeating() bool            { return this.state["heater"] }
+func (this *FakeHVAC) IsBlowing() bool            { return this.state["blower"] }
+func (this *FakeHVAC) IsCooling() bool            { return this.state["cooler"] }
+func (this *FakeHVAC) HighTemperatureAlarm() bool { return this.state["high"] }
+func (this *FakeHVAC) LowTemperatureAlarm() bool  { return this.state["low"] }
 
-func (self *FakeHVAC) SetCurrentTemperature(value int) { self.temperature = value }
-func (self *FakeHVAC) CurrentTemperature() int         { return self.temperature }
+func (this *FakeHVAC) SetCurrentTemperature(value int) { this.temperature = value }
+func (this *FakeHVAC) CurrentTemperature() int         { return this.temperature }
 
 // String returns the status of each hardware component encoded in a single space-delimited string.
 // UPPERCASE components are activated.
 // lowercase components are deactivated.
-func (self *FakeHVAC) String() string {
+func (this *FakeHVAC) String() string {
 	current := []string{"heater", "blower", "cooler", "low", "high"}
 	for i, component := range current {
-		if self.state[component] {
+		if this.state[component] {
 			current[i] = strings.ToUpper(current[i])
 		}
 	}

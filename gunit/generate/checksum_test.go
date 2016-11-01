@@ -43,9 +43,9 @@ func NewFakeFile(name string, size int64, mode os.FileMode, modified time.Time, 
 	}
 }
 
-func (self *FakeFile) Name() string       { return self.name }
-func (self *FakeFile) Size() int64        { return self.size }
-func (self *FakeFile) ModTime() time.Time { return self.modified }
-func (self *FakeFile) Mode() os.FileMode  { return self.mode }
-func (self *FakeFile) IsDir() bool        { return self.isDir }
-func (self *FakeFile) Sys() interface{}   { return self }
+func (this *FakeFile) Name() string       { return this.name }
+func (this *FakeFile) Size() int64        { return this.size }
+func (this *FakeFile) ModTime() time.Time { return this.modified }
+func (this *FakeFile) Mode() os.FileMode  { return this.mode }
+func (this *FakeFile) IsDir() bool        { return this.isDir }
+func (this *FakeFile) Sys() interface{}   { return this }

@@ -17,71 +17,71 @@ type EnvironmentControllerFixture struct {
 	controller *EnvironmentController
 }
 
-func (self *EnvironmentControllerFixture) Setup() {
-	self.hardware = NewFakeHardware()
-	self.controller = NewController(self.hardware)
+func (this *EnvironmentControllerFixture) Setup() {
+	this.hardware = NewFakeHardware()
+	this.controller = NewController(this.hardware)
 }
 
-func (self *EnvironmentControllerFixture) TestEverythingTurnedOffAtStartup() {
-	self.activateAllHardwareComponents()
-	self.controller = NewController(self.hardware)
-	self.assertAllHardwareComponentsAreDeactivated()
+func (this *EnvironmentControllerFixture) TestEverythingTurnedOffAtStartup() {
+	this.activateAllHardwareComponents()
+	this.controller = NewController(this.hardware)
+	this.assertAllHardwareComponentsAreDeactivated()
 }
 
-func (self *EnvironmentControllerFixture) TestEverythingOffWhenComfortable() {
-	self.setupComfortableEnvironment()
-	self.assertAllHardwareComponentsAreDeactivated()
+func (this *EnvironmentControllerFixture) TestEverythingOffWhenComfortable() {
+	this.setupComfortableEnvironment()
+	this.assertAllHardwareComponentsAreDeactivated()
 }
 
-func (self *EnvironmentControllerFixture) TestCoolerAndBlowerWhenHot() {
-	self.setupHotEnvironment()
-	self.So(self.hardware.String(), should.Equal, "heater BLOWER COOLER low high")
+func (this *EnvironmentControllerFixture) TestCoolerAndBlowerWhenHot() {
+	this.setupHotEnvironment()
+	this.So(this.hardware.String(), should.Equal, "heater BLOWER COOLER low high")
 }
 
-func (self *EnvironmentControllerFixture) TestHeaterAndBlowerWhenCold() {
-	self.setupColdEnvironment()
-	self.So(self.hardware.String(), should.Equal, "HEATER BLOWER cooler low high")
+func (this *EnvironmentControllerFixture) TestHeaterAndBlowerWhenCold() {
+	this.setupColdEnvironment()
+	this.So(this.hardware.String(), should.Equal, "HEATER BLOWER cooler low high")
 }
 
-func (self *EnvironmentControllerFixture) TestHighAlarmOnIfAtThreshold() {
-	self.setupBlazingEnvironment()
-	self.So(self.hardware.String(), should.Equal, "heater BLOWER COOLER low HIGH")
+func (this *EnvironmentControllerFixture) TestHighAlarmOnIfAtThreshold() {
+	this.setupBlazingEnvironment()
+	this.So(this.hardware.String(), should.Equal, "heater BLOWER COOLER low HIGH")
 }
 
-func (self *EnvironmentControllerFixture) TestLowAlarmOnIfAtThreshold() {
-	self.setupFreezingEnvironment()
-	self.So(self.hardware.String(), should.Equal, "HEATER BLOWER cooler LOW high")
+func (this *EnvironmentControllerFixture) TestLowAlarmOnIfAtThreshold() {
+	this.setupFreezingEnvironment()
+	this.So(this.hardware.String(), should.Equal, "HEATER BLOWER cooler LOW high")
 }
 
-func (self *EnvironmentControllerFixture) setupComfortableEnvironment() {
-	self.hardware.SetCurrentTemperature(COMFORTABLE)
-	self.controller.Regulate()
+func (this *EnvironmentControllerFixture) setupComfortableEnvironment() {
+	this.hardware.SetCurrentTemperature(COMFORTABLE)
+	this.controller.Regulate()
 }
-func (self *EnvironmentControllerFixture) setupHotEnvironment() {
-	self.hardware.SetCurrentTemperature(TOO_HOT)
-	self.controller.Regulate()
+func (this *EnvironmentControllerFixture) setupHotEnvironment() {
+	this.hardware.SetCurrentTemperature(TOO_HOT)
+	this.controller.Regulate()
 }
-func (self *EnvironmentControllerFixture) setupBlazingEnvironment() {
-	self.hardware.SetCurrentTemperature(WAY_TOO_HOT)
-	self.controller.Regulate()
+func (this *EnvironmentControllerFixture) setupBlazingEnvironment() {
+	this.hardware.SetCurrentTemperature(WAY_TOO_HOT)
+	this.controller.Regulate()
 }
-func (self *EnvironmentControllerFixture) setupColdEnvironment() {
-	self.hardware.SetCurrentTemperature(TOO_COLD)
-	self.controller.Regulate()
+func (this *EnvironmentControllerFixture) setupColdEnvironment() {
+	this.hardware.SetCurrentTemperature(TOO_COLD)
+	this.controller.Regulate()
 }
-func (self *EnvironmentControllerFixture) setupFreezingEnvironment() {
-	self.hardware.SetCurrentTemperature(WAY_TOO_COLD)
-	self.controller.Regulate()
-}
-
-func (self *EnvironmentControllerFixture) activateAllHardwareComponents() {
-	self.hardware.ActivateBlower()
-	self.hardware.ActivateHeater()
-	self.hardware.ActivateCooler()
-	self.hardware.ActivateHighTemperatureAlarm()
-	self.hardware.ActivateLowTemperatureAlarm()
+func (this *EnvironmentControllerFixture) setupFreezingEnvironment() {
+	this.hardware.SetCurrentTemperature(WAY_TOO_COLD)
+	this.controller.Regulate()
 }
 
-func (self *EnvironmentControllerFixture) assertAllHardwareComponentsAreDeactivated() {
-	self.So(self.hardware.String(), should.Equal, "heater blower cooler low high")
+func (this *EnvironmentControllerFixture) activateAllHardwareComponents() {
+	this.hardware.ActivateBlower()
+	this.hardware.ActivateHeater()
+	this.hardware.ActivateCooler()
+	this.hardware.ActivateHighTemperatureAlarm()
+	this.hardware.ActivateLowTemperatureAlarm()
+}
+
+func (this *EnvironmentControllerFixture) assertAllHardwareComponentsAreDeactivated() {
+	this.So(this.hardware.String(), should.Equal, "heater blower cooler low high")
 }

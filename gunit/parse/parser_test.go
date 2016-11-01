@@ -3,7 +3,8 @@ package parse
 import (
 	"testing"
 
-	. "github.com/smartystreets/assertions"
+	"github.com/smartystreets/assertions"
+	"github.com/smartystreets/assertions/should"
 )
 
 //////////////////////////////////////////////////////////////////////////////
@@ -39,46 +40,46 @@ type FixtureParsingFixture struct {
 	fixtures   []*Fixture
 }
 
-func (self *FixtureParsingFixture) ParseFixtures() {
-	self.fixtures, self.parseError = Fixtures(self.input)
+func (this *FixtureParsingFixture) ParseFixtures() {
+	this.fixtures, this.parseError = Fixtures(this.input)
 }
 
-func (self *FixtureParsingFixture) AssertFixturesParsedAccuratelyAndCompletely() {
-	self.assertFileWasReadWithoutError()
-	self.assertFileWasParsedWithoutError()
-	self.assertAllFixturesParsed()
-	self.assertParsedFixturesAreCorrect()
+func (this *FixtureParsingFixture) AssertFixturesParsedAccuratelyAndCompletely() {
+	this.assertFileWasReadWithoutError()
+	this.assertFileWasParsedWithoutError()
+	this.assertAllFixturesParsed()
+	this.assertParsedFixturesAreCorrect()
 }
-func (self *FixtureParsingFixture) assertFileWasReadWithoutError() {
-	if self.readError != nil {
-		self.t.Error("Problem: cound't read the input file:", self.readError)
-		self.t.FailNow()
+func (this *FixtureParsingFixture) assertFileWasReadWithoutError() {
+	if this.readError != nil {
+		this.t.Error("Problem: cound't read the input file:", this.readError)
+		this.t.FailNow()
 	}
 }
-func (self *FixtureParsingFixture) assertFileWasParsedWithoutError() {
-	if self.parseError != nil {
-		self.t.Error("Problem: unexpected parsing error: ", self.parseError)
-		self.t.FailNow()
+func (this *FixtureParsingFixture) assertFileWasParsedWithoutError() {
+	if this.parseError != nil {
+		this.t.Error("Problem: unexpected parsing error: ", this.parseError)
+		this.t.FailNow()
 	}
 }
-func (self *FixtureParsingFixture) assertAllFixturesParsed() {
-	if len(self.fixtures) != len(expected) {
-		self.t.Logf("Problem: Got back the wrong number of fixtures. Expected: %d Got: %d", len(expected), len(self.fixtures))
-		self.t.FailNow()
+func (this *FixtureParsingFixture) assertAllFixturesParsed() {
+	if len(this.fixtures) != len(expected) {
+		this.t.Logf("Problem: Got back the wrong number of fixtures. Expected: %d Got: %d", len(expected), len(this.fixtures))
+		this.t.FailNow()
 	}
 }
-func (self *FixtureParsingFixture) assertParsedFixturesAreCorrect() {
+func (this *FixtureParsingFixture) assertParsedFixturesAreCorrect() {
 	for x := 0; x < len(expected); x++ {
-		key := self.fixtures[x].StructName
-		if ok, message := So(self.fixtures[x], ShouldResemble, expected[key]); !ok {
-			self.t.Errorf("Comparison failure for record: %d\n%s", x, message)
+		key := this.fixtures[x].StructName
+		if ok, message := assertions.So(this.fixtures[x], should.Resemble, expected[key]); !ok {
+			this.t.Errorf("Comparison failure for record: %d\n%s", x, message)
 		}
 	}
 }
 
-func (self *FixtureParsingFixture) AssertErrorWasReturned() {
-	if self.parseError == nil {
-		self.t.Error("Expected an error, but got nil instead")
+func (this *FixtureParsingFixture) AssertErrorWasReturned() {
+	if this.parseError == nil {
+		this.t.Error("Expected an error, but got nil instead")
 	}
 }
 

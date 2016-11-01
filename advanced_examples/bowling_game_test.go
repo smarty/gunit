@@ -17,50 +17,50 @@ type BowlingGameScoringTests struct {
 	game *Game
 }
 
-func (self *BowlingGameScoringTests) Setup() {
-	self.game = NewGame()
+func (this *BowlingGameScoringTests) Setup() {
+	this.game = NewGame()
 }
 
-func (self *BowlingGameScoringTests) TestAfterAllGutterBallsTheScoreShouldBeZero() {
-	self.rollMany(20, 0)
-	self.So(self.game.Score(), should.Equal, 0)
+func (this *BowlingGameScoringTests) TestAfterAllGutterBallsTheScoreShouldBeZero() {
+	this.rollMany(20, 0)
+	this.So(this.game.Score(), should.Equal, 0)
 }
 
-func (self *BowlingGameScoringTests) TestAfterAllOnesTheScoreShouldBeTwenty() {
-	self.rollMany(20, 1)
-	self.So(self.game.Score(), should.Equal, 20)
+func (this *BowlingGameScoringTests) TestAfterAllOnesTheScoreShouldBeTwenty() {
+	this.rollMany(20, 1)
+	this.So(this.game.Score(), should.Equal, 20)
 }
 
-func (self *BowlingGameScoringTests) TestSpareReceivesSingleRollBonus() {
-	self.rollSpare()
-	self.game.Roll(4)
-	self.game.Roll(3)
-	self.rollMany(16, 0)
-	self.So(self.game.Score(), should.Equal, 21)
+func (this *BowlingGameScoringTests) TestSpareReceivesSingleRollBonus() {
+	this.rollSpare()
+	this.game.Roll(4)
+	this.game.Roll(3)
+	this.rollMany(16, 0)
+	this.So(this.game.Score(), should.Equal, 21)
 }
 
-func (self *BowlingGameScoringTests) TestStrikeReceivesDoubleRollBonus() {
-	self.rollStrike()
-	self.game.Roll(4)
-	self.game.Roll(3)
-	self.rollMany(16, 0)
-	self.So(self.game.Score(), should.Equal, 24)
+func (this *BowlingGameScoringTests) TestStrikeReceivesDoubleRollBonus() {
+	this.rollStrike()
+	this.game.Roll(4)
+	this.game.Roll(3)
+	this.rollMany(16, 0)
+	this.So(this.game.Score(), should.Equal, 24)
 }
 
-func (self *BowlingGameScoringTests) TestPerfectGame() {
-	self.rollMany(12, 10)
-	self.So(self.game.Score(), should.Equal, 300)
+func (this *BowlingGameScoringTests) TestPerfectGame() {
+	this.rollMany(12, 10)
+	this.So(this.game.Score(), should.Equal, 300)
 }
 
-func (self *BowlingGameScoringTests) rollMany(times, pins int) {
+func (this *BowlingGameScoringTests) rollMany(times, pins int) {
 	for x := 0; x < times; x++ {
-		self.game.Roll(pins)
+		this.game.Roll(pins)
 	}
 }
-func (self *BowlingGameScoringTests) rollSpare() {
-	self.game.Roll(5)
-	self.game.Roll(5)
+func (this *BowlingGameScoringTests) rollSpare() {
+	this.game.Roll(5)
+	this.game.Roll(5)
 }
-func (self *BowlingGameScoringTests) rollStrike() {
-	self.game.Roll(10)
+func (this *BowlingGameScoringTests) rollStrike() {
+	this.game.Roll(10)
 }

@@ -14,28 +14,28 @@ func NewFixtureCollector() *FixtureCollector {
 	}
 }
 
-func (self *FixtureCollector) Collect(file *ast.File) map[string]*Fixture {
-	ast.Walk(self, file) // Calls self.Visit(...) recursively which populates self.fixtures
-	return self.fixtures
+func (this *FixtureCollector) Collect(file *ast.File) map[string]*Fixture {
+	ast.Walk(this, file) // Calls this.Visit(...) recursively which populates this.fixtures
+	return this.fixtures
 }
 
-func (self *FixtureCollector) Visit(node ast.Node) ast.Visitor {
+func (this *FixtureCollector) Visit(node ast.Node) ast.Visitor {
 	switch t := node.(type) {
 	case *ast.TypeSpec:
 		name := t.Name.Name
-		self.candidates[name] = &Fixture{StructName: name}
-		return &FixtureValidator{Parent: self, FixtureName: name}
+		this.candidates[name] = &Fixture{StructName: name}
+		return &FixtureValidator{Parent: this, FixtureName: name}
 	default:
-		return self
+		return this
 	}
 }
 
-func (self *FixtureCollector) Validate(fixture string) {
-	self.fixtures[fixture] = self.candidates[fixture]
-	delete(self.candidates, fixture)
+func (this *FixtureCollector) Validate(fixture string) {
+	this.fixtures[fixture] = this.candidates[fixture]
+	delete(this.candidates, fixture)
 }
 
-func (self *FixtureCollector) Invalidate(fixture string) {
-	self.candidates[fixture].InvalidNonPointer = true
-	self.Validate(fixture)
+func (this *FixtureCollector) Invalidate(fixture string) {
+	this.candidates[fixture].InvalidNonPointer = true
+	this.Validate(fixture)
 }

@@ -50,87 +50,87 @@ func NewFixture(t TT, verbose bool) *Fixture {
 }
 
 // Parallel is analogous to *testing.T.Parallel.
-func (self *Fixture) Parallel() {
-	self.t.Parallel()
+func (this *Fixture) Parallel() {
+	this.t.Parallel()
 }
 
 // So is a convenience method for reporting assertion failure messages,
 // say from the assertion functions found in github.com/smartystreets/assertions/should.
-// Example: self.So(actual, should.Equal, expected)
-func (self *Fixture) So(actual interface{}, assert func(actual interface{}, expected ...interface{}) string, expected ...interface{}) bool {
+// Example: this.So(actual, should.Equal, expected)
+func (this *Fixture) So(actual interface{}, assert func(actual interface{}, expected ...interface{}) string, expected ...interface{}) bool {
 	ok, failure := assertions.So(actual, assert, expected...)
 	if !ok {
-		self.t.Fail()
-		self.reportFailure(failure)
+		this.t.Fail()
+		this.reportFailure(failure)
 	}
 	return ok
 }
 
-func (self *Fixture) Ok(condition bool, messages ...string) {
+func (this *Fixture) Ok(condition bool, messages ...string) {
 	if !condition {
 		if len(messages) == 0 {
 			messages = append(messages, "Expected condition to be true, was false instead.")
 		}
-		self.t.Fail()
-		self.reportFailure(strings.Join(messages, ", "))
+		this.t.Fail()
+		this.reportFailure(strings.Join(messages, ", "))
 	}
 }
 
-func (self *Fixture) Error(args ...interface{}) {
-	self.t.Fail()
-	self.reportFailure(fmt.Sprint(args...))
+func (this *Fixture) Error(args ...interface{}) {
+	this.t.Fail()
+	this.reportFailure(fmt.Sprint(args...))
 }
 
-func (self *Fixture) Errorf(format string, args ...interface{}) {
-	self.t.Fail()
-	self.reportFailure(fmt.Sprintf(format, args...))
+func (this *Fixture) Errorf(format string, args ...interface{}) {
+	this.t.Fail()
+	this.reportFailure(fmt.Sprintf(format, args...))
 }
 
-func (self *Fixture) reportFailure(failure string) {
-	self.Print(NewFailureReport(failure))
+func (this *Fixture) reportFailure(failure string) {
+	this.Print(NewFailureReport(failure))
 }
 
 // Print is analogous to fmt.Print and is ideal for printing in the middle of a test case.
-func (self *Fixture) Print(a ...interface{}) (n int, err error) {
-	return fmt.Fprint(self, a...)
+func (this *Fixture) Print(a ...interface{}) (n int, err error) {
+	return fmt.Fprint(this, a...)
 }
 
 // Printf is analogous to fmt.Printf and is ideal for printing in the middle of a test case.
-func (self *Fixture) Printf(format string, a ...interface{}) (n int, err error) {
-	return fmt.Fprintf(self, format, a...)
+func (this *Fixture) Printf(format string, a ...interface{}) (n int, err error) {
+	return fmt.Fprintf(this, format, a...)
 }
 
 // Println is analogous to fmt.Println and is ideal for printing in the middle of a test case.
-func (self *Fixture) Println(a ...interface{}) (n int, err error) {
-	return fmt.Fprintln(self, a...)
+func (this *Fixture) Println(a ...interface{}) (n int, err error) {
+	return fmt.Fprintln(this, a...)
 }
 
 // Write implements io.Writer.
-func (self *Fixture) Write(p []byte) (int, error) {
-	return self.log.Write(p)
+func (this *Fixture) Write(p []byte) (int, error) {
+	return this.log.Write(p)
 }
 
 // Finalize is called by generated code.
-func (self *Fixture) Finalize() {
+func (this *Fixture) Finalize() {
 	if r := recover(); r != nil {
-		self.recover(r)
+		this.recover(r)
 	}
 
-	if self.t.Failed() || (self.verbose && self.log.Len() > 0) {
-		self.t.Log("\n" + strings.TrimSpace(self.log.String()) + "\n")
+	if this.t.Failed() || (this.verbose && this.log.Len() > 0) {
+		this.t.Log("\n" + strings.TrimSpace(this.log.String()) + "\n")
 	}
 }
 
 // Failed is analogous to *testing.T.Failed().
-func (self *Fixture) Failed() bool {
-	return self.t.Failed()
+func (this *Fixture) Failed() bool {
+	return this.t.Failed()
 }
 
-func (self *Fixture) recover(r interface{}) {
-	self.Println("PANIC:", r)
+func (this *Fixture) recover(r interface{}) {
+	this.Println("PANIC:", r)
 	buffer := make([]byte, 1024*16)
 	runtime.Stack(buffer, false)
-	self.Println(strings.TrimSpace(string(buffer)))
-	self.Println("* (Additional tests may have been skipped as a result of the panic shown above.)")
-	self.t.Fail()
+	this.Println(strings.TrimSpace(string(buffer)))
+	this.Println("* (Additional tests may have been skipped as a result of the panic shown above.)")
+	this.t.Fail()
 }

@@ -7,26 +7,26 @@ type FixtureValidator struct {
 	FixtureName string
 }
 
-func (self *FixtureValidator) Visit(node ast.Node) ast.Visitor {
+func (this *FixtureValidator) Visit(node ast.Node) ast.Visitor {
 	// We start at a TypeSpec and look for an embedded pointer field: `*gunit.Fixture`.
 	field, isField := node.(*ast.Field)
 	if !isField {
-		return self
+		return this
 	}
 	pointer, isPointer := field.Type.(*ast.StarExpr)
 	if !isPointer {
-		return &NonPointerFixtureValidator{Parent: self.Parent, FixtureName: self.FixtureName}
+		return &NonPointerFixtureValidator{Parent: this.Parent, FixtureName: this.FixtureName}
 	}
 
 	selector, isSelector := pointer.X.(*ast.SelectorExpr)
 	if !isSelector {
-		return self
+		return this
 	}
 	gunit, isGunit := selector.X.(*ast.Ident)
 	if selector.Sel.Name != "Fixture" || !isGunit || gunit.Name != "gunit" {
-		return self
+		return this
 	}
-	self.Parent.Validate(self.FixtureName)
+	this.Parent.Validate(this.FixtureName)
 	return nil
 }
 
@@ -37,7 +37,7 @@ type NonPointerFixtureValidator struct {
 	FixtureName string
 }
 
-func (self *NonPointerFixtureValidator) Visit(node ast.Node) ast.Visitor {
+func (this *NonPointerFixtureValidator) Visit(node ast.Node) ast.Visitor {
 	selector, isSelector := node.(*ast.SelectorExpr)
 	if !isSelector {
 		return nil
@@ -46,6 +46,6 @@ func (self *NonPointerFixtureValidator) Visit(node ast.Node) ast.Visitor {
 	if selector.Sel.Name != "Fixture" || !isGunit || gunit.Name != "gunit" {
 		return nil
 	}
-	self.Parent.Invalidate(self.FixtureName)
+	this.Parent.Invalidate(this.FixtureName)
 	return nil
 }

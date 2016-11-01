@@ -13,23 +13,23 @@ func NewController(hardware HVAC) *EnvironmentController {
 	return &EnvironmentController{hardware: hardware}
 }
 
-func (self *EnvironmentController) Regulate() {
-	temperature := self.hardware.CurrentTemperature()
+func (this *EnvironmentController) Regulate() {
+	temperature := this.hardware.CurrentTemperature()
 
 	if temperature >= WAY_TOO_HOT {
-		self.hardware.ActivateHighTemperatureAlarm()
+		this.hardware.ActivateHighTemperatureAlarm()
 	} else if temperature <= WAY_TOO_COLD {
-		self.hardware.ActivateLowTemperatureAlarm()
+		this.hardware.ActivateLowTemperatureAlarm()
 	}
 
 	if temperature >= TOO_HOT {
-		self.hardware.DeactivateHeater()
-		self.hardware.ActivateBlower()
-		self.hardware.ActivateCooler()
+		this.hardware.DeactivateHeater()
+		this.hardware.ActivateBlower()
+		this.hardware.ActivateCooler()
 	} else if temperature <= TOO_COLD {
-		self.hardware.DeactivateCooler()
-		self.hardware.ActivateBlower()
-		self.hardware.ActivateHeater()
+		this.hardware.DeactivateCooler()
+		this.hardware.ActivateBlower()
+		this.hardware.ActivateHeater()
 	}
 }
 

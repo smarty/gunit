@@ -13,15 +13,15 @@ func NewFixtureMethodFinder(fixtures map[string]*Fixture) *FixtureMethodFinder {
 	return &FixtureMethodFinder{fixtures: fixtures}
 }
 
-func (self *FixtureMethodFinder) Find(file *ast.File) map[string]*Fixture {
-	ast.Walk(self, file) // Calls self.Visit(...) recursively.
-	return self.fixtures
+func (this *FixtureMethodFinder) Find(file *ast.File) map[string]*Fixture {
+	ast.Walk(this, file) // Calls this.Visit(...) recursively.
+	return this.fixtures
 }
 
-func (self *FixtureMethodFinder) Visit(node ast.Node) ast.Visitor {
+func (this *FixtureMethodFinder) Visit(node ast.Node) ast.Visitor {
 	function, isFunction := node.(*ast.FuncDecl)
 	if !isFunction {
-		return self
+		return this
 	}
 
 	if function.Recv.NumFields() == 0 {
@@ -30,17 +30,17 @@ func (self *FixtureMethodFinder) Visit(node ast.Node) ast.Visitor {
 
 	receiver, isPointer := function.Recv.List[0].Type.(*ast.StarExpr)
 	if !isPointer {
-		return &FixtureMethodInvalidator{function: function.Name.Name, fixtures: self.fixtures}
+		return &FixtureMethodInvalidator{function: function.Name.Name, fixtures: this.fixtures}
 	}
 
 	fixtureName := receiver.X.(*ast.Ident).Name
-	fixture, functionMatchesFixture := self.fixtures[fixtureName]
+	fixture, functionMatchesFixture := this.fixtures[fixtureName]
 	if !functionMatchesFixture {
 		return nil
 	}
 
 	if !isExportedAndVoidAndNiladic(function) {
-		return self
+		return this
 	}
 
 	attach(function, fixture)
@@ -108,7 +108,7 @@ type FixtureMethodInvalidator struct {
 	fixtures map[string]*Fixture
 }
 
-func (self *FixtureMethodInvalidator) Visit(node ast.Node) ast.Visitor {
+func (this *FixtureMethodInvalidator) Visit(node ast.Node) ast.Visitor {
 	receiverList, isReceiverList := node.(*ast.FieldList)
 	if !isReceiverList {
 		return nil
@@ -121,11 +121,11 @@ func (self *FixtureMethodInvalidator) Visit(node ast.Node) ast.Visitor {
 	receiver := receiverList.List[0]
 
 	fixtureName := receiver.Type.(*ast.Ident).Name
-	fixture, functionMatchesFixture := self.fixtures[fixtureName]
+	fixture, functionMatchesFixture := this.fixtures[fixtureName]
 	if !functionMatchesFixture {
 		return nil
 	}
 
-	fixture.InvalidTestCases = append(fixture.InvalidTestCases, self.function)
+	fixture.InvalidTestCases = append(fixture.InvalidTestCases, this.function)
 	return nil
 }
