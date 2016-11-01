@@ -32,6 +32,9 @@ func exit(message string, args ...interface{}) {
 ////////////////////////////////////////////////////////////////////////////////
 
 func init() {
+	if _, found := os.LookupEnv("GUNIT_NO_GO_GENERATE"); found {
+		return
+	}
 	working, err := os.Getwd()
 	if err != nil {
 		exit("Could not resolve working directory. Error: %s\n", err)
