@@ -127,7 +127,7 @@ func (self *Fixture) Failed() bool {
 }
 
 func (self *Fixture) recover(r interface{}) {
-	self.Println("X PANIC:", r)
+	self.Println("PANIC:", r)
 	buffer := make([]byte, 1024*16)
 	runtime.Stack(buffer, false)
 	self.Println(strings.TrimSpace(string(buffer)))
