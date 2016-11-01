@@ -66,8 +66,8 @@ func (this *fixtureRunner) runTestCase() {
 		this.outerT.Run(this.activeTest.description, this.run)
 	}
 }
-func (this *fixtureRunner) skip(t *testing.T)     { t.Skip() }
-func (this *fixtureRunner) skipLong(t *testing.T) { t.Skip("Skipping long-running test") }
+func (this *fixtureRunner) skip(t *testing.T)     { t.Skip("Skipped test") }
+func (this *fixtureRunner) skipLong(t *testing.T) { t.Skip("Skipped long-running test") }
 func (this *fixtureRunner) run(t *testing.T) {
 	inner := this.initializeFixture(t)
 	defer inner.Finalize()
@@ -130,13 +130,17 @@ type fixtureMethodInfo struct {
 }
 
 func (this *fixtureRunner) newFixtureMethodInfo(name string) fixtureMethodInfo {
+	isTest := strings.HasPrefix(name, "Test")
+	isLongTest := strings.HasPrefix(name, "LongTest")
+	isSkippedTest := strings.HasPrefix(name, "SkipTest")
 	isSkippedLongTest := strings.HasPrefix(name, "SkipLongTest")
+
 	return fixtureMethodInfo{
 		name:          name,
 		isSetup:       strings.HasPrefix(name, "Setup"),
 		isTeardown:    strings.HasPrefix(name, "Teardown"),
-		isTest:        strings.HasPrefix(name, "Test"),
-		isLongTest:    strings.HasPrefix(name, "LongTest"),
-		isSkippedTest: strings.HasPrefix(name, "SkipTest") || isSkippedLongTest,
+		isLongTest:    isLongTest,
+		isSkippedTest: isSkippedTest || isSkippedLongTest,
+		isTest:        isTest || isLongTest || isSkippedTest || isSkippedLongTest,
 	}
 }
