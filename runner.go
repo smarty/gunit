@@ -22,15 +22,12 @@ func newFixtureRunner(fixture interface{}, t *testing.T) *fixtureRunner {
 }
 
 type fixtureRunner struct {
-	outerT        *testing.T
-	fixtureType   reflect.Type
+	outerT      *testing.T
+	fixtureType reflect.Type
 
-	setup         int
-	teardown      int
-	tests         []testCaseInfo
-
-	activeTest    testCaseInfo
-	activeFixture reflect.Value
+	setup    int
+	teardown int
+	tests    []*testCase
 }
 
 /**************************************************************************/
@@ -57,69 +54,89 @@ func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMeth
 
 func (this *fixtureRunner) RunTestCases() {
 	for _, test := range this.tests {
-		this.activeTest = test
-		this.runTestCase()
+		test.Prepare(this.setup, this.teardown, this.fixtureType)
+		test.Run(this.outerT)
 	}
-}
-func (this *fixtureRunner) runTestCase() {
-	if this.activeTest.skipped {
-		this.outerT.Run(this.activeTest.description, this.skip)
-	} else if this.activeTest.long && testing.Short() {
-		this.outerT.Run(this.activeTest.description, this.skipLong)
-	} else {
-		this.outerT.Run(this.activeTest.description, this.run)
-	}
-}
-func (this *fixtureRunner) skip(t *testing.T)     { t.Skip("Skipped test") }
-func (this *fixtureRunner) skipLong(t *testing.T) { t.Skip("Skipped long-running test") }
-func (this *fixtureRunner) run(t *testing.T) {
-	inner := this.initializeFixture(t)
-	defer inner.Finalize()
-	this.runTestCaseWithSetupAndTeardown()
-}
-func (this *fixtureRunner) initializeFixture(t *testing.T) *Fixture {
-	inner := NewFixture(t, testing.Verbose())
-	this.activeFixture = reflect.New(this.fixtureType.Elem())
-	this.activeFixture.Elem().FieldByName("Fixture").Set(reflect.ValueOf(inner))
-	return inner
-}
-func (this *fixtureRunner) runTestCaseWithSetupAndTeardown() {
-	this.runSetup()
-	defer this.runTeardown()
-	this.runTest()
-}
-func (this *fixtureRunner) runSetup() {
-	if this.setup < 0 {
-		return
-	}
-	this.activeFixture.Method(this.setup).Call(nil)
-}
-func (this *fixtureRunner) runTest() {
-	this.activeFixture.Method(this.activeTest.methodIndex).Call(nil)
-}
-func (this *fixtureRunner) runTeardown() {
-	if this.teardown < 0 {
-		return
-	}
-	this.activeFixture.Method(this.teardown).Call(nil)
 }
 
 /**************************************************************************/
 
-type testCaseInfo struct {
-	methodIndex int
-	description string
-	skipped     bool
-	long        bool
+type testCase struct {
+	methodIndex      int
+	description      string
+	skipped          bool
+	long             bool
+
+	setup            int
+	teardown         int
+	innerFixture     *Fixture
+	outerFixtureType reflect.Type
+	outerFixture     reflect.Value
 }
 
-func newTestCase(methodIndex int, method fixtureMethodInfo) testCaseInfo {
-	return testCaseInfo{
+func newTestCase(methodIndex int, method fixtureMethodInfo) *testCase {
+	return &testCase{
 		methodIndex: methodIndex,
 		description: method.name,
 		skipped:     method.isSkippedTest,
 		long:        method.isLongTest,
 	}
+}
+
+func (this *testCase) Prepare(setup, teardown int, outerFixtureType reflect.Type) {
+	this.setup = setup
+	this.teardown = teardown
+	this.outerFixtureType = outerFixtureType
+}
+
+func (this *testCase) Run(t *testing.T) {
+	if this.skipped {
+		t.Run(this.description, skip)
+	} else if this.long && testing.Short() {
+		t.Run(this.description, skipLong)
+	} else {
+		t.Run(this.description, this.run)
+	}
+}
+
+func skip(innerT *testing.T)     { innerT.Skip("Skipped test") }
+func skipLong(innerT *testing.T) { innerT.Skip("Skipped long-running test") }
+
+func (this *testCase) run(innerT *testing.T) {
+	this.initializeFixture(innerT)
+	defer this.innerFixture.Finalize()
+	this.runWithSetupAndTeardown()
+}
+func (this *testCase) initializeFixture(innerT *testing.T) {
+	this.innerFixture = NewFixture(innerT, testing.Verbose())
+	this.outerFixture = reflect.New(this.outerFixtureType.Elem())
+	this.outerFixture.Elem().FieldByName("Fixture").Set(reflect.ValueOf(this.innerFixture))
+}
+
+func (this *testCase) runWithSetupAndTeardown() {
+	this.runSetup()
+	defer this.runTeardown()
+	this.runTest()
+}
+
+func (this *testCase) runSetup() {
+	if this.setup < 0 {
+		return
+	}
+
+	this.outerFixture.Method(this.setup).Call(nil)
+}
+
+func (this *testCase) runTest() {
+	this.outerFixture.Method(this.methodIndex).Call(nil)
+}
+
+func (this *testCase) runTeardown() {
+	if this.teardown < 0 {
+		return
+	}
+
+	this.outerFixture.Method(this.teardown).Call(nil)
 }
 
 /**************************************************************************/
