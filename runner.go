@@ -33,6 +33,8 @@ type fixtureRunner struct {
 	activeFixture reflect.Value
 }
 
+/**************************************************************************/
+
 func (this *fixtureRunner) ScanFixtureForTestCases() {
 	for methodIndex := 0; methodIndex < this.fixtureType.NumMethod(); methodIndex++ {
 		methodName := this.fixtureType.Method(methodIndex).Name
@@ -50,6 +52,8 @@ func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMeth
 		this.tests = append(this.tests, newTestCase(methodIndex, method))
 	}
 }
+
+/**************************************************************************/
 
 func (this *fixtureRunner) RunTestCases() {
 	for _, test := range this.tests {
@@ -81,8 +85,8 @@ func (this *fixtureRunner) initializeFixture(t *testing.T) *Fixture {
 }
 func (this *fixtureRunner) runTestCaseWithSetupAndTeardown() {
 	this.runSetup()
+	defer this.runTeardown()
 	this.runTest()
-	this.runTeardown()
 }
 func (this *fixtureRunner) runSetup() {
 	if this.setup < 0 {
@@ -144,3 +148,5 @@ func (this *fixtureRunner) newFixtureMethodInfo(name string) fixtureMethodInfo {
 		isTest:        isTest || isLongTest || isSkippedTest || isSkippedLongTest,
 	}
 }
+
+/**************************************************************************/
