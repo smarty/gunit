@@ -27,25 +27,25 @@ import (
 	"github.com/smartystreets/assertions"
 )
 
-// TT represents the functional subset from *testing.T needed by Fixture.
-type TT interface {
+// tt represents the functional subset from *testing.T needed by Fixture.
+type tt interface {
 	Log(args ...interface{})
 	Fail()
 	Failed() bool
-	SkipNow()
+	SkipNow() // FUTURE: remove along with 'gunit' command code.
 	Parallel()
 }
 
 // Fixture keeps track of test status (failed, passed, skipped) and
 // handles custom logging for xUnit style tests as an embedded field.
 type Fixture struct {
-	t       TT
+	t       tt
 	log     *bytes.Buffer
 	verbose bool
 }
 
 // NewFixture is called by generated code.
-func NewFixture(t TT, verbose bool) *Fixture {
+func NewFixture(t tt, verbose bool) *Fixture { // FUTURE: un-export this along with deletion of 'gunit' command code.
 	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
 }
 

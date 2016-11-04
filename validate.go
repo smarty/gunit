@@ -10,7 +10,7 @@ import (
 )
 
 // Validate is called by generated code.
-func Validate(checksum string) {
+func Validate(checksum string) { // FUTURE: remove along with 'gunit' command code.
 	_, file, _, ok := runtime.Caller(1)
 	if !ok {
 		exit("Unable to resolve the test file from runtime.Caller(...).\n")
@@ -24,14 +24,14 @@ func Validate(checksum string) {
 	}
 }
 
-func exit(message string, args ...interface{}) {
+func exit(message string, args ...interface{}) { // FUTURE: remove along with 'gunit' command code.
 	fmt.Fprintf(os.Stderr, message, args...)
 	os.Exit(1)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-func init() {
+func init() { // FUTURE: remove along with 'gunit' command code.
 	if _, found := os.LookupEnv("GUNIT_NO_GO_GENERATE"); found {
 		return
 	}
