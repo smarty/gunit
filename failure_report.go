@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type FailureReport struct {
+type failureReport struct {
 	Stack   []string
 	Method  string
 	Fixture string
@@ -15,13 +15,13 @@ type FailureReport struct {
 	Failure string
 }
 
-func NewFailureReport(failure string) string {
-	report := &FailureReport{Failure: failure}
+func newFailureReport(failure string) string {
+	report := &failureReport{Failure: failure}
 	report.ScanStack()
 	return report.String()
 }
 
-func (this *FailureReport) ScanStack() {
+func (this *failureReport) ScanStack() {
 	for x := maxStackDepth; x >= 0; x-- {
 		pc, file, line, ok := runtime.Caller(x)
 		if !ok { // stack frame still too high
@@ -36,7 +36,7 @@ func (this *FailureReport) ScanStack() {
 	}
 }
 
-func (this *FailureReport) ParseTestName(name string) {
+func (this *failureReport) ParseTestName(name string) {
 	if len(this.Method) > 0 {
 		return
 	}
@@ -54,7 +54,7 @@ func (this *FailureReport) ParseTestName(name string) {
 	this.Package = strings.Join(parts[0:last-1], ".")
 }
 
-func (this FailureReport) String() string {
+func (this failureReport) String() string {
 	buffer := new(bytes.Buffer)
 	fmt.Fprintf(buffer, "Test:     %s.%s()\n", this.Fixture, this.Method)
 	for i, stack := range this.Stack {

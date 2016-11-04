@@ -87,7 +87,7 @@ func (this *Fixture) Errorf(format string, args ...interface{}) {
 }
 
 func (this *Fixture) reportFailure(failure string) {
-	this.Print(NewFailureReport(failure))
+	this.Print(newFailureReport(failure))
 }
 
 // Print is analogous to fmt.Print and is ideal for printing in the middle of a test case.
