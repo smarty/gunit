@@ -16,6 +16,11 @@ func assertPanic(t *testing.T) {
 	assertions.New(t).So(recover(), should.NotBeNil)
 }
 
+func TestMarkedAsSkippedIfNoTestCases(t *testing.T) {
+	type FixtureWithNoTestCases struct { *Fixture }
+	Run(new(FixtureWithNoTestCases), t)
+}
+
 func TestRunnerFixtureWithSetupAndTeardown(t *testing.T) {
 	invocations = []string{}
 
