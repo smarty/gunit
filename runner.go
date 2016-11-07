@@ -62,10 +62,10 @@ func (this *fixtureRunner) RunTestCases() {
 /**************************************************************************/
 
 type testCase struct {
-	methodIndex      int
-	description      string
-	skipped          bool
-	long             bool
+	methodIndex int
+	description string
+	skipped     bool
+	long        bool
 
 	setup            int
 	teardown         int
