@@ -26,8 +26,8 @@ func newFixtureRunner(fixture interface{}, t *testing.T) *fixtureRunner {
 
 func ensureEmbeddedFixture(fixture interface{}) {
 	fixtureType := reflect.TypeOf(fixture)
-	_, hasEmbeddedGunitFixture := fixtureType.Elem().FieldByName("Fixture")
-	if !hasEmbeddedGunitFixture {
+	embedded, _ := fixtureType.Elem().FieldByName("Fixture")
+	if embedded.Type != embeddedGoodExample.Type {
 		panic(fmt.Sprintf("Type (%v) lacks embedded *gunit.Fixture.", fixtureType))
 	}
 }
@@ -178,3 +178,7 @@ func (this *fixtureRunner) newFixtureMethodInfo(name string) fixtureMethodInfo {
 }
 
 /**************************************************************************/
+
+type goodExample struct { *Fixture }
+
+var embeddedGoodExample, _ = reflect.TypeOf(new(goodExample)).Elem().FieldByName("Fixture")

@@ -8,7 +8,7 @@ import (
 )
 
 func TestRunnerPanicsIfFixtureIsIncompatible(t *testing.T) {
-	type FixtureWithoutEmbeddedGunitFixture struct { /* missing: *gunit.Fixture */}
+	type FixtureWithoutEmbeddedGunitFixture struct { Fixture string /* should be: *gunit.Fixture */}
 	defer assertPanic(t)
 	Run(new(FixtureWithoutEmbeddedGunitFixture), t)
 }
