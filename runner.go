@@ -1,6 +1,7 @@
 package gunit
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -13,11 +14,21 @@ func Run(fixture interface{}, t *testing.T) {
 }
 
 func newFixtureRunner(fixture interface{}, t *testing.T) *fixtureRunner {
+	ensureEmbeddedFixture(fixture)
+
 	return &fixtureRunner{
 		setup:       -1,
 		teardown:    -1,
 		outerT:      t,
 		fixtureType: reflect.ValueOf(fixture).Type(),
+	}
+}
+
+func ensureEmbeddedFixture(fixture interface{}) {
+	fixtureType := reflect.TypeOf(fixture)
+	_, hasEmbeddedGunitFixture := fixtureType.Elem().FieldByName("Fixture")
+	if !hasEmbeddedGunitFixture {
+		panic(fmt.Sprintf("Type (%v) lacks embedded *gunit.Fixture.", fixtureType))
 	}
 }
 

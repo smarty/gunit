@@ -7,6 +7,15 @@ import (
 	"github.com/smartystreets/assertions/should"
 )
 
+func TestRunnerPanicsIfFixtureIsIncompatible(t *testing.T) {
+	type FixtureWithoutEmbeddedGunitFixture struct { /* missing: *gunit.Fixture */}
+	defer assertPanic(t)
+	Run(new(FixtureWithoutEmbeddedGunitFixture), t)
+}
+func assertPanic(t *testing.T) {
+	assertions.New(t).So(recover(), should.NotBeNil)
+}
+
 func TestRunnerFixtureWithSetupAndTeardown(t *testing.T) {
 	invocations = []string{}
 
