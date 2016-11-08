@@ -10,7 +10,7 @@ import (
 func TestRunnerPanicsIfFixtureIsIncompatible(t *testing.T) {
 	type FixtureWithoutEmbeddedGunitFixture struct { Fixture string /* should be: *gunit.Fixture */}
 	defer assertPanic(t)
-	Run(new(FixtureWithoutEmbeddedGunitFixture), t)
+	RunSequential(new(FixtureWithoutEmbeddedGunitFixture), t)
 }
 func assertPanic(t *testing.T) {
 	assertions.New(t).So(recover(), should.NotBeNil)
@@ -18,14 +18,14 @@ func assertPanic(t *testing.T) {
 
 func TestMarkedAsSkippedIfNoTestCases(t *testing.T) {
 	type FixtureWithNoTestCases struct { *Fixture }
-	Run(new(FixtureWithNoTestCases), t)
+	RunSequential(new(FixtureWithNoTestCases), t)
 }
 
 func TestRunnerFixtureWithSetupAndTeardown(t *testing.T) {
 	invocations = []string{}
 
 	defer assertSetupTeardownInvocationsInCorrectOrder(t)
-	Run(new(RunnerFixtureSetupTeardown), t)
+	RunSequential(new(RunnerFixtureSetupTeardown), t)
 }
 func assertSetupTeardownInvocationsInCorrectOrder(t *testing.T) {
 	expectedInvocations := []string{
@@ -45,7 +45,7 @@ func TestRunnerFixture(t *testing.T) {
 	invocations = []string{}
 
 	defer assertInvocationsInCorrectOrder(t)
-	Run(new(RunnerFixturePlain), t)
+	RunSequential(new(RunnerFixturePlain), t)
 }
 func assertInvocationsInCorrectOrder(t *testing.T) {
 	expectedInvocations := []string{"Test3", "Test1"} // Test2 and Test4 are always skipped
