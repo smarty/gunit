@@ -7,21 +7,26 @@ import (
 	"testing"
 )
 
+// Run receives an instance of a struct that embeds *Fixture.
+// The struct definition may include Setup*, Teardown*, and Test*
+// methods which will be run as an xUnit-style test fixture.
 func Run(fixture interface{}, t *testing.T) {
+	t.Parallel()
+	run(fixture, t)
+}
+
+// RunSequential, like Run receives an instance of a struct that embeds *Fixture.
+// The fixture is run in much the same way, except that it will not be run in
+// parallel with other fixtures in the same package.
+func RunSequential(fixture interface{}, t *testing.T) {
+	run(fixture, t)
+}
+
+func run(fixture interface{}, t *testing.T) {
+	ensureEmbeddedFixture(fixture)
 	runner := newFixtureRunner(fixture, t)
 	runner.ScanFixtureForTestCases()
 	runner.RunTestCases()
-}
-
-func newFixtureRunner(fixture interface{}, t *testing.T) *fixtureRunner {
-	ensureEmbeddedFixture(fixture)
-
-	return &fixtureRunner{
-		setup:       -1,
-		teardown:    -1,
-		outerT:      t,
-		fixtureType: reflect.ValueOf(fixture).Type(),
-	}
 }
 
 func ensureEmbeddedFixture(fixture interface{}) {
@@ -29,6 +34,15 @@ func ensureEmbeddedFixture(fixture interface{}) {
 	embedded, _ := fixtureType.Elem().FieldByName("Fixture")
 	if embedded.Type != embeddedGoodExample.Type {
 		panic(fmt.Sprintf("Type (%v) lacks embedded *gunit.Fixture.", fixtureType))
+	}
+}
+
+func newFixtureRunner(fixture interface{}, t *testing.T) *fixtureRunner {
+	return &fixtureRunner{
+		setup:       -1,
+		teardown:    -1,
+		outerT:      t,
+		fixtureType: reflect.ValueOf(fixture).Type(),
 	}
 }
 
