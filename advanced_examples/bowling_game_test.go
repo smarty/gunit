@@ -7,31 +7,30 @@ import (
 	"github.com/smartystreets/gunit"
 )
 
-func TestBowlingGameScoring(t *testing.T) {
-	gunit.Run(new(BowlingGameScoringTests), t)
+func TestBowlingGameScoringFixture(t *testing.T) {
+	gunit.Run(new(BowlingGameScoringFixture), t)
 }
 
-type BowlingGameScoringTests struct {
+type BowlingGameScoringFixture struct {
 	*gunit.Fixture
-
 	game *Game
 }
 
-func (this *BowlingGameScoringTests) Setup() {
+func (this *BowlingGameScoringFixture) Setup() {
 	this.game = NewGame()
 }
 
-func (this *BowlingGameScoringTests) TestAfterAllGutterBallsTheScoreShouldBeZero() {
+func (this *BowlingGameScoringFixture) TestAfterAllGutterBallsTheScoreShouldBeZero() {
 	this.rollMany(20, 0)
 	this.So(this.game.Score(), should.Equal, 0)
 }
 
-func (this *BowlingGameScoringTests) TestAfterAllOnesTheScoreShouldBeTwenty() {
+func (this *BowlingGameScoringFixture) TestAfterAllOnesTheScoreShouldBeTwenty() {
 	this.rollMany(20, 1)
 	this.So(this.game.Score(), should.Equal, 20)
 }
 
-func (this *BowlingGameScoringTests) TestSpareReceivesSingleRollBonus() {
+func (this *BowlingGameScoringFixture) TestSpareReceivesSingleRollBonus() {
 	this.rollSpare()
 	this.game.Roll(4)
 	this.game.Roll(3)
@@ -39,7 +38,7 @@ func (this *BowlingGameScoringTests) TestSpareReceivesSingleRollBonus() {
 	this.So(this.game.Score(), should.Equal, 21)
 }
 
-func (this *BowlingGameScoringTests) TestStrikeReceivesDoubleRollBonus() {
+func (this *BowlingGameScoringFixture) TestStrikeReceivesDoubleRollBonus() {
 	this.rollStrike()
 	this.game.Roll(4)
 	this.game.Roll(3)
@@ -47,20 +46,20 @@ func (this *BowlingGameScoringTests) TestStrikeReceivesDoubleRollBonus() {
 	this.So(this.game.Score(), should.Equal, 24)
 }
 
-func (this *BowlingGameScoringTests) TestPerfectGame() {
+func (this *BowlingGameScoringFixture) TestPerfectGame() {
 	this.rollMany(12, 10)
 	this.So(this.game.Score(), should.Equal, 300)
 }
 
-func (this *BowlingGameScoringTests) rollMany(times, pins int) {
+func (this *BowlingGameScoringFixture) rollMany(times, pins int) {
 	for x := 0; x < times; x++ {
 		this.game.Roll(pins)
 	}
 }
-func (this *BowlingGameScoringTests) rollSpare() {
+func (this *BowlingGameScoringFixture) rollSpare() {
 	this.game.Roll(5)
 	this.game.Roll(5)
 }
-func (this *BowlingGameScoringTests) rollStrike() {
+func (this *BowlingGameScoringFixture) rollStrike() {
 	this.game.Roll(10)
 }

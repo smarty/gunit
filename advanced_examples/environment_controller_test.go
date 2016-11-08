@@ -7,7 +7,7 @@ import (
 	"github.com/smartystreets/gunit"
 )
 
-func TestEnvironmentController(t *testing.T) {
+func TestEnvironmentControllerFixture(t *testing.T) {
 	gunit.Run(new(EnvironmentControllerFixture), t)
 }
 

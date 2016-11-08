@@ -7,12 +7,12 @@ import (
 	"github.com/smartystreets/gunit"
 )
 
-func TestExample(t *testing.T) {
+func TestExampleFixture(t *testing.T) {
 	gunit.Run(new(ExampleFixture), t)
 }
 
 type ExampleFixture struct {
-	*gunit.Fixture // Required: Embedding this type is what makes the magic happen.
+	*gunit.Fixture // Required: Embedding this type is what allows gunit.Run to run the tests in this fixture.
 
 	// Declare useful state here (probably the stuff being testing, any fakes, etc...).
 }
@@ -37,9 +37,14 @@ func (this *ExampleFixture) TestWithAssertions() {
 }
 
 func (this *ExampleFixture) SkipTestWithNothing() {
-	// Because this method's name starts with 'Skip', this will be skipped in the generated code.
+	// Because this method's name starts with 'Skip', this will be skipped when `go test` is run.
 }
 
 func (this *ExampleFixture) LongTest() {
 	// Because this method's name starts with 'Long', it will be skipped if the -short flag is passed to `go test`.
+}
+
+func (this *ExampleFixture) SkipLongTest() {
+	// Because this method's name starts with 'Skip', it will be skipped when `go test` is run. Removing the 'Skip'
+	// prefix would reveal the 'Long' prefix, explained above.
 }
