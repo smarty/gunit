@@ -11,7 +11,7 @@ import (
 // The struct definition may include Setup*, Teardown*, and Test*
 // methods which will be run as an xUnit-style test fixture.
 func Run(fixture interface{}, t *testing.T) {
-	t.Parallel()
+	//t.Parallel() // TODO: uncomment this when Intellij supports running parallel test functions.
 	run(fixture, t)
 }
 
