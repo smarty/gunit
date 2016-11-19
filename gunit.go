@@ -90,19 +90,19 @@ func (this *Fixture) reportFailure(failure string) {
 	this.Print(newFailureReport(failure))
 }
 
-// Print is analogous to fmt.Print and is ideal for printing in the middle of a test case.
-func (this *Fixture) Print(a ...interface{}) (n int, err error) {
-	return fmt.Fprint(this, a...)
+// Print is nearly analogous to fmt.Print and is ideal for printing in the middle of a test case.
+func (this *Fixture) Print(a ...interface{}) {
+	fmt.Fprint(this, a...)
 }
 
-// Printf is analogous to fmt.Printf and is ideal for printing in the middle of a test case.
-func (this *Fixture) Printf(format string, a ...interface{}) (n int, err error) {
-	return fmt.Fprintf(this, format, a...)
+// Printf is nearly analogous to fmt.Printf and is ideal for printing in the middle of a test case.
+func (this *Fixture) Printf(format string, a ...interface{}) {
+	fmt.Fprintf(this, format, a...)
 }
 
-// Println is analogous to fmt.Println and is ideal for printing in the middle of a test case.
-func (this *Fixture) Println(a ...interface{}) (n int, err error) {
-	return fmt.Fprintln(this, a...)
+// Println is nearly analogous to fmt.Println and is ideal for printing in the middle of a test case.
+func (this *Fixture) Println(a ...interface{}) {
+	fmt.Fprintln(this, a...)
 }
 
 // Write implements io.Writer.
