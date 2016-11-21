@@ -10,10 +10,15 @@ import (
 // Run receives an instance of a struct that embeds *Fixture.
 // The struct definition may include Setup*, Teardown*, and Test*
 // methods which will be run as an xUnit-style test fixture.
+// This function currently forwards to RunSequential but will
+// soon forward to RunParallel.
 func Run(fixture interface{}, t *testing.T) {
 	RunSequential(fixture, t) // TODO: change to RunParallel when Intellij supports running parallel test functions.
 }
 
+// RunParallel, like Run receives an instance of a struct that embeds *Fixture.
+// The fixture is run in much the same way, except that it will be run in
+// parallel with other fixtures in the same package.
 func RunParallel(fixture interface{}, t *testing.T) {
 	t.Parallel()
 	run(fixture, t)
