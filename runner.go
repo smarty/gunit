@@ -11,27 +11,20 @@ import (
 // The struct definition may include Setup*, Teardown*, and Test*
 // methods which will be run as an xUnit-style test fixture.
 func Run(fixture interface{}, t *testing.T) {
-	RunParallel(fixture, t)
-}
-
-// RunParallel, like Run receives an instance of a struct that embeds *Fixture.
-// The fixture is run in much the same way, except that it will be run in
-// parallel with other fixtures in the same package.
-func RunParallel(fixture interface{}, t *testing.T) {
 	t.Parallel()
-	run(fixture, t)
+	run(fixture, t, true)
 }
 
 // RunSequential, like Run receives an instance of a struct that embeds *Fixture.
 // The fixture is run in much the same way, except that it will not be run in
 // parallel with other fixtures in the same package.
 func RunSequential(fixture interface{}, t *testing.T) {
-	run(fixture, t)
+	run(fixture, t, false)
 }
 
-func run(fixture interface{}, t *testing.T) {
+func run(fixture interface{}, t *testing.T, parallel bool) {
 	ensureEmbeddedFixture(fixture)
-	runner := newFixtureRunner(fixture, t)
+	runner := newFixtureRunner(fixture, t, parallel)
 	runner.ScanFixtureForTestCases()
 	runner.RunTestCases()
 }
@@ -44,8 +37,9 @@ func ensureEmbeddedFixture(fixture interface{}) {
 	}
 }
 
-func newFixtureRunner(fixture interface{}, t *testing.T) *fixtureRunner {
+func newFixtureRunner(fixture interface{}, t *testing.T, parallel bool) *fixtureRunner {
 	return &fixtureRunner{
+		parallel:    parallel,
 		setup:       -1,
 		teardown:    -1,
 		outerT:      t,
@@ -57,6 +51,7 @@ type fixtureRunner struct {
 	outerT      *testing.T
 	fixtureType reflect.Type
 
+	parallel bool
 	setup    int
 	teardown int
 	tests    []*testCase
@@ -78,7 +73,7 @@ func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMeth
 	case method.isTeardown:
 		this.teardown = methodIndex
 	case method.isTest:
-		this.tests = append(this.tests, newTestCase(methodIndex, method))
+		this.tests = append(this.tests, newTestCase(methodIndex, method, this.parallel))
 	}
 }
 
@@ -102,6 +97,7 @@ type testCase struct {
 	description string
 	skipped     bool
 	long        bool
+	parallel    bool
 
 	setup            int
 	teardown         int
@@ -110,8 +106,9 @@ type testCase struct {
 	outerFixture     reflect.Value
 }
 
-func newTestCase(methodIndex int, method fixtureMethodInfo) *testCase {
+func newTestCase(methodIndex int, method fixtureMethodInfo, parallel bool) *testCase {
 	return &testCase{
+		parallel:    parallel,
 		methodIndex: methodIndex,
 		description: method.name,
 		skipped:     method.isSkippedTest,
@@ -139,6 +136,9 @@ func skip(innerT *testing.T)     { innerT.Skip("Skipped test") }
 func skipLong(innerT *testing.T) { innerT.Skip("Skipped long-running test") }
 
 func (this *testCase) run(innerT *testing.T) {
+	if this.parallel {
+		innerT.Parallel()
+	}
 	this.initializeFixture(innerT)
 	defer this.innerFixture.Finalize()
 	this.runWithSetupAndTeardown()
@@ -204,6 +204,6 @@ func (this *fixtureRunner) newFixtureMethodInfo(name string) fixtureMethodInfo {
 
 /**************************************************************************/
 
-type goodExample struct { *Fixture }
+type goodExample struct{ *Fixture }
 
 var embeddedGoodExample, _ = reflect.TypeOf(new(goodExample)).Elem().FieldByName("Fixture")
