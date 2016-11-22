@@ -31,6 +31,7 @@ This limited scope makes extracting functions or structs inconvenient as state w
 package examples
 
 import (
+    "time"
 	"testing"
 
 	"github.com/smartystreets/assertions/should"
@@ -47,33 +48,33 @@ type ExampleFixture struct {
 	// Declare useful state here (probably the stuff being tested, any fakes, etc...).
 }
 
-func (self *ExampleFixture) SetupStuff() {
+func (this *ExampleFixture) SetupStuff() {
 	// This optional method will be executed before each "Test"
 	// method (because it starts with "Setup").
 }
-func (self *ExampleFixture) TeardownStuff() {
+func (this *ExampleFixture) TeardownStuff() {
 	// This optional method will be executed after each "Test"
 	// method (because it starts with "Teardown"), even if the test method panics.
 }
 
 
 // This is an actual test case:
-func (self *ExampleFixture) TestWithAssertions() {
+func (this *ExampleFixture) TestWithAssertions() {
 	// Here's how to use the functions from the `should`
 	// package at github.com/smartystreets/assertions/should
 	// to perform assertions:
-	self.So(42, should.Equal, 42)
-	self.So("Hello, World!", should.ContainSubstring, "World")
+	this.So(42, should.Equal, 42)
+	this.So("Hello, World!", should.ContainSubstring, "World")
 }
 
-func (self *ExampleFixture) SkipTestWithNothing() {
+func (this *ExampleFixture) SkipTestWithNothing() {
 	// Because this method's name starts with 'Skip', it will be skipped.
 }
 
-func (self *ExampleFixture) LongTestSlowOperation() {
+func (this *ExampleFixture) LongTestSlowOperation() {
 	// Because this method's name starts with 'Long', it will be skipped if `go test` is run with the `short` flag.
 	time.Sleep(time.Hour)
-	So(true, should.BeTrue)
+	this.So(true, should.BeTrue)
 }
 ```
 
