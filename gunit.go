@@ -31,7 +31,6 @@ type tt interface {
 	Log(args ...interface{})
 	Fail()
 	Failed() bool
-	SkipNow() // FUTURE: remove along with 'gunit' command code.
 }
 
 // Fixture keeps track of test status (failed, passed, skipped) and

@@ -17,9 +17,6 @@ func TestFinalizeAfterNoActions(t *testing.T) {
 	if test.fakeT.failed {
 		t.Error("Fake should not have been marked as failed.")
 	}
-	if test.fakeT.skipped {
-		t.Error("Fake should not have been marked as skipped.")
-	}
 	if test.out.Len() > 0 {
 		t.Errorf("Output was not blank: '%s'", test.out.String())
 	}
@@ -44,7 +41,7 @@ func TestSoPasses(t *testing.T) {
 	test.fixture.Finalize()
 
 	if !result {
-		t.Errorf("Expected true result, got false")
+		t.Error("Expected true result, got false")
 	}
 	if test.out.Len() > 0 {
 		t.Errorf("Unexpected ouput: '%s'", test.out.String())
@@ -61,7 +58,7 @@ func TestSoFailsAndLogs(t *testing.T) {
 	test.fixture.Finalize()
 
 	if result {
-		t.Errorf("Expected false result, got true")
+		t.Error("Expected false result, got true")
 	}
 	if output := test.out.String(); !strings.Contains(output, "Expected:") {
 		t.Errorf("Unexpected ouput: '%s'", test.out.String())
@@ -222,12 +219,10 @@ func Setup(verbose bool) *FixtureTestState {
 type FakeTT struct {
 	log      *bytes.Buffer
 	failed   bool
-	skipped  bool // FUTURE: Remove along with 'gunit' command code.
 }
 
 func (self *FakeTT) Log(args ...interface{}) { fmt.Fprint(self.log, args...) }
 func (self *FakeTT) Fail()                   { self.failed = true }
 func (self *FakeTT) Failed() bool            { return self.failed }
-func (self *FakeTT) SkipNow()                { self.skipped = true } // FUTURE: Remove along with 'gunit' command code.
 
 //////////////////////////////////////////////////////////////////////////////
