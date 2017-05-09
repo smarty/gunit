@@ -22,12 +22,12 @@ func (this *BowlingGameScoringFixture) Setup() {
 
 func (this *BowlingGameScoringFixture) TestAfterAllGutterBallsTheScoreShouldBeZero() {
 	this.rollMany(20, 0)
-	this.So(this.game.Score(), should.Equal, 0)
+	this.assertScore(0)
 }
 
 func (this *BowlingGameScoringFixture) TestAfterAllOnesTheScoreShouldBeTwenty() {
 	this.rollMany(20, 1)
-	this.So(this.game.Score(), should.Equal, 20)
+	this.assertScore(20)
 }
 
 func (this *BowlingGameScoringFixture) TestSpareReceivesSingleRollBonus() {
@@ -35,7 +35,7 @@ func (this *BowlingGameScoringFixture) TestSpareReceivesSingleRollBonus() {
 	this.game.Roll(4)
 	this.game.Roll(3)
 	this.rollMany(16, 0)
-	this.So(this.game.Score(), should.Equal, 21)
+	this.assertScore(21)
 }
 
 func (this *BowlingGameScoringFixture) TestStrikeReceivesDoubleRollBonus() {
@@ -43,22 +43,24 @@ func (this *BowlingGameScoringFixture) TestStrikeReceivesDoubleRollBonus() {
 	this.game.Roll(4)
 	this.game.Roll(3)
 	this.rollMany(16, 0)
-	this.So(this.game.Score(), should.Equal, 24)
+	this.assertScore(24)
 }
 
 func (this *BowlingGameScoringFixture) TestPerfectGame() {
 	this.rollMany(12, 10)
-	this.So(this.game.Score(), should.Equal, 300)
+	this.assertScore(300)
 }
 
+func (this *BowlingGameScoringFixture) assertScore(expected int) {
+	this.So(this.game.Score(), should.Equal, expected)
+}
 func (this *BowlingGameScoringFixture) rollMany(times, pins int) {
 	for x := 0; x < times; x++ {
 		this.game.Roll(pins)
 	}
 }
 func (this *BowlingGameScoringFixture) rollSpare() {
-	this.game.Roll(5)
-	this.game.Roll(5)
+	this.rollMany(2, 5)
 }
 func (this *BowlingGameScoringFixture) rollStrike() {
 	this.game.Roll(10)
