@@ -22,8 +22,6 @@ import (
 	"fmt"
 	"runtime"
 	"strings"
-
-	"github.com/smartystreets/assertions"
 )
 
 // tt represents the functional subset from *testing.T needed by Fixture.
@@ -59,12 +57,13 @@ func (this *Fixture) So(
 	assert func(actual interface{}, expected ...interface{}) string,
 	expected ...interface{}) bool {
 
-	ok, failure := assertions.So(actual, assert, expected...)
-	if !ok {
+	failure := assert(actual, expected...)
+	failed := len(failure) > 0
+	if failed {
 		this.t.Fail()
 		this.reportFailure(failure)
 	}
-	return ok
+	return !failed
 }
 
 func (this *Fixture) Ok(condition bool, messages ...string) {
