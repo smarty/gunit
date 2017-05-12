@@ -53,11 +53,11 @@ func (this *testCase) run(innerT *testing.T) {
 		innerT.Parallel()
 	}
 	this.initializeFixture(innerT)
-	defer this.innerFixture.Finalize()
+	defer this.innerFixture.finalize()
 	this.runWithSetupAndTeardown()
 }
 func (this *testCase) initializeFixture(innerT *testing.T) {
-	this.innerFixture = NewFixture(innerT, testing.Verbose())
+	this.innerFixture = newFixture(innerT, testing.Verbose())
 	this.outerFixture = reflect.New(this.outerFixtureType.Elem())
 	this.outerFixture.Elem().FieldByName("Fixture").Set(reflect.ValueOf(this.innerFixture))
 }

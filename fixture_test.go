@@ -12,7 +12,7 @@ import (
 func TestFinalizeAfterNoActions(t *testing.T) {
 	test := Setup(false)
 
-	test.fixture.Finalize()
+	test.fixture.finalize()
 
 	if test.fakeT.failed {
 		t.Error("Fake should not have been marked as failed.")
@@ -27,7 +27,7 @@ func TestFinalizeAfterFailure(t *testing.T) {
 
 	test.fakeT.Fail()
 
-	test.fixture.Finalize()
+	test.fixture.finalize()
 
 	if output := strings.TrimSpace(test.out.String()); strings.Contains(output, "Failure") {
 		t.Errorf("Unexpected output: '%s'", output)
@@ -38,7 +38,7 @@ func TestSoPasses(t *testing.T) {
 	test := Setup(false)
 
 	result := test.fixture.So(true, should.BeTrue)
-	test.fixture.Finalize()
+	test.fixture.finalize()
 
 	if !result {
 		t.Error("Expected true result, got false")
@@ -55,7 +55,7 @@ func TestSoFailsAndLogs(t *testing.T) {
 	test := Setup(false)
 
 	result := test.fixture.So(true, should.BeFalse)
-	test.fixture.Finalize()
+	test.fixture.finalize()
 
 	if result {
 		t.Error("Expected false result, got true")
@@ -72,7 +72,7 @@ func TestOkPasses(t *testing.T) {
 	test := Setup(false)
 
 	test.fixture.Ok(true)
-	test.fixture.Finalize()
+	test.fixture.finalize()
 
 	if test.out.Len() > 0 {
 		t.Errorf("Unexpected ouput: '%s'", test.out.String())
@@ -86,7 +86,7 @@ func TestOkFailsAndLogs(t *testing.T) {
 	test := Setup(false)
 
 	test.fixture.Ok(false)
-	test.fixture.Finalize()
+	test.fixture.finalize()
 
 	if output := test.out.String(); !strings.Contains(output, "Expected condition to be true, was false instead.") {
 		t.Errorf("Unexpected ouput: '%s'", test.out.String())
@@ -100,7 +100,7 @@ func TestOkWithCustomMessageFailsAndLogs(t *testing.T) {
 	test := Setup(false)
 
 	test.fixture.Ok(false, "gophers!")
-	test.fixture.Finalize()
+	test.fixture.finalize()
 
 	if output := test.out.String(); !strings.Contains(output, "gophers!") {
 		t.Errorf("Unexpected ouput: '%s'", test.out.String())
@@ -114,7 +114,7 @@ func TestErrorFailsAndLogs(t *testing.T) {
 	test := Setup(false)
 
 	test.fixture.Error("1", "2", "3")
-	test.fixture.Finalize()
+	test.fixture.finalize()
 
 	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
@@ -128,7 +128,7 @@ func TestErrorfFailsAndLogs(t *testing.T) {
 	test := Setup(false)
 
 	test.fixture.Errorf("%s%s%s", "1", "2", "3")
-	test.fixture.Finalize()
+	test.fixture.finalize()
 
 	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
@@ -144,7 +144,7 @@ func TestFixturePrinting(t *testing.T) {
 	test.fixture.Print("Print")
 	test.fixture.Println("Println")
 	test.fixture.Printf("Printf")
-	test.fixture.Finalize()
+	test.fixture.finalize()
 
 	output := test.out.String()
 	if !strings.Contains(output, "Print") {
@@ -165,7 +165,7 @@ func TestPanicIsRecoveredAndPrintedByFinalize(t *testing.T) {
 	test := Setup(false)
 
 	var freakOut = func() {
-		defer test.fixture.Finalize()
+		defer test.fixture.finalize()
 		panic("GOPHERS!")
 	}
 
@@ -175,7 +175,7 @@ func TestPanicIsRecoveredAndPrintedByFinalize(t *testing.T) {
 	if !strings.Contains(output, "PANIC: GOPHERS!") {
 		t.Errorf("Expected string containing: 'PANIC: GOPHERS!' Got: '%s'", output)
 	}
-	if !strings.Contains(output, "github.com/smartystreets/gunit.(*Fixture).Finalize") {
+	if !strings.Contains(output, "github.com/smartystreets/gunit.(*Fixture).finalize") {
 		t.Error("Expected string containing stack trace information...")
 	}
 	if !strings.Contains(output, "* (Additional tests may have been skipped as a result of the panic shown above.)") {
@@ -210,15 +210,15 @@ func Setup(verbose bool) *FixtureTestState {
 	this := &FixtureTestState{}
 	this.out = &bytes.Buffer{}
 	this.fakeT = &FakeTT{log: this.out}
-	this.fixture = NewFixture(this.fakeT, verbose)
+	this.fixture = newFixture(this.fakeT, verbose)
 	return this
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 type FakeTT struct {
-	log      *bytes.Buffer
-	failed   bool
+	log    *bytes.Buffer
+	failed bool
 }
 
 func (self *FakeTT) Log(args ...interface{}) { fmt.Fprint(self.log, args...) }

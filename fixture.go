@@ -39,14 +39,9 @@ type Fixture struct {
 	verbose bool
 }
 
-// NewFixture is called by generated code.
-func NewFixture(t tt, verbose bool) *Fixture { // FUTURE: un-export this along with deletion of 'gunit' command code.
+// newFixture is called by generated code.
+func newFixture(t tt, verbose bool) *Fixture {
 	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
-}
-
-// Parallel is now deprecated. At one point it was analogous to *testing.T.Parallel.
-func (this *Fixture) Parallel() {
-	this.Println("[WARNING] Fixture.Parallel() is now deprecated and will soon be removed.")
 }
 
 // So is a convenience method for reporting assertion failure messages,
@@ -66,6 +61,8 @@ func (this *Fixture) So(
 	return !failed
 }
 
+// Ok tests a boolean which, if not true, marks the current test case as failed and
+// prints the provided message.
 func (this *Fixture) Ok(condition bool, messages ...string) {
 	if !condition {
 		if len(messages) == 0 {
@@ -76,11 +73,13 @@ func (this *Fixture) Ok(condition bool, messages ...string) {
 	}
 }
 
+// Error is analogous to *testing.T.Error
 func (this *Fixture) Error(args ...interface{}) {
 	this.t.Fail()
 	this.reportFailure(fmt.Sprint(args...))
 }
 
+// Errorf is analogous to *testing.T.Errorf
 func (this *Fixture) Errorf(format string, args ...interface{}) {
 	this.t.Fail()
 	this.reportFailure(fmt.Sprintf(format, args...))
@@ -110,8 +109,7 @@ func (this *Fixture) Write(p []byte) (int, error) {
 	return this.log.Write(p)
 }
 
-// Finalize is called by generated code.
-func (this *Fixture) Finalize() {
+func (this *Fixture) finalize() {
 	if r := recover(); r != nil {
 		this.recoverPanic(r)
 	}
