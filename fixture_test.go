@@ -201,7 +201,7 @@ func TestFailed(t *testing.T) {
 
 type FixtureTestState struct {
 	fixture *Fixture
-	fakeT   *FakeTT
+	fakeT   *FakeTestingT
 	out     *bytes.Buffer
 	verbose bool
 }
@@ -209,20 +209,20 @@ type FixtureTestState struct {
 func Setup(verbose bool) *FixtureTestState {
 	this := &FixtureTestState{}
 	this.out = &bytes.Buffer{}
-	this.fakeT = &FakeTT{log: this.out}
+	this.fakeT = &FakeTestingT{log: this.out}
 	this.fixture = newFixture(this.fakeT, verbose)
 	return this
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-type FakeTT struct {
+type FakeTestingT struct {
 	log    *bytes.Buffer
 	failed bool
 }
 
-func (self *FakeTT) Log(args ...interface{}) { fmt.Fprint(self.log, args...) }
-func (self *FakeTT) Fail()                   { self.failed = true }
-func (self *FakeTT) Failed() bool            { return self.failed }
+func (self *FakeTestingT) Log(args ...interface{}) { fmt.Fprint(self.log, args...) }
+func (self *FakeTestingT) Fail()                   { self.failed = true }
+func (self *FakeTestingT) Failed() bool            { return self.failed }
 
 //////////////////////////////////////////////////////////////////////////////

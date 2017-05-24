@@ -1,7 +1,7 @@
 package gunit
 
-// tt represents the functional subset from *testing.T needed by Fixture.
-type tt interface {
+// testingT represents the functional subset from *testing.T needed by Fixture.
+type testingT interface {
 	Log(args ...interface{})
 	Fail()
 	Failed() bool
