@@ -45,7 +45,7 @@ func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMeth
 
 func (this *fixtureRunner) RunTestCases() {
 	if len(this.tests) == 0 {
-		this.outerT.Skipf("Fixure (%v) has no test cases.", this.fixtureType)
+		this.outerT.Skipf("Fixture (%v) has no test cases.", this.fixtureType)
 		return
 	}
 	for _, test := range this.tests {
