@@ -1,7 +1,6 @@
 package gunit
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 )
@@ -22,17 +21,17 @@ func RunSequential(fixture interface{}, t *testing.T) {
 }
 
 func run(fixture interface{}, t *testing.T, parallel bool) {
-	ensureEmbeddedFixture(fixture)
+	ensureEmbeddedFixture(fixture, t)
 	runner := newFixtureRunner(fixture, t, parallel)
 	runner.ScanFixtureForTestCases()
 	runner.RunTestCases()
 }
 
-func ensureEmbeddedFixture(fixture interface{}) {
+func ensureEmbeddedFixture(fixture interface{}, t *testing.T) {
 	fixtureType := reflect.TypeOf(fixture)
 	embedded, _ := fixtureType.Elem().FieldByName("Fixture")
 	if embedded.Type != embeddedGoodExample.Type {
-		panic(fmt.Sprintf("Type (%v) lacks embedded *gunit.Fixture.", fixtureType))
+		t.Fatalf("Type (%v) lacks embedded *gunit.Fixture.", fixtureType)
 	}
 }
 
