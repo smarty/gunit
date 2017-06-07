@@ -3,7 +3,6 @@ package examples
 import (
 	"testing"
 
-	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
 )
 
@@ -52,7 +51,7 @@ func (this *BowlingGameScoringFixture) TestPerfectGame() {
 }
 
 func (this *BowlingGameScoringFixture) assertScore(expected int) {
-	this.So(this.game.Score(), should.Equal, expected)
+	this.AssertEqual(expected, this.game.Score())
 }
 func (this *BowlingGameScoringFixture) rollMany(times, pins int) {
 	for x := 0; x < times; x++ {

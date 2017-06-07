@@ -3,7 +3,6 @@ package examples
 import (
 	"testing"
 
-	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
 )
 
@@ -35,22 +34,22 @@ func (this *EnvironmentControllerFixture) TestEverythingOffWhenComfortable() {
 
 func (this *EnvironmentControllerFixture) TestCoolerAndBlowerWhenHot() {
 	this.setupHotEnvironment()
-	this.So(this.hardware.String(), should.Equal, "heater BLOWER COOLER low high")
+	this.AssertEqual("heater BLOWER COOLER low high", this.hardware.String())
 }
 
 func (this *EnvironmentControllerFixture) TestHeaterAndBlowerWhenCold() {
 	this.setupColdEnvironment()
-	this.So(this.hardware.String(), should.Equal, "HEATER BLOWER cooler low high")
+	this.AssertEqual("HEATER BLOWER cooler low high", this.hardware.String())
 }
 
 func (this *EnvironmentControllerFixture) TestHighAlarmOnIfAtThreshold() {
 	this.setupBlazingEnvironment()
-	this.So(this.hardware.String(), should.Equal, "heater BLOWER COOLER low HIGH")
+	this.AssertEqual("heater BLOWER COOLER low HIGH", this.hardware.String())
 }
 
 func (this *EnvironmentControllerFixture) TestLowAlarmOnIfAtThreshold() {
 	this.setupFreezingEnvironment()
-	this.So(this.hardware.String(), should.Equal, "HEATER BLOWER cooler LOW high")
+	this.AssertEqual("HEATER BLOWER cooler LOW high", this.hardware.String())
 }
 
 func (this *EnvironmentControllerFixture) setupComfortableEnvironment() {
@@ -83,5 +82,5 @@ func (this *EnvironmentControllerFixture) activateAllHardwareComponents() {
 }
 
 func (this *EnvironmentControllerFixture) assertAllHardwareComponentsAreDeactivated() {
-	this.So(this.hardware.String(), should.Equal, "heater blower cooler low high")
+	this.AssertEqual("heater blower cooler low high", this.hardware.String())
 }

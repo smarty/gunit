@@ -28,12 +28,17 @@ func (this *ExampleFixture) TeardownStuff() {
 
 // This is an actual test case:
 func (this *ExampleFixture) TestWithAssertions() {
-	// Here's how to use the functions from the `should`
-	// package at github.com/smartystreets/assertions/should
-	// to perform assertions:
+	// Built-in assertion functions:
+	this.Assert(1 == 1, "One should equal one")
+	this.AssertEqual(1, 1)
+	this.AssertDeepEqual(1, 1)
+	this.AssertSprintEqual(1, 1.0)
+	this.AssertSprintfEqual(uint(1), int64(1), "%d")
+
+	// External assertion functions from the `should` package:
 	this.So(42, should.Equal, 42)
 	this.So("Hello, World!", should.ContainSubstring, "World")
-	this.Ok(1 == 1, "One should equal one")
+
 }
 
 func (this *ExampleFixture) SkipTestWithNothing() {

@@ -3,6 +3,7 @@ package gunit
 import (
 	"bytes"
 	"fmt"
+	"reflect"
 	"runtime"
 	"strings"
 )
@@ -34,7 +35,7 @@ func newFixture(t testingT, verbose bool) *Fixture {
 }
 
 // So is a convenience method for reporting assertion failure messages,
-// say from the assertion functions found in github.com/smartystreets/assertions/should.
+// from the many assertion functions found in github.com/smartystreets/assertions/should.
 // Example: this.So(actual, should.Equal, expected)
 func (this *Fixture) So(
 	actual interface{},
@@ -50,15 +51,28 @@ func (this *Fixture) So(
 	return !failed
 }
 
-// Ok tests a boolean which, if not true, marks the current test case as failed and
+// Assert tests a boolean which, if not true, marks the current test case as failed and
 // prints the provided message.
-func (this *Fixture) Ok(condition bool, messages ...string) {
+func (this *Fixture) Assert(condition bool, messages ...string) {
 	if !condition {
 		if len(messages) == 0 {
 			messages = append(messages, "Expected condition to be true, was false instead.")
 		}
 		this.fail(strings.Join(messages, ", "))
 	}
+}
+func (this *Fixture) AssertEqual(expected, actual interface{}) {
+	this.Assert(expected == actual, fmt.Sprintf(comparisonFormat, fmt.Sprint(expected), fmt.Sprint(actual)))
+}
+func (this *Fixture) AssertSprintEqual(expected, actual interface{}) {
+	this.AssertEqual(fmt.Sprint(expected), fmt.Sprint(actual))
+}
+func (this *Fixture) AssertSprintfEqual(expected, actual interface{}, format string) {
+	this.AssertEqual(fmt.Sprintf(format, expected), fmt.Sprintf(format, actual))
+}
+func (this *Fixture) AssertDeepEqual(expected, actual interface{}) {
+	this.Assert(reflect.DeepEqual(expected, actual),
+		fmt.Sprintf(comparisonFormat, fmt.Sprintf("%#v", expected), fmt.Sprintf("%#v", actual)))
 }
 
 func (this *Fixture) Error(args ...interface{})            { this.fail(fmt.Sprint(args...)) }
@@ -92,3 +106,5 @@ func (this *Fixture) recoverPanic(r interface{}) {
 	this.Println("* (Additional tests may have been skipped as a result of the panic shown above.)")
 	this.t.Fail()
 }
+
+const comparisonFormat = "Expected: [%s]\nActual:   [%s]"
