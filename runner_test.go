@@ -8,15 +8,13 @@ import (
 )
 
 func TestRunnerPanicsIfFixtureIsIncompatible(t *testing.T) {
-	t.Skip("We need to use a fake *testing.T for this test as it no longer panics (it fails!)") // TODO
 	type FixtureWithoutEmbeddedGunitFixture struct {
 		Fixture string /* should be: *gunit.Fixture */
 	}
-	defer assertPanic(t)
-	RunSequential(new(FixtureWithoutEmbeddedGunitFixture), t)
-}
-func assertPanic(t *testing.T) {
-	assertions.New(t).So(recover(), should.NotBeNil)
+
+	test := Setup(false)
+	ensureEmbeddedFixture(new(FixtureWithoutEmbeddedGunitFixture), test.fakeT)
+	assertions.New(t).So(test.fixture.Failed(), should.BeTrue)
 }
 
 func TestMarkedAsSkippedIfNoTestCases(t *testing.T) {

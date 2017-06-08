@@ -27,7 +27,7 @@ func run(fixture interface{}, t *testing.T, parallel bool) {
 	runner.RunTestCases()
 }
 
-func ensureEmbeddedFixture(fixture interface{}, t *testing.T) {
+func ensureEmbeddedFixture(fixture interface{}, t testingT) {
 	fixtureType := reflect.TypeOf(fixture)
 	embedded, _ := fixtureType.Elem().FieldByName("Fixture")
 	if embedded.Type != embeddedGoodExample.Type {

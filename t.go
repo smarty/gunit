@@ -5,4 +5,5 @@ type testingT interface {
 	Log(args ...interface{})
 	Fail()
 	Failed() bool
+	Fatalf(format string, args ...interface{})
 }

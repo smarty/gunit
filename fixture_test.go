@@ -336,5 +336,9 @@ type FakeTestingT struct {
 func (self *FakeTestingT) Log(args ...interface{}) { fmt.Fprint(self.log, args...) }
 func (self *FakeTestingT) Fail()                   { self.failed = true }
 func (self *FakeTestingT) Failed() bool            { return self.failed }
+func (this *FakeTestingT) Fatalf(format string, args ...interface{}) {
+	this.Fail()
+	this.Log(fmt.Sprintf(format, args))
+}
 
 //////////////////////////////////////////////////////////////////////////////
