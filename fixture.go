@@ -13,13 +13,13 @@ import (
 // The Fixture manages an instance of *testing.T. Certain methods
 // defined herein merely forward to calls on the *testing.T:
 //
-// - Fixture.Error(...) ----> *testing.T.Error
-// - Fixture.Errorf(...) ---> *testing.T.Errorf
-// - Fixture.Print(...) ----> *testing.T.Log or fmt.Print
-// - Fixture.Printf(...) ---> *testing.T.Logf or fmt.Printf
-// - Fixture.Println(...) --> *testing.T.Log or fmt.Println
-// - Fixture.Failed() ------> *testing.T.Failed()
-// - Fixture.fail() --------> *testing.T.Fail()
+//     - Fixture.Error(...) ----> *testing.T.Error
+//     - Fixture.Errorf(...) ---> *testing.T.Errorf
+//     - Fixture.Print(...) ----> *testing.T.Log or fmt.Print
+//     - Fixture.Printf(...) ---> *testing.T.Logf or fmt.Printf
+//     - Fixture.Println(...) --> *testing.T.Log or fmt.Println
+//     - Fixture.Failed() ------> *testing.T.Failed()
+//     - Fixture.fail() --------> *testing.T.Fail()
 //
 // We don't use these methods much, preferring instead to lean heavily
 // on Fixture.So and the rich set of should-style assertions provided at
