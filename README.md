@@ -3,7 +3,7 @@
 ## Installation
 
 ```
-$ go get github.com/smartystreets/gunit/gunit
+$ go get github.com/smartystreets/gunit
 ```
 
 -------------------------
