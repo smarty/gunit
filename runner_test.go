@@ -10,7 +10,7 @@ import (
 /**************************************************************************/
 /**************************************************************************/
 
-func TestRunnerPanicsIfFixtureIsIncompatible(t *testing.T) {
+func TestRunnerEndsFatallyIfFixtureIsIncompatible(t *testing.T) {
 	test := Setup(false)
 	ensureEmbeddedFixture(new(FixtureWithoutEmbeddedGunitFixture), test.fakeT)
 	assertions.New(t).So(test.fixture.Failed(), should.BeTrue)
