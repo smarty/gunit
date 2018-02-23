@@ -89,3 +89,67 @@ func (this *RunnerFixturePlain) SkipLongTest4() { invocations_B = append(invocat
 
 /**************************************************************************/
 /**************************************************************************/
+
+func TestRunnerFixtureWithFocus(t *testing.T) {
+	invocations_C = []string{}
+	defer assertFocusIsOnlyInvocation(t)
+	RunSequential(new(RunnerFixtureFocus), t)
+}
+func assertFocusIsOnlyInvocation(t *testing.T) {
+	assertions.New(t).So(invocations_C, should.Resemble, []string{"Test3"})
+}
+
+var invocations_C []string
+
+type RunnerFixtureFocus struct{ *Fixture }
+
+func (this *RunnerFixtureFocus) Test1()      { invocations_C = append(invocations_C, "Test1") }
+func (this *RunnerFixtureFocus) Test2()      { invocations_C = append(invocations_C, "Test2") }
+func (this *RunnerFixtureFocus) FocusTest3() { invocations_C = append(invocations_C, "Test3") }
+func (this *RunnerFixtureFocus) Test4()      { invocations_C = append(invocations_C, "Test4") }
+
+/**************************************************************************/
+/**************************************************************************/
+
+func TestRunnerFixtureWithFocusLong(t *testing.T) {
+	invocations_D = []string{}
+	defer assertFocusLongIsOnlyInvocation(t)
+	RunSequential(new(RunnerFixtureFocusLong), t)
+}
+func assertFocusLongIsOnlyInvocation(t *testing.T) {
+	expected := []string{"Test3"}
+	if testing.Short() {
+		expected = []string{}
+	}
+	assertions.New(t).So(invocations_D, should.Resemble, expected)
+}
+
+var invocations_D []string
+
+type RunnerFixtureFocusLong struct{ *Fixture }
+
+func (this *RunnerFixtureFocusLong) Test1()          { invocations_D = append(invocations_D, "Test1") }
+func (this *RunnerFixtureFocusLong) Test2()          { invocations_D = append(invocations_D, "Test2") }
+func (this *RunnerFixtureFocusLong) FocusLongTest3() { invocations_D = append(invocations_D, "Test3") }
+func (this *RunnerFixtureFocusLong) Test4()          { invocations_D = append(invocations_D, "Test4") }
+
+/**************************************************************************/
+/**************************************************************************/
+
+func TestRunnerFixtureWithOnlyOneFocus(t *testing.T) {
+	invocations_E = []string{}
+	defer assertSingleFocusIsOnlyInvocation(t)
+	RunSequential(new(RunnerFixtureWithOnlyOneFocus), t)
+}
+func assertSingleFocusIsOnlyInvocation(t *testing.T) {
+	assertions.New(t).So(invocations_E, should.Resemble, []string{"Test1"})
+}
+
+var invocations_E []string
+
+type RunnerFixtureWithOnlyOneFocus struct{ *Fixture }
+
+func (this *RunnerFixtureWithOnlyOneFocus) FocusTest1()          { invocations_E = append(invocations_E, "Test1") }
+
+/**************************************************************************/
+/**************************************************************************/
