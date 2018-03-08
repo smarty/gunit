@@ -103,7 +103,6 @@ func (this *Fixture) recoverPanic(r interface{}) {
 	buffer := make([]byte, 1024*16)
 	runtime.Stack(buffer, false)
 	this.Println(strings.TrimSpace(string(buffer)))
-	this.Println("* (Additional tests may have been skipped as a result of the panic shown above.)")
 	this.t.Fail()
 }
 
