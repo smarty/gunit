@@ -5,18 +5,21 @@ import (
 	"fmt"
 	"runtime"
 	"strings"
+
+	"github.com/smartystreets/gunit/scan"
 )
 
 type failureReport struct {
-	Stack   []string
-	Method  string
-	Fixture string
-	Package string
-	Failure string
+	Stack    []string
+	Method   string
+	Fixture  string
+	Package  string
+	Failure  string
+	FileLine string
 }
 
-func newFailureReport(failure string) string {
-	report := &failureReport{Failure: failure}
+func newFailureReport(failure, fileLine string) string {
+	report := &failureReport{Failure: failure, FileLine: fileLine}
 	report.ScanStack()
 	return report.String()
 }
@@ -49,25 +52,16 @@ func (this *failureReport) ParseTestName(name string) {
 		return
 	}
 
-	if method := parts[last]; hasMethodPrefix(method) {
+	if method := parts[last]; scan.IsTestCase(method) {
 		this.Method = method
 		this.Fixture = parts[last-1]
 		this.Package = strings.Join(parts[0:last-1], ".")
 	}
 }
 
-func hasMethodPrefix(value string) bool {
-	for _, allowed := range []string{"FocusLongTest", "FocusTest", "LongTest", "Test", "Setup", "Teardown"} {
-		if strings.HasPrefix(value, allowed) {
-			return true
-		}
-	}
-	return false
-}
-
 func (this failureReport) String() string {
 	buffer := new(bytes.Buffer)
-	fmt.Fprintf(buffer, "Method:   %s.%s()\n", this.Fixture, this.Method)
+	fmt.Fprintf(buffer, "(@)       %s\n",  this.FileLine)
 	for i, stack := range this.Stack {
 		fmt.Fprintf(buffer, "(%d):      %s\n", len(this.Stack)-i-1, stack)
 	}

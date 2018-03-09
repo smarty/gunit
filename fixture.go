@@ -25,13 +25,14 @@ import (
 // on Fixture.So and the rich set of should-style assertions provided at
 // github.com/smartystreets/assertions/should
 type Fixture struct {
-	t       testingT
-	log     *bytes.Buffer
-	verbose bool
+	t        testingT
+	log      *bytes.Buffer
+	verbose  bool
+	fileLine string
 }
 
-func newFixture(t testingT, verbose bool) *Fixture {
-	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
+func newFixture(t testingT, verbose bool, fileLine string) *Fixture {
+	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}, fileLine: fileLine}
 }
 
 // So is a convenience method for reporting assertion failure messages,
@@ -41,7 +42,6 @@ func (this *Fixture) So(actual interface{}, assert assertion, expected ...interf
 	failure := assert(actual, expected...)
 	failed := len(failure) > 0
 	if failed {
-		this.t.Fail()
 		this.fail(failure)
 	}
 	return !failed
@@ -81,12 +81,12 @@ func (this *Fixture) Println(a ...interface{})               { fmt.Fprintln(this
 
 // Write implements io.Writer. There are rare times when this is convenient (debugging via `log.SetOutput(fixture)`).
 func (this *Fixture) Write(p []byte) (int, error) { return this.log.Write(p) }
-func (this *Fixture) Failed() bool { return this.t.Failed() }
-func (this *Fixture) Name() string { return this.t.Name() }
+func (this *Fixture) Failed() bool                { return this.t.Failed() }
+func (this *Fixture) Name() string                { return this.t.Name() }
 
 func (this *Fixture) fail(failure string) {
 	this.t.Fail()
-	this.Print(newFailureReport(failure))
+	this.Print(newFailureReport(failure, this.fileLine))
 }
 
 func (this *Fixture) finalize() {
