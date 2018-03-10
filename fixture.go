@@ -94,6 +94,8 @@ func (this *Fixture) finalize() {
 		this.recoverPanic(r)
 	}
 
+	this.t.Log("\n" + this.fileLine)
+
 	if this.t.Failed() || (this.verbose && this.log.Len() > 0) {
 		this.t.Log("\n" + strings.TrimSpace(this.log.String()) + "\n")
 	}
