@@ -25,14 +25,13 @@ import (
 // on Fixture.So and the rich set of should-style assertions provided at
 // github.com/smartystreets/assertions/should
 type Fixture struct {
-	t        testingT
-	log      *bytes.Buffer
-	verbose  bool
-	fileLine string
+	t       testingT
+	log     *bytes.Buffer
+	verbose bool
 }
 
-func newFixture(t testingT, verbose bool, fileLine string) *Fixture {
-	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}, fileLine: fileLine}
+func newFixture(t testingT, verbose bool) *Fixture {
+	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
 }
 
 // So is a convenience method for reporting assertion failure messages,
@@ -86,15 +85,13 @@ func (this *Fixture) Name() string                { return this.t.Name() }
 
 func (this *Fixture) fail(failure string) {
 	this.t.Fail()
-	this.Print(newFailureReport(failure, this.fileLine))
+	this.Print(newFailureReport(failure))
 }
 
 func (this *Fixture) finalize() {
 	if r := recover(); r != nil {
 		this.recoverPanic(r)
 	}
-
-	this.t.Log("\n" + this.fileLine)
 
 	if this.t.Failed() || (this.verbose && this.log.Len() > 0) {
 		this.t.Log("\n" + strings.TrimSpace(this.log.String()) + "\n")

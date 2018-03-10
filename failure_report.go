@@ -15,11 +15,10 @@ type failureReport struct {
 	Fixture  string
 	Package  string
 	Failure  string
-	FileLine string
 }
 
-func newFailureReport(failure, fileLine string) string {
-	report := &failureReport{Failure: failure, FileLine: fileLine}
+func newFailureReport(failure string) string {
+	report := &failureReport{Failure: failure}
 	report.ScanStack()
 	return report.String()
 }
@@ -61,7 +60,6 @@ func (this *failureReport) ParseTestName(name string) {
 
 func (this failureReport) String() string {
 	buffer := new(bytes.Buffer)
-	fmt.Fprintf(buffer, "(@)       %s\n",  this.FileLine)
 	for i, stack := range this.Stack {
 		fmt.Fprintf(buffer, "(%d):      %s\n", len(this.Stack)-i-1, stack)
 	}
