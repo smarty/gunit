@@ -299,9 +299,6 @@ func TestPanicIsRecoveredAndPrintedByFinalize(t *testing.T) {
 	if !strings.Contains(output, "gunit.(*Fixture).finalize") {
 		t.Error("Expected string containing stack trace information...")
 	}
-	if !strings.Contains(output, "* (Additional tests may have been skipped as a result of the panic shown above.)") {
-		t.Error("Expected string containing warning about additional tests not being run.")
-	}
 }
 
 func TestFailed(t *testing.T) {
