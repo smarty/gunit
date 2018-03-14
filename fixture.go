@@ -41,7 +41,6 @@ func (this *Fixture) So(actual interface{}, assert assertion, expected ...interf
 	failure := assert(actual, expected...)
 	failed := len(failure) > 0
 	if failed {
-		this.t.Fail()
 		this.fail(failure)
 	}
 	return !failed
@@ -81,8 +80,8 @@ func (this *Fixture) Println(a ...interface{})               { fmt.Fprintln(this
 
 // Write implements io.Writer. There are rare times when this is convenient (debugging via `log.SetOutput(fixture)`).
 func (this *Fixture) Write(p []byte) (int, error) { return this.log.Write(p) }
-func (this *Fixture) Failed() bool { return this.t.Failed() }
-func (this *Fixture) Name() string { return this.t.Name() }
+func (this *Fixture) Failed() bool                { return this.t.Failed() }
+func (this *Fixture) Name() string                { return this.t.Name() }
 
 func (this *Fixture) fail(failure string) {
 	this.t.Fail()

@@ -3,15 +3,18 @@ package gunit
 import (
 	"reflect"
 	"testing"
+
+	"github.com/smartystreets/gunit/scan"
 )
 
-func newFixtureRunner(fixture interface{}, t *testing.T, parallel bool) *fixtureRunner {
+func newFixtureRunner(fixture interface{}, t *testing.T, parallel bool, positions scan.TestCasePositions) *fixtureRunner {
 	return &fixtureRunner{
 		parallel:    parallel,
 		setup:       -1,
 		teardown:    -1,
 		outerT:      t,
 		fixtureType: reflect.ValueOf(fixture).Type(),
+		positions:   positions,
 	}
 }
 
@@ -19,11 +22,12 @@ type fixtureRunner struct {
 	outerT      *testing.T
 	fixtureType reflect.Type
 
-	parallel bool
-	setup    int
-	teardown int
-	focus    []*testCase
-	tests    []*testCase
+	parallel  bool
+	setup     int
+	teardown  int
+	focus     []*testCase
+	tests     []*testCase
+	positions scan.TestCasePositions
 }
 
 func (this *fixtureRunner) ScanFixtureForTestCases() {
@@ -40,9 +44,9 @@ func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMeth
 	case method.isTeardown:
 		this.teardown = methodIndex
 	case method.isFocusTest:
-		this.focus = append(this.focus, newTestCase(methodIndex, method, this.parallel))
+		this.focus = append(this.focus, newTestCase(methodIndex, method, this.parallel, this.positions))
 	case method.isTest:
-		this.tests = append(this.tests, newTestCase(methodIndex, method, this.parallel))
+		this.tests = append(this.tests, newTestCase(methodIndex, method, this.parallel, this.positions))
 	}
 }
 
