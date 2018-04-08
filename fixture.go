@@ -25,13 +25,13 @@ import (
 // on Fixture.So and the rich set of should-style assertions provided at
 // github.com/smartystreets/assertions/should
 type Fixture struct {
-	t       testingT
+	T       testingT
 	log     *bytes.Buffer
 	verbose bool
 }
 
 func newFixture(t testingT, verbose bool) *Fixture {
-	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
+	return &Fixture{T: t, verbose: verbose, log: &bytes.Buffer{}}
 }
 
 // So is a convenience method for reporting assertion failure messages,
@@ -80,11 +80,11 @@ func (this *Fixture) Println(a ...interface{})               { fmt.Fprintln(this
 
 // Write implements io.Writer. There are rare times when this is convenient (debugging via `log.SetOutput(fixture)`).
 func (this *Fixture) Write(p []byte) (int, error) { return this.log.Write(p) }
-func (this *Fixture) Failed() bool                { return this.t.Failed() }
-func (this *Fixture) Name() string                { return this.t.Name() }
+func (this *Fixture) Failed() bool                { return this.T.Failed() }
+func (this *Fixture) Name() string                { return this.T.Name() }
 
 func (this *Fixture) fail(failure string) {
-	this.t.Fail()
+	this.T.Fail()
 	this.Print(newFailureReport(failure))
 }
 
@@ -93,8 +93,8 @@ func (this *Fixture) finalize() {
 		this.recoverPanic(r)
 	}
 
-	if this.t.Failed() || (this.verbose && this.log.Len() > 0) {
-		this.t.Log("\n" + strings.TrimSpace(this.log.String()) + "\n")
+	if this.T.Failed() || (this.verbose && this.log.Len() > 0) {
+		this.T.Log("\n" + strings.TrimSpace(this.log.String()) + "\n")
 	}
 }
 func (this *Fixture) recoverPanic(r interface{}) {
@@ -102,7 +102,7 @@ func (this *Fixture) recoverPanic(r interface{}) {
 	buffer := make([]byte, 1024*16)
 	runtime.Stack(buffer, false)
 	this.Println(strings.TrimSpace(string(buffer)))
-	this.t.Fail()
+	this.T.Fail()
 }
 
 const comparisonFormat = "Expected: [%s]\nActual:   [%s]"
