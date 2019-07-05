@@ -3,6 +3,7 @@ package gunit
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -32,12 +33,20 @@ func (this *failureReport) ScanStack() {
 		if !more {
 			break
 		}
-		if !strings.HasSuffix(frame.File, "_test.go") {
+		if isFromStandardLibrary(frame) || isFromGunit(frame) {
 			continue
 		}
 		this.ParseTestName(frame.Function)
 		this.Stack = append(this.Stack, fmt.Sprintf("%s:%d", frame.File, frame.Line))
 	}
+}
+
+func isFromGunit(frame runtime.Frame) bool {
+	return strings.HasSuffix(filepath.Dir(frame.File), "github.com/smartystreets/gunit")
+}
+
+func isFromStandardLibrary(frame runtime.Frame) bool {
+	return strings.Contains(frame.File, "libexec/src/")
 }
 
 func (this *failureReport) ParseTestName(name string) {
