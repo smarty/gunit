@@ -3,6 +3,7 @@ package gunit
 import (
 	"bytes"
 	"fmt"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -32,12 +33,30 @@ func (this *failureReport) ScanStack() {
 		if !more {
 			break
 		}
-		if !strings.HasSuffix(frame.File, "_test.go") {
+		if isFromStandardLibrary(frame) || isFromGunit(frame) {
 			continue
 		}
 		this.ParseTestName(frame.Function)
 		this.Stack = append(this.Stack, fmt.Sprintf("%s:%d", frame.File, frame.Line))
 	}
+}
+
+
+func isFromGunit(frame runtime.Frame) bool {
+	const gunitFolder = "github.com/smartystreets/gunit"
+	const goModuleVersionSeparator = "@" // Go module path w/ '@' separator example:
+	// /Users/mike/go/pkg/mod/github.com/smartystreets/gunit@v1.0.1-0.20190705210239-badfae8b004a/failure_report.go:23
+
+	dir := filepath.Dir(frame.File)
+	parts := strings.Split(dir, goModuleVersionSeparator)
+	if len(parts) > 1 {
+		dir = parts[0]
+	}
+	return strings.HasSuffix(dir, gunitFolder)
+}
+
+func isFromStandardLibrary(frame runtime.Frame) bool {
+	return strings.Contains(frame.File, "libexec/src/")
 }
 
 func (this *failureReport) ParseTestName(name string) {
