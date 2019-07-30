@@ -54,12 +54,14 @@ var invocations_A []string
 
 type RunnerFixtureSetupTeardown struct{ *Fixture }
 
-func (this *RunnerFixtureSetupTeardown) Setup()         { invocations_A = append(invocations_A, "Setup") }
-func (this *RunnerFixtureSetupTeardown) Teardown()      { invocations_A = append(invocations_A, "Teardown") }
-func (this *RunnerFixtureSetupTeardown) Test1()         { invocations_A = append(invocations_A, "Test1") }
-func (this *RunnerFixtureSetupTeardown) SkipTest2()     { invocations_A = append(invocations_A, "Test2") }
-func (this *RunnerFixtureSetupTeardown) LongTest3()     { invocations_A = append(invocations_A, "Test3") }
-func (this *RunnerFixtureSetupTeardown) SkipLongTest4() { invocations_A = append(invocations_A, "Test4") }
+func (this *RunnerFixtureSetupTeardown) Setup()     { invocations_A = append(invocations_A, "Setup") }
+func (this *RunnerFixtureSetupTeardown) Teardown()  { invocations_A = append(invocations_A, "Teardown") }
+func (this *RunnerFixtureSetupTeardown) Test1()     { invocations_A = append(invocations_A, "Test1") }
+func (this *RunnerFixtureSetupTeardown) SkipTest2() { invocations_A = append(invocations_A, "Test2") }
+func (this *RunnerFixtureSetupTeardown) LongTest3() { invocations_A = append(invocations_A, "Test3") }
+func (this *RunnerFixtureSetupTeardown) SkipLongTest4() {
+	invocations_A = append(invocations_A, "Test4")
+}
 
 /**************************************************************************/
 /**************************************************************************/
@@ -149,7 +151,9 @@ var invocations_E []string
 
 type RunnerFixtureWithOnlyOneFocus struct{ *Fixture }
 
-func (this *RunnerFixtureWithOnlyOneFocus) FocusTest1()          { invocations_E = append(invocations_E, "Test1") }
+func (this *RunnerFixtureWithOnlyOneFocus) FocusTest1() {
+	invocations_E = append(invocations_E, "Test1")
+}
 
 /**************************************************************************/
 /**************************************************************************/

@@ -44,7 +44,7 @@ func TestSoPasses(t *testing.T) {
 		t.Error("Expected true result, got false")
 	}
 	if test.out.Len() > 0 {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if test.fakeT.failed {
 		t.Error("Test was erroneously marked as failed.")
@@ -61,7 +61,7 @@ func TestSoFailsAndLogs(t *testing.T) {
 		t.Error("Expected false result, got true")
 	}
 	if output := test.out.String(); !strings.Contains(output, "Expected:") {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
@@ -75,7 +75,7 @@ func TestAssertPasses(t *testing.T) {
 	test.fixture.finalize()
 
 	if test.out.Len() > 0 {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if test.fakeT.failed {
 		t.Error("Test was erroneously marked as failed.")
@@ -89,7 +89,7 @@ func TestAssertFailsAndLogs(t *testing.T) {
 	test.fixture.finalize()
 
 	if output := test.out.String(); !strings.Contains(output, "Expected condition to be true, was false instead.") {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
@@ -106,7 +106,7 @@ func TestAssertWithCustomMessageFailsAndLogs(t *testing.T) {
 	test.fixture.finalize()
 
 	if output := test.out.String(); !strings.Contains(output, "gophers!") {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
@@ -120,7 +120,7 @@ func TestAssertEqualPasses(t *testing.T) {
 	test.fixture.finalize()
 
 	if test.out.Len() > 0 {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if test.fakeT.failed {
 		t.Error("Test was erroneously marked as failed.")
@@ -134,7 +134,7 @@ func TestAssertEqualFails(t *testing.T) {
 	test.fixture.finalize()
 
 	if output := test.out.String(); !strings.Contains(output, "Expected: [1]\nActual:   [2]") {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
@@ -151,7 +151,7 @@ func TestAssertSprintEqualPasses(t *testing.T) {
 	test.fixture.finalize()
 
 	if test.out.Len() > 0 {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if test.fakeT.failed {
 		t.Error("Test was erroneously marked as failed.")
@@ -168,7 +168,7 @@ func TestAssertSprintEqualFails(t *testing.T) {
 	test.fixture.finalize()
 
 	if output := test.out.String(); !strings.Contains(output, "Expected: [1]\nActual:   [2]") {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
@@ -182,7 +182,7 @@ func TestAssertSprintfEqualPasses(t *testing.T) {
 	test.fixture.finalize()
 
 	if test.out.Len() > 0 {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if test.fakeT.failed {
 		t.Error("Test was erroneously marked as failed.")
@@ -196,7 +196,7 @@ func TestAssertSprintfEqualFails(t *testing.T) {
 	test.fixture.finalize()
 
 	if output := test.out.String(); !strings.Contains(output, "Expected: [1]\nActual:   [2]") {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
@@ -210,7 +210,7 @@ func TestAssertDeepEqualPasses(t *testing.T) {
 	test.fixture.finalize()
 
 	if test.out.Len() > 0 {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if test.fakeT.failed {
 		t.Error("Test was erroneously marked as failed.")
@@ -224,7 +224,7 @@ func TestAssertDeepEqualFails(t *testing.T) {
 	test.fixture.finalize()
 
 	if output := test.out.String(); !strings.Contains(output, "Expected: [1]\nActual:   [2]") {
-		t.Errorf("Unexpected ouput: '%s'", test.out.String())
+		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")

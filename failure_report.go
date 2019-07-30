@@ -11,11 +11,11 @@ import (
 )
 
 type failureReport struct {
-	Stack    []string
-	Method   string
-	Fixture  string
-	Package  string
-	Failure  string
+	Stack   []string
+	Method  string
+	Fixture string
+	Package string
+	Failure string
 }
 
 func newFailureReport(failure string) string {
@@ -40,7 +40,6 @@ func (this *failureReport) ScanStack() {
 		this.Stack = append(this.Stack, fmt.Sprintf("%s:%d", frame.File, frame.Line))
 	}
 }
-
 
 func isFromGunit(frame runtime.Frame) bool {
 	const gunitFolder = "github.com/smartystreets/gunit"
