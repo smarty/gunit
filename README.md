@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/smartystreets/gunit.svg?branch=master)](https://travis-ci.org/smartystreets/gunit)
 [![Code Coverage](https://codecov.io/gh/smartystreets/gunit/branch/master/graph/badge.svg)](https://codecov.io/gh/smartystreets/gunit)
 [![Go Report Card](https://goreportcard.com/badge/github.com/smartystreets/gunit)](https://goreportcard.com/report/github.com/smartystreets/gunit)
+[![GoDoc](https://godoc.org/github.com/smartystreets/gunit?status.svg)](http://godoc.org/github.com/smartystreets/gunit)
 
 # gunit
 
