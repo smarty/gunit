@@ -55,7 +55,8 @@ func isFromGunit(frame runtime.Frame) bool {
 }
 
 func isFromStandardLibrary(frame runtime.Frame) bool {
-	return strings.Contains(frame.File, "libexec/src/")
+	return strings.Contains(frame.File, "/libexec/src/") || // homebrew
+		strings.Contains(frame.File, "/go/src/") // traditional
 }
 
 func (this *failureReport) ParseTestName(name string) {
