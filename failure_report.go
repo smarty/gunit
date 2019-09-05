@@ -42,7 +42,8 @@ func (this *failureReport) ScanStack() {
 		this.ParseTestName(frame.Function)
 		this.LoadFile(frame)
 		code := this.extractLineOfCode(frame)
-		stack := fmt.Sprintf("%-60s %s:%d", code, frame.File, frame.Line)
+		filename := filepath.Base(frame.File)
+		stack := fmt.Sprintf("%s // %s:%d", code, filename, frame.Line)
 		this.Stack = append(this.Stack, strings.TrimSpace(stack))
 	}
 }
