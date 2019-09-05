@@ -3,6 +3,7 @@ package gunit
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -11,7 +12,9 @@ import (
 )
 
 type failureReport struct {
-	Stack   []string
+	Stack []string
+	Files map[string][]string
+
 	Method  string
 	Fixture string
 	Package string
@@ -19,7 +22,7 @@ type failureReport struct {
 }
 
 func newFailureReport(failure string) string {
-	report := &failureReport{Failure: failure}
+	report := &failureReport{Failure: failure, Files: make(map[string][]string)}
 	report.ScanStack()
 	return report.String()
 }
@@ -37,8 +40,32 @@ func (this *failureReport) ScanStack() {
 			continue
 		}
 		this.ParseTestName(frame.Function)
-		this.Stack = append(this.Stack, fmt.Sprintf("%s:%d", frame.File, frame.Line))
+		this.LoadFile(frame)
+		code := this.extractLineOfCode(frame)
+		stack := fmt.Sprintf("%-60s %s:%d", code, frame.File, frame.Line)
+		this.Stack = append(this.Stack, strings.TrimSpace(stack))
 	}
+}
+
+func (this *failureReport) LoadFile(frame runtime.Frame) {
+	if _, found := this.Files[frame.File]; !found {
+		this.Files[frame.File] = readLines(frame.File)
+	}
+}
+func readLines(path string) []string {
+	all, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil
+	}
+	return strings.Split(string(all), "\n")
+}
+
+func (this *failureReport) extractLineOfCode(frame runtime.Frame) string {
+	file := this.Files[frame.File]
+	if len(file) < frame.Line {
+		return ""
+	}
+	return strings.TrimSpace(file[frame.Line-1])
 }
 
 func isFromGunit(frame runtime.Frame) bool {
@@ -80,7 +107,7 @@ func (this *failureReport) ParseTestName(name string) {
 func (this failureReport) String() string {
 	buffer := new(bytes.Buffer)
 	for i, stack := range this.Stack {
-		fmt.Fprintf(buffer, "(%d):      %s\n", len(this.Stack)-i-1, stack)
+		fmt.Fprintf(buffer, "(%d): %s\n", len(this.Stack)-i-1, stack)
 	}
 	fmt.Fprintf(buffer, this.Failure)
 	return buffer.String() + "\n\n"
