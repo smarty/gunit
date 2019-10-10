@@ -7,4 +7,5 @@ type testingT interface {
 	Fail()
 	Failed() bool
 	Fatalf(format string, args ...interface{})
+	Errorf(format string, args ...interface{})
 }
