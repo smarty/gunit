@@ -25,12 +25,12 @@ import (
 // on Fixture.So and the rich set of should-style assertions provided at
 // github.com/smartystreets/assertions/should
 type Fixture struct {
-	t       testingT
+	t       TestingT
 	log     *bytes.Buffer
 	verbose bool
 }
 
-func newFixture(t testingT, verbose bool) *Fixture {
+func newFixture(t TestingT, verbose bool) *Fixture {
 	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
 }
 
