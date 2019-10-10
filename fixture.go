@@ -34,6 +34,9 @@ func newFixture(t TestingT, verbose bool) *Fixture {
 	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
 }
 
+// T exposes the TestingT (*testing.T) instance.
+func (this *Fixture) T() TestingT { return this.t }
+
 // So is a convenience method for reporting assertion failure messages,
 // from the many assertion functions found in github.com/smartystreets/assertions/should.
 // Example: this.So(actual, should.Equal, expected)
