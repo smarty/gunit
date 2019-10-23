@@ -157,3 +157,14 @@ func (this *RunnerFixtureWithOnlyOneFocus) FocusTest1() {
 
 /**************************************************************************/
 /**************************************************************************/
+
+func TestWarningOfPrivateFixture(t *testing.T) {
+	RunSequential(new(privateFixture), t)
+}
+
+type privateFixture struct{ *Fixture }
+
+func (this *privateFixture) Test1() {}
+
+/**************************************************************************/
+/**************************************************************************/

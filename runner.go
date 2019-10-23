@@ -1,6 +1,7 @@
 package gunit
 
 import (
+	"fmt"
 	"reflect"
 	"runtime"
 	"testing"
@@ -25,6 +26,7 @@ func RunSequential(fixture interface{}, t *testing.T) {
 
 func run(fixture interface{}, t *testing.T, parallel bool) {
 	ensureEmbeddedFixture(fixture, t)
+	checkExportingFixture(fixture, t)
 
 	_, filename, _, _ := runtime.Caller(2)
 	positions := scan.LocateTestCases(filename)
@@ -42,6 +44,13 @@ func ensureEmbeddedFixture(fixture interface{}, t TestingT) {
 	}
 }
 
-type goodExample struct{ *Fixture }
+func checkExportingFixture(fixture interface{}, t TestingT) {
+	fixtureType := reflect.TypeOf(fixture)
+	if fixtureType.Name() == "" {
+		t.Log(fmt.Sprintf("Type (%v) is not exportable", fixtureType))
+	}
+}
 
-var embeddedGoodExample, _ = reflect.TypeOf(new(goodExample)).Elem().FieldByName("Fixture")
+type GoodExample struct{ *Fixture }
+
+var embeddedGoodExample, _ = reflect.TypeOf(new(GoodExample)).Elem().FieldByName("Fixture")

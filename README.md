@@ -47,6 +47,8 @@ func TestExampleFixture(t *testing.T) {
 	gunit.Run(new(ExampleFixture), t)
 }
 
+// Be sure that your fixture is exportable
+// otherwise you'll not be able to retrieve your fixture file:line report for errors
 type ExampleFixture struct {
 	*gunit.Fixture // Required: Embedding this type is what makes the magic happen.
 
