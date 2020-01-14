@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
-	"runtime"
 	"strings"
 )
 
@@ -101,11 +100,9 @@ func (this *Fixture) finalize() {
 	}
 }
 func (this *Fixture) recoverPanic(r interface{}) {
-	this.Println("PANIC:", r)
-	buffer := make([]byte, 1024*16)
-	runtime.Stack(buffer, false)
-	this.Println(strings.TrimSpace(string(buffer)))
 	this.t.Fail()
+	this.Println("PANIC:", r)
+	this.Println(panicReport())
 }
 
 const comparisonFormat = "Expected: [%s]\nActual:   [%s]"

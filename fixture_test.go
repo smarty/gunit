@@ -296,9 +296,6 @@ func TestPanicIsRecoveredAndPrintedByFinalize(t *testing.T) {
 	if !strings.Contains(output, "PANIC: GOPHERS!") {
 		t.Errorf("Expected string containing: 'PANIC: GOPHERS!' Got: '%s'", output)
 	}
-	if !strings.Contains(output, "gunit.(*Fixture).finalize") {
-		t.Error("Expected string containing stack trace information...")
-	}
 }
 
 func TestFailed(t *testing.T) {
