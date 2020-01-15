@@ -1,21 +1,22 @@
-package gunit
+package reports
 
 import (
+	"fmt"
 	"runtime/debug"
 	"strings"
 )
 
-func panicReport() string {
-	stack := strings.Split(string(debug.Stack()), "\n")
-	var filtered []string
-	filtered = append(filtered, "...")
-	for _, line := range stack {
+func PanicReport(r interface{}) string {
+	var builder strings.Builder
+	fmt.Fprintln(&builder, "PANIC:", r)
+	fmt.Fprintln(&builder, "...")
+	for _, line := range strings.Split(string(debug.Stack()), "\n") {
 		if panicLineIsFromGoRuntime(line) || panicLineIsFromGunit(line) {
 			continue
 		}
-		filtered = append(filtered, line)
+		fmt.Fprintln(&builder, line)
 	}
-	return strings.TrimSpace(strings.Join(filtered, "\n"))
+	return strings.TrimSpace(builder.String())
 }
 
 func panicLineIsFromGunit(line string) bool {
@@ -28,7 +29,10 @@ func panicLineIsFromGunit(line string) bool {
 	if strings.Contains(line, "github.com/smartystreets/gunit/test_case.go") {
 		return true
 	}
-	if strings.Contains(line, "github.com/smartystreets/gunit/panic_report.go") {
+	if strings.Contains(line, "github.com/smartystreets/gunit/reports/panic_report.go") {
+		return true
+	}
+	if strings.Contains(line, "github.com/smartystreets/gunit/reports.PanicReport(") {
 		return true
 	}
 	if strings.Contains(line, "github.com/smartystreets/gunit.") {

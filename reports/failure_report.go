@@ -1,4 +1,4 @@
-package gunit
+package reports
 
 import (
 	"bytes"
@@ -21,7 +21,7 @@ type failureReport struct {
 	Failure string
 }
 
-func newFailureReport(failure string) string {
+func FailureReport(failure string) string {
 	report := &failureReport{Failure: failure, Files: make(map[string][]string)}
 	report.ScanStack()
 	return report.String()
@@ -70,16 +70,21 @@ func (this *failureReport) extractLineOfCode(frame runtime.Frame) string {
 }
 
 func isFromGunit(frame runtime.Frame) bool {
+	const gunitBasicExamples = "github.com/smartystreets/gunit/basic_examples"
+	const gunitAdvancedExamples = "github.com/smartystreets/gunit/advanced_examples"
 	const gunitFolder = "github.com/smartystreets/gunit"
 	const goModuleVersionSeparator = "@" // Go module path w/ '@' separator example:
-	// /Users/mike/go/pkg/mod/github.com/smartystreets/gunit@v1.0.1-0.20190705210239-badfae8b004a/failure_report.go:23
+	// /Users/mike/go/pkg/mod/github.com/smartystreets/gunit@v1.0.1-0.20190705210239-badfae8b004a/reports/failure_report.go:23
 
 	dir := filepath.Dir(frame.File)
 	parts := strings.Split(dir, goModuleVersionSeparator)
 	if len(parts) > 1 {
 		dir = parts[0]
 	}
-	return strings.HasSuffix(dir, gunitFolder)
+	if strings.Contains(dir, gunitBasicExamples) || strings.Contains(dir, gunitAdvancedExamples) {
+		return false
+	}
+	return strings.Contains(dir, gunitFolder)
 }
 
 func isFromStandardLibrary(frame runtime.Frame) bool {
