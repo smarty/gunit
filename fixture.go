@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
-	"runtime"
 	"strings"
+
+	"github.com/smartystreets/gunit/reports"
 )
 
 // Fixture keeps track of test status (failed, passed, skipped) and
@@ -88,7 +89,7 @@ func (this *Fixture) Name() string                { return this.t.Name() }
 
 func (this *Fixture) fail(failure string) {
 	this.t.Fail()
-	this.Print(newFailureReport(failure))
+	this.Print(reports.FailureReport(failure))
 }
 
 func (this *Fixture) finalize() {
@@ -101,11 +102,8 @@ func (this *Fixture) finalize() {
 	}
 }
 func (this *Fixture) recoverPanic(r interface{}) {
-	this.Println("PANIC:", r)
-	buffer := make([]byte, 1024*16)
-	runtime.Stack(buffer, false)
-	this.Println(strings.TrimSpace(string(buffer)))
 	this.t.Fail()
+	this.Print(reports.PanicReport(r))
 }
 
 const comparisonFormat = "Expected: [%s]\nActual:   [%s]"
