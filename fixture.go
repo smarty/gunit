@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+	"runtime/debug"
 	"strings"
 
 	"github.com/smartystreets/gunit/reports"
@@ -103,7 +104,7 @@ func (this *Fixture) finalize() {
 }
 func (this *Fixture) recoverPanic(r interface{}) {
 	this.t.Fail()
-	this.Print(reports.PanicReport(r))
+	this.Print(reports.PanicReport(r, debug.Stack()))
 }
 
 const comparisonFormat = "Expected: [%s]\nActual:   [%s]"
