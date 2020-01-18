@@ -90,7 +90,7 @@ func (this *Fixture) Name() string                { return this.t.Name() }
 
 func (this *Fixture) fail(failure string) {
 	this.t.Fail()
-	this.Print(reports.FailureReport(failure))
+	this.Print(reports.FailureReport(failure, reports.StackTrace()))
 }
 
 func (this *Fixture) finalize() {

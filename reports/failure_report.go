@@ -5,95 +5,71 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
-	"runtime"
 	"strings"
 
 	"github.com/smartystreets/gunit/scan"
 )
 
+func FailureReport(failure string, stack []Frame) string {
+	report := newFailureReport(failure)
+	report.scanStack(stack)
+	return report.composeReport()
+}
+
+func newFailureReport(failure string) *failureReport {
+	return &failureReport{
+		failure: failure,
+		files:   make(map[string][]string),
+	}
+}
+
 type failureReport struct {
-	Stack []string
-	Files map[string][]string
+	stack []string
+	files map[string][]string
 
-	Method  string
-	Fixture string
-	Package string
-	Failure string
+	method   string
+	fixture  string
+	package_ string
+	failure  string
 }
 
-func FailureReport(failure string) string {
-	report := &failureReport{Failure: failure, Files: make(map[string][]string)}
-	report.ScanStack()
-	return report.String()
-}
-
-func (this *failureReport) ScanStack() {
-	stack := make([]uintptr, maxStackDepth)
-	runtime.Callers(0, stack)
-	frames := runtime.CallersFrames(stack)
-	for {
-		frame, more := frames.Next()
-		if !more {
-			break
-		}
-		if isFromStandardLibrary(frame) || isFromGunit(frame) {
+func (this *failureReport) scanStack(stack []Frame) {
+	for _, frame := range stack {
+		if frame.isFromStandardLibrary() || frame.isFromGunit() {
 			continue
 		}
-		this.ParseTestName(frame.Function)
-		this.LoadFile(frame)
+		this.parseTestName(frame.Function)
+		this.loadFile(frame)
 		code := this.extractLineOfCode(frame)
 		filename := filepath.Base(frame.File)
 		stack := fmt.Sprintf("%s // %s:%d", code, filename, frame.Line)
-		this.Stack = append(this.Stack, strings.TrimSpace(stack))
+		this.stack = append(this.stack, strings.TrimSpace(stack))
 	}
 }
 
-func (this *failureReport) LoadFile(frame runtime.Frame) {
-	if _, found := this.Files[frame.File]; !found {
-		this.Files[frame.File] = readLines(frame.File)
+func (this *failureReport) loadFile(frame Frame) {
+	if _, found := this.files[frame.File]; !found {
+		this.files[frame.File] = readLines(frame.File)
 	}
 }
 func readLines(path string) []string {
-	all, err := ioutil.ReadFile(path)
+	all, err := ioutil.ReadFile(path) // TODO: Fake filesystem!
 	if err != nil {
 		return nil
 	}
 	return strings.Split(string(all), "\n")
 }
 
-func (this *failureReport) extractLineOfCode(frame runtime.Frame) string {
-	file := this.Files[frame.File]
+func (this *failureReport) extractLineOfCode(frame Frame) string {
+	file := this.files[frame.File]
 	if len(file) < frame.Line {
 		return ""
 	}
 	return strings.TrimSpace(file[frame.Line-1])
 }
 
-func isFromGunit(frame runtime.Frame) bool {
-	const gunitBasicExamples = "github.com/smartystreets/gunit/basic_examples"
-	const gunitAdvancedExamples = "github.com/smartystreets/gunit/advanced_examples"
-	const gunitFolder = "github.com/smartystreets/gunit"
-	const goModuleVersionSeparator = "@" // Go module path w/ '@' separator example:
-	// /Users/mike/go/pkg/mod/github.com/smartystreets/gunit@v1.0.1-0.20190705210239-badfae8b004a/reports/failure_report.go:23
-
-	dir := filepath.Dir(frame.File)
-	parts := strings.Split(dir, goModuleVersionSeparator)
-	if len(parts) > 1 {
-		dir = parts[0]
-	}
-	if strings.Contains(dir, gunitBasicExamples) || strings.Contains(dir, gunitAdvancedExamples) {
-		return false
-	}
-	return strings.Contains(dir, gunitFolder)
-}
-
-func isFromStandardLibrary(frame runtime.Frame) bool {
-	return strings.Contains(frame.File, "/libexec/src/") || // homebrew
-		strings.Contains(frame.File, "/go/src/") // traditional
-}
-
-func (this *failureReport) ParseTestName(name string) {
-	if len(this.Method) > 0 {
+func (this *failureReport) parseTestName(name string) {
+	if len(this.method) > 0 {
 		return
 	}
 	parts := strings.Split(name, ".")
@@ -104,18 +80,18 @@ func (this *failureReport) ParseTestName(name string) {
 	}
 
 	if method := parts[last]; scan.IsTestCase(method) {
-		this.Method = method
-		this.Fixture = parts[last-1]
-		this.Package = strings.Join(parts[0:last-1], ".")
+		this.method = method
+		this.fixture = parts[last-1]
+		this.package_ = strings.Join(parts[0:last-1], ".")
 	}
 }
 
-func (this failureReport) String() string {
+func (this failureReport) composeReport() string {
 	buffer := new(bytes.Buffer)
-	for i, stack := range this.Stack {
-		fmt.Fprintf(buffer, "(%d): %s\n", len(this.Stack)-i-1, stack)
+	for i, stack := range this.stack {
+		fmt.Fprintf(buffer, "(%d): %s\n", len(this.stack)-i-1, stack)
 	}
-	fmt.Fprintf(buffer, this.Failure)
+	fmt.Fprintf(buffer, this.failure)
 	return buffer.String() + "\n\n"
 }
 
