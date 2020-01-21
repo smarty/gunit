@@ -11,26 +11,28 @@ import (
 )
 
 func FailureReport(failure string, stack []Frame) string {
-	report := newFailureReport(failure)
+	report := newFailureReport(failure, readFile)
 	report.scanStack(stack)
 	return report.composeReport()
 }
 
-func newFailureReport(failure string) *failureReport {
-	return &failureReport{
-		failure: failure,
-		files:   make(map[string][]string),
-	}
-}
-
 type failureReport struct {
-	stack []string
-	files map[string][]string
+	stack  []string
+	files  map[string][]string
+	reader fileReader
 
 	method   string
 	fixture  string
 	package_ string
 	failure  string
+}
+
+func newFailureReport(failure string, reader fileReader) *failureReport {
+	return &failureReport{
+		failure: failure,
+		files:   make(map[string][]string),
+		reader:  reader,
+	}
 }
 
 func (this *failureReport) scanStack(stack []Frame) {
@@ -49,15 +51,8 @@ func (this *failureReport) scanStack(stack []Frame) {
 
 func (this *failureReport) loadFile(frame Frame) {
 	if _, found := this.files[frame.File]; !found {
-		this.files[frame.File] = readLines(frame.File)
+		this.files[frame.File] = strings.Split(this.reader(frame.File), "\n")
 	}
-}
-func readLines(path string) []string {
-	all, err := ioutil.ReadFile(path) // TODO: Fake filesystem!
-	if err != nil {
-		return nil
-	}
-	return strings.Split(string(all), "\n")
 }
 
 func (this *failureReport) extractLineOfCode(frame Frame) string {
@@ -96,3 +91,13 @@ func (this failureReport) composeReport() string {
 }
 
 const maxStackDepth = 32
+
+type fileReader func(path string) string
+
+func readFile(path string) string {
+	raw, err := ioutil.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+	return string(raw)
+}
