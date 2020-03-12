@@ -7,7 +7,7 @@ fmt:
 	go fmt ./...
 
 test:
-	go test -timeout=1s -race -coverprofile=coverage.txt -covermode=atomic .
+	go test -timeout=1s -race -covermode=atomic .
 
 compile:
 	go build ./...
