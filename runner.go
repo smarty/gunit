@@ -42,6 +42,4 @@ func ensureEmbeddedFixture(fixture interface{}, t TestingT) {
 	}
 }
 
-type goodExample struct{ *Fixture }
-
-var embeddedGoodExample, _ = reflect.TypeOf(new(goodExample)).Elem().FieldByName("Fixture")
+var embeddedGoodExample, _ = reflect.TypeOf(new(struct{ *Fixture })).Elem().FieldByName("Fixture")
