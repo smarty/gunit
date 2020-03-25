@@ -19,6 +19,7 @@ func Run(fixture interface{}, t *testing.T) {
 // RunSequential, like Run receives an instance of a struct that embeds *Fixture.
 // The fixture is run in much the same way, except that it will not be run in
 // parallel with other fixtures in the same package.
+// Deprecated
 func RunSequential(fixture interface{}, t *testing.T) {
 	run(fixture, t, false)
 }
