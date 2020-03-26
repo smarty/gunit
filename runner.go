@@ -16,7 +16,7 @@ func Run(fixture interface{}, t *testing.T, options ...option) {
 	if config.ParallelFixture() {
 		t.Parallel()
 	}
-	run(fixture, t, config.ParallelTestCases())
+	run(fixture, t, config)
 }
 
 // Deprecated
@@ -25,16 +25,16 @@ func Run(fixture interface{}, t *testing.T, options ...option) {
 // The fixture is run in much the same way, except that it will not be run in
 // parallel with other fixtures in the same package.
 func RunSequential(fixture interface{}, t *testing.T) {
-	run(fixture, t, false)
+	run(fixture, t, newConfig())
 }
 
-func run(fixture interface{}, t *testing.T, parallel bool) {
+func run(fixture interface{}, t *testing.T, config configuration) {
 	ensureEmbeddedFixture(fixture, t)
 
 	_, filename, _, _ := runtime.Caller(2)
 	positions := scan.LocateTestCases(filename)
 
-	runner := newFixtureRunner(fixture, t, parallel, positions)
+	runner := newFixtureRunner(fixture, t, config.ParallelTestCases(), positions)
 	runner.ScanFixtureForTestCases()
 	runner.RunTestCases()
 }
