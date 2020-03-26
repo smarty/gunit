@@ -24,7 +24,7 @@ type FixtureWithoutEmbeddedGunitFixture struct {
 /**************************************************************************/
 
 func TestMarkedAsSkippedIfNoTestCases(t *testing.T) {
-	RunSequential(new(FixtureWithNoTestCases), t)
+	Run(new(FixtureWithNoTestCases), t, Options.AllSequential())
 }
 
 type FixtureWithNoTestCases struct{ *Fixture }
@@ -36,7 +36,7 @@ func TestRunnerFixtureWithSetupAndTeardown(t *testing.T) {
 	invocations_A = []string{}
 
 	defer assertSetupTeardownInvocationsInCorrectOrder(t)
-	RunSequential(new(RunnerFixtureSetupTeardown), t)
+	Run(new(RunnerFixtureSetupTeardown), t, Options.AllSequential())
 }
 func assertSetupTeardownInvocationsInCorrectOrder(t *testing.T) {
 	expectedInvocations := []string{
@@ -70,7 +70,7 @@ func TestRunnerFixture(t *testing.T) {
 	invocations_B = []string{}
 
 	defer assertInvocationsInCorrectOrder(t)
-	RunSequential(new(RunnerFixturePlain), t)
+	Run(new(RunnerFixturePlain), t, Options.AllSequential())
 }
 func assertInvocationsInCorrectOrder(t *testing.T) {
 	expectedInvocations := []string{"Test3", "Test1"} // Test2 and Test4 are always skipped
@@ -95,7 +95,7 @@ func (this *RunnerFixturePlain) SkipLongTest4() { invocations_B = append(invocat
 func TestRunnerFixtureWithFocus(t *testing.T) {
 	invocations_C = []string{}
 	defer assertFocusIsOnlyInvocation(t)
-	RunSequential(new(RunnerFixtureFocus), t)
+	Run(new(RunnerFixtureFocus), t, Options.AllSequential())
 }
 func assertFocusIsOnlyInvocation(t *testing.T) {
 	assertions.New(t).So(invocations_C, should.Resemble, []string{"Test3"})
@@ -116,7 +116,7 @@ func (this *RunnerFixtureFocus) Test4()      { invocations_C = append(invocation
 func TestRunnerFixtureWithFocusLong(t *testing.T) {
 	invocations_D = []string{}
 	defer assertFocusLongIsOnlyInvocation(t)
-	RunSequential(new(RunnerFixtureFocusLong), t)
+	Run(new(RunnerFixtureFocusLong), t, Options.AllSequential())
 }
 func assertFocusLongIsOnlyInvocation(t *testing.T) {
 	expected := []string{"Test3"}
@@ -141,7 +141,7 @@ func (this *RunnerFixtureFocusLong) Test4()          { invocations_D = append(in
 func TestRunnerFixtureWithOnlyOneFocus(t *testing.T) {
 	invocations_E = []string{}
 	defer assertSingleFocusIsOnlyInvocation(t)
-	RunSequential(new(RunnerFixtureWithOnlyOneFocus), t)
+	Run(new(RunnerFixtureWithOnlyOneFocus), t, Options.AllSequential())
 }
 func assertSingleFocusIsOnlyInvocation(t *testing.T) {
 	assertions.New(t).So(invocations_E, should.Resemble, []string{"Test1"})

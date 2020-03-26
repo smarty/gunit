@@ -1,10 +1,12 @@
 package gunit
 
+type option func(*configuration)
+
 var Options options
 
 type options struct{}
 
-// SkipFixture is an option meant to be passed to gunit.Run(...)
+// SkipAll is an option meant to be passed to gunit.Run(...)
 // and causes each and every "Test" method in the corresponding
 // fixture to be skipped (as if each had been prefixed with
 // "Skip"). Even "Test" methods marked with the "Focus" prefix
@@ -12,11 +14,13 @@ type options struct{}
 //
 // TODO
 //
-func (options) SkipFixture() option {
-	return optionSkipFixture
+func (options) SkipAll() option {
+	return func(this *configuration) {
+		this.SkippedTestCases = true
+	}
 }
 
-// LongRunningFixture is an option meant to be passed to
+// LongRunning is an option meant to be passed to
 // gunit.Run(...) and, in the case that the -short testing
 // flag has been passed at the command line, it causes each
 // and every "Test" method in the corresponding fixture to
@@ -24,8 +28,10 @@ func (options) SkipFixture() option {
 //
 // TODO
 //
-func (options) LongRunningFixture() option {
-	return optionLongRunningFixture
+func (options) LongRunning() option {
+	return func(this *configuration) {
+		this.LongRunningTestCases = true
+	}
 }
 
 // SequentialFixture is an option meant to be passed to
@@ -33,7 +39,9 @@ func (options) LongRunningFixture() option {
 // is not to be run in parallel with any tests (by not calling
 // t.Parallel() on the provided *testing.T).
 func (options) SequentialFixture() option {
-	return optionSequentialFixture
+	return func(this *configuration) {
+		this.SequentialFixture = true
+	}
 }
 
 // SequentialTestCases is an option meant to be passed to
@@ -42,27 +50,28 @@ func (options) SequentialFixture() option {
 // corresponding to "Test" methods which are created during
 // the natural course of the corresponding invocation of
 // gunit.Run(...).
-//
-// TODO
-//
 func (options) SequentialTestCases() option {
-	return optionSequentialTestCases
+	return func(this *configuration) {
+		this.SequentialTestCases = true
+	}
 }
 
-type option string
+// AllSequential() has the combined effect of passing the
+// following options to gunit.Run(...):
+// 1. SequentialFixture
+// 2. SequentialTestCases
+func (options) AllSequential() option {
+	return Options.composite(
+		Options.SequentialFixture(),
+		Options.SequentialTestCases(),
+	)
+}
 
-const (
-	optionSequentialFixture   option = "option:SequentialFixture"
-	optionSequentialTestCases option = "option:SequentialTestCases"
-	optionSkipFixture         option = "option:SkipFixture"
-	optionLongRunningFixture  option = "option:LongRunningFixture"
-)
-
-func contains(options []option, value option) bool {
-	for _, option := range options {
-		if option == value {
-			return true
+// composite allows graceful chaining of options.
+func (options) composite(options ...option) option {
+	return func(this *configuration) {
+		for _, option := range options {
+			option(this)
 		}
 	}
-	return false
 }
