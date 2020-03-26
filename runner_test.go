@@ -169,3 +169,27 @@ func (this *FixtureSkipAll) SkipLongTest4() { invocations_F = append(invocations
 
 /**************************************************************************/
 /**************************************************************************/
+
+func TestRunnerFixtureLongRunning(t *testing.T) {
+	Run(new(PlainFixtureLongRunning), t, Options.SequentialTestCases(), Options.LongRunning())
+	assertInvocationsInCorrectOrder_LongRunning(t)
+}
+func assertInvocationsInCorrectOrder_LongRunning(t *testing.T) {
+	expectedInvocations := []string{"Test1", "Test3"} // Test2 and Test4 are always skipped
+	if testing.Short() {
+		expectedInvocations = nil
+	}
+	assertions.New(t).So(invocations_G, should.Resemble, expectedInvocations)
+}
+
+var invocations_G []string
+
+type PlainFixtureLongRunning struct{ *Fixture }
+
+func (this *PlainFixtureLongRunning) Test1()     { invocations_G = append(invocations_G, "Test1") }
+func (this *PlainFixtureLongRunning) SkipTest2() { invocations_G = append(invocations_G, "Test2") }
+func (this *PlainFixtureLongRunning) Test3()     { invocations_G = append(invocations_G, "Test3") }
+func (this *PlainFixtureLongRunning) SkipTest4() { invocations_G = append(invocations_G, "Test4") }
+
+/**************************************************************************/
+/**************************************************************************/

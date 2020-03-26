@@ -28,7 +28,7 @@ func newTestCase(methodIndex int, method fixtureMethodInfo, config configuration
 		methodIndex: methodIndex,
 		description: method.name,
 		skipped:     method.isSkippedTest || config.SkippedTestCases,
-		long:        method.isLongTest,
+		long:        method.isLongTest || config.LongRunningTestCases,
 		positions:   positions,
 	}
 }

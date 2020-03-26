@@ -22,9 +22,6 @@ func (options) SkipAll() option {
 // flag has been passed at the command line, it causes each
 // and every "Test" method in the corresponding fixture to
 // be skipped (as if each had been prefixed with "Skip").
-//
-// TODO
-//
 func (options) LongRunning() option {
 	return func(this *configuration) {
 		this.LongRunningTestCases = true
