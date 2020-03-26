@@ -39,8 +39,6 @@ type FixtureWithNoTestCases struct{ *Fixture }
 func TestRunnerFixtureWithSetupAndTeardown(t *testing.T) {
 	t.Parallel()
 
-	invocations_A = []string{}
-
 	defer assertSetupTeardownInvocationsInCorrectOrder(t)
 	Run(new(RunnerFixtureSetupTeardown), t, Options.AllSequential())
 }
@@ -75,8 +73,6 @@ func (this *RunnerFixtureSetupTeardown) SkipLongTest4() {
 func TestRunnerFixture(t *testing.T) {
 	t.Parallel()
 
-	invocations_B = []string{}
-
 	defer assertInvocationsInCorrectOrder(t)
 	Run(new(RunnerFixturePlain), t, Options.AllSequential())
 }
@@ -103,7 +99,6 @@ func (this *RunnerFixturePlain) SkipLongTest4() { invocations_B = append(invocat
 func TestRunnerFixtureWithFocus(t *testing.T) {
 	t.Parallel()
 
-	invocations_C = []string{}
 	defer assertFocusIsOnlyInvocation(t)
 	Run(new(RunnerFixtureFocus), t, Options.AllSequential())
 }
@@ -126,14 +121,13 @@ func (this *RunnerFixtureFocus) Test4()      { invocations_C = append(invocation
 func TestRunnerFixtureWithFocusLong(t *testing.T) {
 	t.Parallel()
 
-	invocations_D = []string{}
 	defer assertFocusLongIsOnlyInvocation(t)
 	Run(new(RunnerFixtureFocusLong), t, Options.AllSequential())
 }
 func assertFocusLongIsOnlyInvocation(t *testing.T) {
 	expected := []string{"Test3"}
 	if testing.Short() {
-		expected = []string{}
+		expected = nil
 	}
 	assertions.New(t).So(invocations_D, should.Resemble, expected)
 }
@@ -153,7 +147,6 @@ func (this *RunnerFixtureFocusLong) Test4()          { invocations_D = append(in
 func TestRunnerFixtureWithOnlyOneFocus(t *testing.T) {
 	t.Parallel()
 
-	invocations_E = []string{}
 	defer assertSingleFocusIsOnlyInvocation(t)
 	Run(new(RunnerFixtureWithOnlyOneFocus), t, Options.AllSequential())
 }
