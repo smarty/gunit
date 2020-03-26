@@ -11,7 +11,7 @@ import (
 // Run receives an instance of a struct that embeds *Fixture.
 // The struct definition may include Setup*, Teardown*, and Test*
 // methods which will be run as an xUnit-style test fixture.
-func Run(fixture interface{}, t *testing.T) {
+func Run(fixture interface{}, t *testing.T, options ...option) {
 	t.Parallel()
 	run(fixture, t, true)
 }
