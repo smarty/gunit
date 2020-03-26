@@ -26,10 +26,10 @@ func Run(fixture interface{}, t *testing.T, options ...option) {
 //
 // Deprecated
 //
-// (See the options struct methods for more flexible ways of achieving sequential execution.)
+// Use Run(fixture, t, Options.AllSequential()) instead.
 //
 func RunSequential(fixture interface{}, t *testing.T) {
-	run(fixture, t, newConfig())
+	Run(fixture, t, Options.AllSequential())
 }
 
 func run(fixture interface{}, t *testing.T, config configuration) {
