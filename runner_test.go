@@ -39,8 +39,8 @@ type FixtureWithNoTestCases struct{ *Fixture }
 func TestRunnerFixtureWithSetupAndTeardown(t *testing.T) {
 	t.Parallel()
 
-	defer assertSetupTeardownInvocationsInCorrectOrder(t)
 	Run(new(RunnerFixtureSetupTeardown), t, Options.AllSequential())
+	assertSetupTeardownInvocationsInCorrectOrder(t)
 }
 func assertSetupTeardownInvocationsInCorrectOrder(t *testing.T) {
 	expectedInvocations := []string{
@@ -73,8 +73,8 @@ func (this *RunnerFixtureSetupTeardown) SkipLongTest4() {
 func TestRunnerFixture(t *testing.T) {
 	t.Parallel()
 
-	defer assertInvocationsInCorrectOrder(t)
 	Run(new(RunnerFixturePlain), t, Options.AllSequential())
+	assertInvocationsInCorrectOrder(t)
 }
 func assertInvocationsInCorrectOrder(t *testing.T) {
 	expectedInvocations := []string{"Test3", "Test1"} // Test2 and Test4 are always skipped
@@ -99,8 +99,8 @@ func (this *RunnerFixturePlain) SkipLongTest4() { invocations_B = append(invocat
 func TestRunnerFixtureWithFocus(t *testing.T) {
 	t.Parallel()
 
-	defer assertFocusIsOnlyInvocation(t)
 	Run(new(RunnerFixtureFocus), t, Options.AllSequential())
+	assertFocusIsOnlyInvocation(t)
 }
 func assertFocusIsOnlyInvocation(t *testing.T) {
 	assertions.New(t).So(invocations_C, should.Resemble, []string{"Test3"})
@@ -121,8 +121,8 @@ func (this *RunnerFixtureFocus) Test4()      { invocations_C = append(invocation
 func TestRunnerFixtureWithFocusLong(t *testing.T) {
 	t.Parallel()
 
-	defer assertFocusLongIsOnlyInvocation(t)
 	Run(new(RunnerFixtureFocusLong), t, Options.AllSequential())
+	assertFocusLongIsOnlyInvocation(t)
 }
 func assertFocusLongIsOnlyInvocation(t *testing.T) {
 	expected := []string{"Test3"}
@@ -147,8 +147,8 @@ func (this *RunnerFixtureFocusLong) Test4()          { invocations_D = append(in
 func TestRunnerFixtureWithOnlyOneFocus(t *testing.T) {
 	t.Parallel()
 
-	defer assertSingleFocusIsOnlyInvocation(t)
 	Run(new(RunnerFixtureWithOnlyOneFocus), t, Options.AllSequential())
+	assertSingleFocusIsOnlyInvocation(t)
 }
 func assertSingleFocusIsOnlyInvocation(t *testing.T) {
 	assertions.New(t).So(invocations_E, should.Resemble, []string{"Test1"})
