@@ -19,11 +19,15 @@ func Run(fixture interface{}, t *testing.T, options ...option) {
 	run(fixture, t, config)
 }
 
-// Deprecated
-//     - pass Options.SequentialFixture() to Run(...) instead
 // RunSequential, like Run receives an instance of a struct that embeds *Fixture.
 // The fixture is run in much the same way, except that it will not be run in
-// parallel with other fixtures in the same package.
+// parallel with other fixtures in the same package, nor will test cases of the
+// corresponding fixture be run in parallel with each other.
+//
+// Deprecated
+//
+// (See the options struct methods for more flexible ways of achieving sequential execution.)
+//
 func RunSequential(fixture interface{}, t *testing.T) {
 	run(fixture, t, newConfig())
 }
