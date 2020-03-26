@@ -34,7 +34,7 @@ func run(fixture interface{}, t *testing.T, config configuration) {
 	_, filename, _, _ := runtime.Caller(2)
 	positions := scan.LocateTestCases(filename)
 
-	runner := newFixtureRunner(fixture, t, config.ParallelTestCases(), positions)
+	runner := newFixtureRunner(fixture, t, config, positions)
 	runner.ScanFixtureForTestCases()
 	runner.RunTestCases()
 }

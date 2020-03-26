@@ -7,9 +7,9 @@ import (
 	"github.com/smartystreets/gunit/scan"
 )
 
-func newFixtureRunner(fixture interface{}, t *testing.T, parallel bool, positions scan.TestCasePositions) *fixtureRunner {
+func newFixtureRunner(fixture interface{}, t *testing.T, config configuration, positions scan.TestCasePositions) *fixtureRunner {
 	return &fixtureRunner{
-		parallel:    parallel,
+		parallel:    config.ParallelTestCases(),
 		setup:       -1,
 		teardown:    -1,
 		outerT:      t,
