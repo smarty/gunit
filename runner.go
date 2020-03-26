@@ -12,11 +12,7 @@ import (
 // The struct definition may include Setup*, Teardown*, and Test*
 // methods which will be run as an xUnit-style test fixture.
 func Run(fixture interface{}, t *testing.T, options ...option) {
-	config := newConfig(options...)
-	if config.ParallelFixture() {
-		t.Parallel()
-	}
-	run(fixture, t, config)
+	run(fixture, t, newConfig(options...))
 }
 
 // RunSequential, like Run receives an instance of a struct that embeds *Fixture.

@@ -13,6 +13,9 @@ func newFixtureRunner(
 	config configuration,
 	positions scan.TestCasePositions,
 ) *fixtureRunner {
+	if config.ParallelFixture() {
+		outerT.Parallel()
+	}
 	return &fixtureRunner{
 		config:      config,
 		setup:       -1,
