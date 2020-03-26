@@ -49,10 +49,14 @@ func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMeth
 	case method.isTeardown:
 		this.teardown = methodIndex
 	case method.isFocusTest:
-		this.focus = append(this.focus, newTestCase(methodIndex, method, this.parallel, this.positions))
+		this.focus = append(this.focus, this.buildTestCase(methodIndex, method))
 	case method.isTest:
-		this.tests = append(this.tests, newTestCase(methodIndex, method, this.parallel, this.positions))
+		this.tests = append(this.tests, this.buildTestCase(methodIndex, method))
 	}
+}
+
+func (this *fixtureRunner) buildTestCase(methodIndex int, method fixtureMethodInfo) *testCase {
+	return newTestCase(methodIndex, method, this.parallel, this.positions)
 }
 
 func (this *fixtureRunner) RunTestCases() {
