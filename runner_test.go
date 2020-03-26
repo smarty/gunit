@@ -26,9 +26,7 @@ type FixtureWithoutEmbeddedGunitFixture struct {
 /**************************************************************************/
 
 func TestMarkedAsSkippedIfNoTestCases(t *testing.T) {
-	t.Parallel()
-
-	Run(new(FixtureWithNoTestCases), t, Options.AllSequential())
+	Run(new(FixtureWithNoTestCases), t, Options.SequentialTestCases())
 }
 
 type FixtureWithNoTestCases struct{ *Fixture }
@@ -37,9 +35,7 @@ type FixtureWithNoTestCases struct{ *Fixture }
 /**************************************************************************/
 
 func TestRunnerFixtureWithSetupAndTeardown(t *testing.T) {
-	t.Parallel()
-
-	Run(new(FixtureWithSetupTeardown), t, Options.AllSequential())
+	Run(new(FixtureWithSetupTeardown), t, Options.SequentialTestCases())
 	assertSetupTeardownInvocationsInCorrectOrder(t)
 }
 func assertSetupTeardownInvocationsInCorrectOrder(t *testing.T) {
@@ -69,9 +65,7 @@ func (this *FixtureWithSetupTeardown) SkipLongTest4() { invocations_A = append(i
 /**************************************************************************/
 
 func TestRunnerFixture(t *testing.T) {
-	t.Parallel()
-
-	Run(new(PlainFixture), t, Options.AllSequential())
+	Run(new(PlainFixture), t, Options.SequentialTestCases())
 	assertInvocationsInCorrectOrder(t)
 }
 func assertInvocationsInCorrectOrder(t *testing.T) {
@@ -95,9 +89,7 @@ func (this *PlainFixture) SkipLongTest4() { invocations_B = append(invocations_B
 /**************************************************************************/
 
 func TestRunnerFixtureWithFocus(t *testing.T) {
-	t.Parallel()
-
-	Run(new(FixtureWithFocus), t, Options.AllSequential())
+	Run(new(FixtureWithFocus), t, Options.SequentialTestCases())
 	assertFocusIsOnlyInvocation(t)
 }
 func assertFocusIsOnlyInvocation(t *testing.T) {
@@ -117,9 +109,7 @@ func (this *FixtureWithFocus) Test4()      { invocations_C = append(invocations_
 /**************************************************************************/
 
 func TestRunnerFixtureWithFocusLong(t *testing.T) {
-	t.Parallel()
-
-	Run(new(FixtureWithFocusLong), t, Options.AllSequential())
+	Run(new(FixtureWithFocusLong), t, Options.SequentialTestCases())
 	assertFocusLongIsOnlyInvocation(t)
 }
 func assertFocusLongIsOnlyInvocation(t *testing.T) {
@@ -143,9 +133,7 @@ func (this *FixtureWithFocusLong) Test4()          { invocations_D = append(invo
 /**************************************************************************/
 
 func TestRunnerFixtureWithOnlyOneFocus(t *testing.T) {
-	t.Parallel()
-
-	Run(new(RunnerFixtureWithOnlyOneFocus), t, Options.AllSequential())
+	Run(new(RunnerFixtureWithOnlyOneFocus), t, Options.SequentialTestCases())
 	assertSingleFocusIsOnlyInvocation(t)
 }
 func assertSingleFocusIsOnlyInvocation(t *testing.T) {
