@@ -39,7 +39,7 @@ type FixtureWithNoTestCases struct{ *Fixture }
 func TestRunnerFixtureWithSetupAndTeardown(t *testing.T) {
 	t.Parallel()
 
-	Run(new(RunnerFixtureSetupTeardown), t, Options.AllSequential())
+	Run(new(FixtureWithSetupTeardown), t, Options.AllSequential())
 	assertSetupTeardownInvocationsInCorrectOrder(t)
 }
 func assertSetupTeardownInvocationsInCorrectOrder(t *testing.T) {
@@ -56,16 +56,14 @@ func assertSetupTeardownInvocationsInCorrectOrder(t *testing.T) {
 
 var invocations_A []string
 
-type RunnerFixtureSetupTeardown struct{ *Fixture }
+type FixtureWithSetupTeardown struct{ *Fixture }
 
-func (this *RunnerFixtureSetupTeardown) Setup()     { invocations_A = append(invocations_A, "Setup") }
-func (this *RunnerFixtureSetupTeardown) Teardown()  { invocations_A = append(invocations_A, "Teardown") }
-func (this *RunnerFixtureSetupTeardown) Test1()     { invocations_A = append(invocations_A, "Test1") }
-func (this *RunnerFixtureSetupTeardown) SkipTest2() { invocations_A = append(invocations_A, "Test2") }
-func (this *RunnerFixtureSetupTeardown) LongTest3() { invocations_A = append(invocations_A, "Test3") }
-func (this *RunnerFixtureSetupTeardown) SkipLongTest4() {
-	invocations_A = append(invocations_A, "Test4")
-}
+func (this *FixtureWithSetupTeardown) Setup()         { invocations_A = append(invocations_A, "Setup") }
+func (this *FixtureWithSetupTeardown) Teardown()      { invocations_A = append(invocations_A, "Teardown") }
+func (this *FixtureWithSetupTeardown) Test1()         { invocations_A = append(invocations_A, "Test1") }
+func (this *FixtureWithSetupTeardown) SkipTest2()     { invocations_A = append(invocations_A, "Test2") }
+func (this *FixtureWithSetupTeardown) LongTest3()     { invocations_A = append(invocations_A, "Test3") }
+func (this *FixtureWithSetupTeardown) SkipLongTest4() { invocations_A = append(invocations_A, "Test4") }
 
 /**************************************************************************/
 /**************************************************************************/
@@ -73,7 +71,7 @@ func (this *RunnerFixtureSetupTeardown) SkipLongTest4() {
 func TestRunnerFixture(t *testing.T) {
 	t.Parallel()
 
-	Run(new(RunnerFixturePlain), t, Options.AllSequential())
+	Run(new(PlainFixture), t, Options.AllSequential())
 	assertInvocationsInCorrectOrder(t)
 }
 func assertInvocationsInCorrectOrder(t *testing.T) {
@@ -86,12 +84,12 @@ func assertInvocationsInCorrectOrder(t *testing.T) {
 
 var invocations_B []string
 
-type RunnerFixturePlain struct{ *Fixture }
+type PlainFixture struct{ *Fixture }
 
-func (this *RunnerFixturePlain) Test1()         { invocations_B = append(invocations_B, "Test1") }
-func (this *RunnerFixturePlain) SkipTest2()     { invocations_B = append(invocations_B, "Test2") }
-func (this *RunnerFixturePlain) LongTest3()     { invocations_B = append(invocations_B, "Test3") }
-func (this *RunnerFixturePlain) SkipLongTest4() { invocations_B = append(invocations_B, "Test4") }
+func (this *PlainFixture) Test1()         { invocations_B = append(invocations_B, "Test1") }
+func (this *PlainFixture) SkipTest2()     { invocations_B = append(invocations_B, "Test2") }
+func (this *PlainFixture) LongTest3()     { invocations_B = append(invocations_B, "Test3") }
+func (this *PlainFixture) SkipLongTest4() { invocations_B = append(invocations_B, "Test4") }
 
 /**************************************************************************/
 /**************************************************************************/
@@ -99,7 +97,7 @@ func (this *RunnerFixturePlain) SkipLongTest4() { invocations_B = append(invocat
 func TestRunnerFixtureWithFocus(t *testing.T) {
 	t.Parallel()
 
-	Run(new(RunnerFixtureFocus), t, Options.AllSequential())
+	Run(new(FixtureWithFocus), t, Options.AllSequential())
 	assertFocusIsOnlyInvocation(t)
 }
 func assertFocusIsOnlyInvocation(t *testing.T) {
@@ -108,12 +106,12 @@ func assertFocusIsOnlyInvocation(t *testing.T) {
 
 var invocations_C []string
 
-type RunnerFixtureFocus struct{ *Fixture }
+type FixtureWithFocus struct{ *Fixture }
 
-func (this *RunnerFixtureFocus) Test1()      { invocations_C = append(invocations_C, "Test1") }
-func (this *RunnerFixtureFocus) Test2()      { invocations_C = append(invocations_C, "Test2") }
-func (this *RunnerFixtureFocus) FocusTest3() { invocations_C = append(invocations_C, "Test3") }
-func (this *RunnerFixtureFocus) Test4()      { invocations_C = append(invocations_C, "Test4") }
+func (this *FixtureWithFocus) Test1()      { invocations_C = append(invocations_C, "Test1") }
+func (this *FixtureWithFocus) Test2()      { invocations_C = append(invocations_C, "Test2") }
+func (this *FixtureWithFocus) FocusTest3() { invocations_C = append(invocations_C, "Test3") }
+func (this *FixtureWithFocus) Test4()      { invocations_C = append(invocations_C, "Test4") }
 
 /**************************************************************************/
 /**************************************************************************/
@@ -121,7 +119,7 @@ func (this *RunnerFixtureFocus) Test4()      { invocations_C = append(invocation
 func TestRunnerFixtureWithFocusLong(t *testing.T) {
 	t.Parallel()
 
-	Run(new(RunnerFixtureFocusLong), t, Options.AllSequential())
+	Run(new(FixtureWithFocusLong), t, Options.AllSequential())
 	assertFocusLongIsOnlyInvocation(t)
 }
 func assertFocusLongIsOnlyInvocation(t *testing.T) {
@@ -134,12 +132,12 @@ func assertFocusLongIsOnlyInvocation(t *testing.T) {
 
 var invocations_D []string
 
-type RunnerFixtureFocusLong struct{ *Fixture }
+type FixtureWithFocusLong struct{ *Fixture }
 
-func (this *RunnerFixtureFocusLong) Test1()          { invocations_D = append(invocations_D, "Test1") }
-func (this *RunnerFixtureFocusLong) Test2()          { invocations_D = append(invocations_D, "Test2") }
-func (this *RunnerFixtureFocusLong) FocusLongTest3() { invocations_D = append(invocations_D, "Test3") }
-func (this *RunnerFixtureFocusLong) Test4()          { invocations_D = append(invocations_D, "Test4") }
+func (this *FixtureWithFocusLong) Test1()          { invocations_D = append(invocations_D, "Test1") }
+func (this *FixtureWithFocusLong) Test2()          { invocations_D = append(invocations_D, "Test2") }
+func (this *FixtureWithFocusLong) FocusLongTest3() { invocations_D = append(invocations_D, "Test3") }
+func (this *FixtureWithFocusLong) Test4()          { invocations_D = append(invocations_D, "Test4") }
 
 /**************************************************************************/
 /**************************************************************************/
