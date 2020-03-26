@@ -22,9 +22,9 @@ type testCase struct {
 	positions        scan.TestCasePositions
 }
 
-func newTestCase(methodIndex int, method fixtureMethodInfo, parallel bool, positions scan.TestCasePositions) *testCase {
+func newTestCase(methodIndex int, method fixtureMethodInfo, config configuration, positions scan.TestCasePositions) *testCase {
 	return &testCase{
-		parallel:    parallel,
+		parallel:    config.ParallelTestCases(),
 		methodIndex: methodIndex,
 		description: method.name,
 		skipped:     method.isSkippedTest,

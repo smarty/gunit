@@ -14,7 +14,7 @@ func newFixtureRunner(
 	positions scan.TestCasePositions,
 ) *fixtureRunner {
 	return &fixtureRunner{
-		parallel:    config.ParallelTestCases(),
+		config:      config,
 		setup:       -1,
 		teardown:    -1,
 		outerT:      outerT,
@@ -27,7 +27,7 @@ type fixtureRunner struct {
 	outerT      *testing.T
 	fixtureType reflect.Type
 
-	parallel  bool
+	config    configuration
 	setup     int
 	teardown  int
 	focus     []*testCase
@@ -56,7 +56,7 @@ func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMeth
 }
 
 func (this *fixtureRunner) buildTestCase(methodIndex int, method fixtureMethodInfo) *testCase {
-	return newTestCase(methodIndex, method, this.parallel, this.positions)
+	return newTestCase(methodIndex, method, this.config, this.positions)
 }
 
 func (this *fixtureRunner) RunTestCases() {
