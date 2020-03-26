@@ -26,7 +26,7 @@ type FixtureWithoutEmbeddedGunitFixture struct {
 /**************************************************************************/
 
 func TestMarkedAsSkippedIfNoTestCases(t *testing.T) {
-	Run(new(FixtureWithNoTestCases), t, Options.SequentialTestCases())
+	Run(new(FixtureWithNoTestCases), t)
 }
 
 type FixtureWithNoTestCases struct{ *Fixture }
@@ -147,6 +147,25 @@ type RunnerFixtureWithOnlyOneFocus struct{ *Fixture }
 func (this *RunnerFixtureWithOnlyOneFocus) FocusTest1() {
 	invocations_E = append(invocations_E, "Test1")
 }
+
+/**************************************************************************/
+/**************************************************************************/
+
+func TestRunnerFixtureSkipAll(t *testing.T) {
+	Run(new(FixtureSkipAll), t, Options.SequentialTestCases(), Options.SkipAll())
+	assertions.New(t).So(invocations_F, should.BeNil)
+}
+
+var invocations_F []string
+
+type FixtureSkipAll struct{ *Fixture }
+
+func (this *FixtureSkipAll) Setup()         { invocations_F = append(invocations_F, "Setup") }
+func (this *FixtureSkipAll) Teardown()      { invocations_F = append(invocations_F, "Teardown") }
+func (this *FixtureSkipAll) Test1()         { invocations_F = append(invocations_F, "Test1") }
+func (this *FixtureSkipAll) SkipTest2()     { invocations_F = append(invocations_F, "Test2") }
+func (this *FixtureSkipAll) LongTest3()     { invocations_F = append(invocations_F, "Test3") }
+func (this *FixtureSkipAll) SkipLongTest4() { invocations_F = append(invocations_F, "Test4") }
 
 /**************************************************************************/
 /**************************************************************************/

@@ -11,9 +11,6 @@ type options struct{}
 // fixture to be skipped (as if each had been prefixed with
 // "Skip"). Even "Test" methods marked with the "Focus" prefix
 // will be skipped.
-//
-// TODO
-//
 func (options) SkipAll() option {
 	return func(this *configuration) {
 		this.SkippedTestCases = true
