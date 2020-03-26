@@ -11,6 +11,8 @@ import (
 /**************************************************************************/
 
 func TestRunnerEndsFatallyIfFixtureIsIncompatible(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 	ensureEmbeddedFixture(new(FixtureWithoutEmbeddedGunitFixture), test.fakeT)
 	assertions.New(t).So(test.fixture.Failed(), should.BeTrue)
@@ -24,6 +26,8 @@ type FixtureWithoutEmbeddedGunitFixture struct {
 /**************************************************************************/
 
 func TestMarkedAsSkippedIfNoTestCases(t *testing.T) {
+	t.Parallel()
+
 	Run(new(FixtureWithNoTestCases), t, Options.AllSequential())
 }
 
@@ -33,6 +37,8 @@ type FixtureWithNoTestCases struct{ *Fixture }
 /**************************************************************************/
 
 func TestRunnerFixtureWithSetupAndTeardown(t *testing.T) {
+	t.Parallel()
+
 	invocations_A = []string{}
 
 	defer assertSetupTeardownInvocationsInCorrectOrder(t)
@@ -67,6 +73,8 @@ func (this *RunnerFixtureSetupTeardown) SkipLongTest4() {
 /**************************************************************************/
 
 func TestRunnerFixture(t *testing.T) {
+	t.Parallel()
+
 	invocations_B = []string{}
 
 	defer assertInvocationsInCorrectOrder(t)
@@ -93,6 +101,8 @@ func (this *RunnerFixturePlain) SkipLongTest4() { invocations_B = append(invocat
 /**************************************************************************/
 
 func TestRunnerFixtureWithFocus(t *testing.T) {
+	t.Parallel()
+
 	invocations_C = []string{}
 	defer assertFocusIsOnlyInvocation(t)
 	Run(new(RunnerFixtureFocus), t, Options.AllSequential())
@@ -114,6 +124,8 @@ func (this *RunnerFixtureFocus) Test4()      { invocations_C = append(invocation
 /**************************************************************************/
 
 func TestRunnerFixtureWithFocusLong(t *testing.T) {
+	t.Parallel()
+
 	invocations_D = []string{}
 	defer assertFocusLongIsOnlyInvocation(t)
 	Run(new(RunnerFixtureFocusLong), t, Options.AllSequential())
@@ -139,6 +151,8 @@ func (this *RunnerFixtureFocusLong) Test4()          { invocations_D = append(in
 /**************************************************************************/
 
 func TestRunnerFixtureWithOnlyOneFocus(t *testing.T) {
+	t.Parallel()
+
 	invocations_E = []string{}
 	defer assertSingleFocusIsOnlyInvocation(t)
 	Run(new(RunnerFixtureWithOnlyOneFocus), t, Options.AllSequential())

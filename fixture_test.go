@@ -10,6 +10,8 @@ import (
 )
 
 func TestFinalizeAfterNoActions(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.finalize()
@@ -23,6 +25,8 @@ func TestFinalizeAfterNoActions(t *testing.T) {
 }
 
 func TestFinalizeAfterFailure(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fakeT.Fail()
@@ -35,6 +39,8 @@ func TestFinalizeAfterFailure(t *testing.T) {
 }
 
 func TestSoPasses(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	result := test.fixture.So(true, should.BeTrue)
@@ -52,6 +58,8 @@ func TestSoPasses(t *testing.T) {
 }
 
 func TestSoFailsAndLogs(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	result := test.fixture.So(true, should.BeFalse)
@@ -69,6 +77,8 @@ func TestSoFailsAndLogs(t *testing.T) {
 }
 
 func TestAssertPasses(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.Assert(true)
@@ -83,6 +93,8 @@ func TestAssertPasses(t *testing.T) {
 }
 
 func TestAssertFailsAndLogs(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	returned := test.fixture.Assert(false)
@@ -100,6 +112,8 @@ func TestAssertFailsAndLogs(t *testing.T) {
 }
 
 func TestAssertWithCustomMessageFailsAndLogs(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.Assert(false, "gophers!")
@@ -114,6 +128,8 @@ func TestAssertWithCustomMessageFailsAndLogs(t *testing.T) {
 }
 
 func TestAssertEqualPasses(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.AssertEqual(1, 1)
@@ -128,6 +144,8 @@ func TestAssertEqualPasses(t *testing.T) {
 }
 
 func TestAssertEqualFails(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	returned := test.fixture.AssertEqual(1, 2)
@@ -145,6 +163,8 @@ func TestAssertEqualFails(t *testing.T) {
 }
 
 func TestAssertSprintEqualPasses(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	returned := test.fixture.AssertSprintEqual(1, 1.0)
@@ -162,6 +182,8 @@ func TestAssertSprintEqualPasses(t *testing.T) {
 }
 
 func TestAssertSprintEqualFails(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.AssertSprintEqual(1, 2)
@@ -176,6 +198,8 @@ func TestAssertSprintEqualFails(t *testing.T) {
 }
 
 func TestAssertSprintfEqualPasses(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.AssertSprintfEqual(1, uint(1), "%d")
@@ -190,6 +214,8 @@ func TestAssertSprintfEqualPasses(t *testing.T) {
 }
 
 func TestAssertSprintfEqualFails(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.AssertSprintfEqual(1, 2, "%d")
@@ -204,6 +230,8 @@ func TestAssertSprintfEqualFails(t *testing.T) {
 }
 
 func TestAssertDeepEqualPasses(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.AssertDeepEqual(1, 1)
@@ -218,6 +246,8 @@ func TestAssertDeepEqualPasses(t *testing.T) {
 }
 
 func TestAssertDeepEqualFails(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.AssertDeepEqual(1, 2)
@@ -232,6 +262,8 @@ func TestAssertDeepEqualFails(t *testing.T) {
 }
 
 func TestErrorFailsAndLogs(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.Error("1", "2", "3")
@@ -246,6 +278,8 @@ func TestErrorFailsAndLogs(t *testing.T) {
 }
 
 func TestErrorfFailsAndLogs(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	test.fixture.Errorf("%s%s%s", "1", "2", "3")
@@ -260,6 +294,8 @@ func TestErrorfFailsAndLogs(t *testing.T) {
 }
 
 func TestFixturePrinting(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(true)
 
 	test.fixture.Print("Print")
@@ -283,6 +319,8 @@ func TestFixturePrinting(t *testing.T) {
 }
 
 func TestPanicIsRecoveredAndPrintedByFinalize(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	var freakOut = func() {
@@ -299,6 +337,8 @@ func TestPanicIsRecoveredAndPrintedByFinalize(t *testing.T) {
 }
 
 func TestFailed(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 
 	if test.fixture.Failed() {
