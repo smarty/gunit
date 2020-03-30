@@ -53,4 +53,5 @@ var exampleStackFrames = []Frame{
 	{Line: 76, Function: "github.com/smartystreets/gunit.(*testCase).runWithSetupAndTeardown", File: "/Users/mike/src/github.com/smartystreets/gunit/test_case.go"},
 	{Line: 64, Function: "github.com/smartystreets/gunit.(*testCase).run", File: "/Users/mike/src/github.com/smartystreets/gunit/test_case.go"},
 	{Line: 909, Function: "testing.tRunner", File: "/usr/local/go/src/testing/testing.go"},
+	{}, // Simulate conditions in go 1.11, which returned errant blank stack frames.
 }

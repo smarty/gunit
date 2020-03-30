@@ -30,6 +30,10 @@ type Frame struct {
 	Line     int
 }
 
+func (frame Frame) isBlank() bool {
+	return frame.Function == "" && frame.File == "" && frame.Line == 0
+}
+
 func (frame Frame) isFromStandardLibrary() bool {
 	return strings.Contains(frame.File, "/libexec/src/") || // homebrew
 		strings.Contains(frame.File, "/go/src/") // traditional

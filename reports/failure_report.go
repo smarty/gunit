@@ -37,7 +37,7 @@ func newFailureReport(failure string, reader fileReader) *failureReport {
 
 func (this *failureReport) scanStack(stack []Frame) {
 	for _, frame := range stack {
-		if frame.isFromStandardLibrary() || frame.isFromGunit() {
+		if frame.isBlank() || frame.isFromStandardLibrary() || frame.isFromGunit() {
 			continue
 		}
 		this.parseTestName(frame.Function)
