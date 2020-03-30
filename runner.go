@@ -12,7 +12,14 @@ import (
 // The struct definition may include Setup*, Teardown*, and Test*
 // methods which will be run as an xUnit-style test fixture.
 func Run(fixture interface{}, t *testing.T, options ...option) {
+	options = temporarilyAllSequential(options)
 	run(fixture, t, newConfig(options...))
+}
+
+func temporarilyAllSequential(options []option) []option {
+	// HACK to accommodate for https://github.com/smartystreets/gunit/issues/28
+	// Also see: https://github.com/golang/go/issues/38050
+	return append(options, Options.AllSequential())
 }
 
 // RunSequential, like Run receives an instance of a struct that embeds *Fixture.
