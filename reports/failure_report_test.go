@@ -26,8 +26,8 @@ func readExampleFile(path string) string {
 }
 
 var exampleFiles = map[string]string{
-	"/Users/mike/src/github.com/smartystreets/gunit/advanced_examples/bowling_game_test.go":  populateFile("this.AssertEqual(expected, this.game.Score())", 54),
-	"/Users/mike/src/github.com/smartystreets/gunit/advanced_examples/bowling_game2_test.go": populateFile("this.assertScore(0)", 24),
+	"/Users/mike/src/github.com/smartystreets/gunit/examples/bowling_game_test.go":  populateFile("this.AssertEqual(expected, this.game.Score())", 54),
+	"/Users/mike/src/github.com/smartystreets/gunit/examples/bowling_game2_test.go": populateFile("this.assertScore(0)", 24),
 }
 
 func populateFile(content string, line int) (final string) {
@@ -45,8 +45,8 @@ var exampleStackFrames = []Frame{
 	{Line: 93, Function: "github.com/smartystreets/gunit.(*Fixture).fail", File: "/Users/mike/src/github.com/smartystreets/gunit/fixture.go"},
 	{Line: 61, Function: "github.com/smartystreets/gunit.(*Fixture).Assert", File: "/Users/mike/src/github.com/smartystreets/gunit/fixture.go"},
 	{Line: 66, Function: "github.com/smartystreets/gunit.(*Fixture).AssertEqual", File: "/Users/mike/src/github.com/smartystreets/gunit/fixture.go"},
-	{Line: 54, Function: "github.com/smartystreets/gunit/advanced_examples.(*BowlingGameScoringFixture).assertScore", File: "/Users/mike/src/github.com/smartystreets/gunit/advanced_examples/bowling_game_test.go"},
-	{Line: 24, Function: "github.com/smartystreets/gunit/advanced_examples.(*BowlingGameScoringFixture).TestAfterAllGutterBallsTheScoreShouldBeZero", File: "/Users/mike/src/github.com/smartystreets/gunit/advanced_examples/bowling_game2_test.go"},
+	{Line: 54, Function: "github.com/smartystreets/gunit/examples.(*BowlingGameScoringFixture).assertScore", File: "/Users/mike/src/github.com/smartystreets/gunit/examples/bowling_game_test.go"},
+	{Line: 24, Function: "github.com/smartystreets/gunit/examples.(*BowlingGameScoringFixture).TestAfterAllGutterBallsTheScoreShouldBeZero", File: "/Users/mike/src/github.com/smartystreets/gunit/examples/bowling_game2_test.go"},
 	{Line: 460, Function: "reflect.Value.call", File: "/usr/local/go/src/reflect/value.go"},
 	{Line: 321, Function: "reflect.Value.Call", File: "/usr/local/go/src/reflect/value.go"},
 	{Line: 86, Function: "github.com/smartystreets/gunit.(*testCase).runTest", File: "/Users/mike/src/github.com/smartystreets/gunit/test_case.go"},

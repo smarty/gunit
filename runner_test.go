@@ -11,6 +11,8 @@ import (
 /**************************************************************************/
 
 func TestRunnerEndsFatallyIfFixtureIsIncompatible(t *testing.T) {
+	t.Parallel()
+
 	test := Setup(false)
 	ensureEmbeddedFixture(new(FixtureWithoutEmbeddedGunitFixture), test.fakeT)
 	assertions.New(t).So(test.fixture.Failed(), should.BeTrue)
@@ -24,7 +26,7 @@ type FixtureWithoutEmbeddedGunitFixture struct {
 /**************************************************************************/
 
 func TestMarkedAsSkippedIfNoTestCases(t *testing.T) {
-	RunSequential(new(FixtureWithNoTestCases), t)
+	Run(new(FixtureWithNoTestCases), t)
 }
 
 type FixtureWithNoTestCases struct{ *Fixture }
@@ -33,10 +35,8 @@ type FixtureWithNoTestCases struct{ *Fixture }
 /**************************************************************************/
 
 func TestRunnerFixtureWithSetupAndTeardown(t *testing.T) {
-	invocations_A = []string{}
-
-	defer assertSetupTeardownInvocationsInCorrectOrder(t)
-	RunSequential(new(RunnerFixtureSetupTeardown), t)
+	Run(new(FixtureWithSetupTeardown), t, Options.SequentialTestCases())
+	assertSetupTeardownInvocationsInCorrectOrder(t)
 }
 func assertSetupTeardownInvocationsInCorrectOrder(t *testing.T) {
 	expectedInvocations := []string{
@@ -52,25 +52,21 @@ func assertSetupTeardownInvocationsInCorrectOrder(t *testing.T) {
 
 var invocations_A []string
 
-type RunnerFixtureSetupTeardown struct{ *Fixture }
+type FixtureWithSetupTeardown struct{ *Fixture }
 
-func (this *RunnerFixtureSetupTeardown) Setup()     { invocations_A = append(invocations_A, "Setup") }
-func (this *RunnerFixtureSetupTeardown) Teardown()  { invocations_A = append(invocations_A, "Teardown") }
-func (this *RunnerFixtureSetupTeardown) Test1()     { invocations_A = append(invocations_A, "Test1") }
-func (this *RunnerFixtureSetupTeardown) SkipTest2() { invocations_A = append(invocations_A, "Test2") }
-func (this *RunnerFixtureSetupTeardown) LongTest3() { invocations_A = append(invocations_A, "Test3") }
-func (this *RunnerFixtureSetupTeardown) SkipLongTest4() {
-	invocations_A = append(invocations_A, "Test4")
-}
+func (this *FixtureWithSetupTeardown) Setup()         { invocations_A = append(invocations_A, "Setup") }
+func (this *FixtureWithSetupTeardown) Teardown()      { invocations_A = append(invocations_A, "Teardown") }
+func (this *FixtureWithSetupTeardown) Test1()         { invocations_A = append(invocations_A, "Test1") }
+func (this *FixtureWithSetupTeardown) SkipTest2()     { invocations_A = append(invocations_A, "Test2") }
+func (this *FixtureWithSetupTeardown) LongTest3()     { invocations_A = append(invocations_A, "Test3") }
+func (this *FixtureWithSetupTeardown) SkipLongTest4() { invocations_A = append(invocations_A, "Test4") }
 
 /**************************************************************************/
 /**************************************************************************/
 
 func TestRunnerFixture(t *testing.T) {
-	invocations_B = []string{}
-
-	defer assertInvocationsInCorrectOrder(t)
-	RunSequential(new(RunnerFixturePlain), t)
+	Run(new(PlainFixture), t, Options.SequentialTestCases())
+	assertInvocationsInCorrectOrder(t)
 }
 func assertInvocationsInCorrectOrder(t *testing.T) {
 	expectedInvocations := []string{"Test3", "Test1"} // Test2 and Test4 are always skipped
@@ -82,20 +78,19 @@ func assertInvocationsInCorrectOrder(t *testing.T) {
 
 var invocations_B []string
 
-type RunnerFixturePlain struct{ *Fixture }
+type PlainFixture struct{ *Fixture }
 
-func (this *RunnerFixturePlain) Test1()         { invocations_B = append(invocations_B, "Test1") }
-func (this *RunnerFixturePlain) SkipTest2()     { invocations_B = append(invocations_B, "Test2") }
-func (this *RunnerFixturePlain) LongTest3()     { invocations_B = append(invocations_B, "Test3") }
-func (this *RunnerFixturePlain) SkipLongTest4() { invocations_B = append(invocations_B, "Test4") }
+func (this *PlainFixture) Test1()         { invocations_B = append(invocations_B, "Test1") }
+func (this *PlainFixture) SkipTest2()     { invocations_B = append(invocations_B, "Test2") }
+func (this *PlainFixture) LongTest3()     { invocations_B = append(invocations_B, "Test3") }
+func (this *PlainFixture) SkipLongTest4() { invocations_B = append(invocations_B, "Test4") }
 
 /**************************************************************************/
 /**************************************************************************/
 
 func TestRunnerFixtureWithFocus(t *testing.T) {
-	invocations_C = []string{}
-	defer assertFocusIsOnlyInvocation(t)
-	RunSequential(new(RunnerFixtureFocus), t)
+	Run(new(FixtureWithFocus), t, Options.SequentialTestCases())
+	assertFocusIsOnlyInvocation(t)
 }
 func assertFocusIsOnlyInvocation(t *testing.T) {
 	assertions.New(t).So(invocations_C, should.Resemble, []string{"Test3"})
@@ -103,45 +98,43 @@ func assertFocusIsOnlyInvocation(t *testing.T) {
 
 var invocations_C []string
 
-type RunnerFixtureFocus struct{ *Fixture }
+type FixtureWithFocus struct{ *Fixture }
 
-func (this *RunnerFixtureFocus) Test1()      { invocations_C = append(invocations_C, "Test1") }
-func (this *RunnerFixtureFocus) Test2()      { invocations_C = append(invocations_C, "Test2") }
-func (this *RunnerFixtureFocus) FocusTest3() { invocations_C = append(invocations_C, "Test3") }
-func (this *RunnerFixtureFocus) Test4()      { invocations_C = append(invocations_C, "Test4") }
+func (this *FixtureWithFocus) Test1()      { invocations_C = append(invocations_C, "Test1") }
+func (this *FixtureWithFocus) Test2()      { invocations_C = append(invocations_C, "Test2") }
+func (this *FixtureWithFocus) FocusTest3() { invocations_C = append(invocations_C, "Test3") }
+func (this *FixtureWithFocus) Test4()      { invocations_C = append(invocations_C, "Test4") }
 
 /**************************************************************************/
 /**************************************************************************/
 
 func TestRunnerFixtureWithFocusLong(t *testing.T) {
-	invocations_D = []string{}
-	defer assertFocusLongIsOnlyInvocation(t)
-	RunSequential(new(RunnerFixtureFocusLong), t)
+	Run(new(FixtureWithFocusLong), t, Options.SequentialTestCases())
+	assertFocusLongIsOnlyInvocation(t)
 }
 func assertFocusLongIsOnlyInvocation(t *testing.T) {
 	expected := []string{"Test3"}
 	if testing.Short() {
-		expected = []string{}
+		expected = nil
 	}
 	assertions.New(t).So(invocations_D, should.Resemble, expected)
 }
 
 var invocations_D []string
 
-type RunnerFixtureFocusLong struct{ *Fixture }
+type FixtureWithFocusLong struct{ *Fixture }
 
-func (this *RunnerFixtureFocusLong) Test1()          { invocations_D = append(invocations_D, "Test1") }
-func (this *RunnerFixtureFocusLong) Test2()          { invocations_D = append(invocations_D, "Test2") }
-func (this *RunnerFixtureFocusLong) FocusLongTest3() { invocations_D = append(invocations_D, "Test3") }
-func (this *RunnerFixtureFocusLong) Test4()          { invocations_D = append(invocations_D, "Test4") }
+func (this *FixtureWithFocusLong) Test1()          { invocations_D = append(invocations_D, "Test1") }
+func (this *FixtureWithFocusLong) Test2()          { invocations_D = append(invocations_D, "Test2") }
+func (this *FixtureWithFocusLong) FocusLongTest3() { invocations_D = append(invocations_D, "Test3") }
+func (this *FixtureWithFocusLong) Test4()          { invocations_D = append(invocations_D, "Test4") }
 
 /**************************************************************************/
 /**************************************************************************/
 
 func TestRunnerFixtureWithOnlyOneFocus(t *testing.T) {
-	invocations_E = []string{}
-	defer assertSingleFocusIsOnlyInvocation(t)
-	RunSequential(new(RunnerFixtureWithOnlyOneFocus), t)
+	Run(new(RunnerFixtureWithOnlyOneFocus), t, Options.SequentialTestCases())
+	assertSingleFocusIsOnlyInvocation(t)
 }
 func assertSingleFocusIsOnlyInvocation(t *testing.T) {
 	assertions.New(t).So(invocations_E, should.Resemble, []string{"Test1"})
@@ -154,6 +147,49 @@ type RunnerFixtureWithOnlyOneFocus struct{ *Fixture }
 func (this *RunnerFixtureWithOnlyOneFocus) FocusTest1() {
 	invocations_E = append(invocations_E, "Test1")
 }
+
+/**************************************************************************/
+/**************************************************************************/
+
+func TestRunnerFixtureSkipAll(t *testing.T) {
+	Run(new(FixtureSkipAll), t, Options.SequentialTestCases(), Options.SkipAll())
+	assertions.New(t).So(invocations_F, should.BeNil)
+}
+
+var invocations_F []string
+
+type FixtureSkipAll struct{ *Fixture }
+
+func (this *FixtureSkipAll) Setup()         { invocations_F = append(invocations_F, "Setup") }
+func (this *FixtureSkipAll) Teardown()      { invocations_F = append(invocations_F, "Teardown") }
+func (this *FixtureSkipAll) Test1()         { invocations_F = append(invocations_F, "Test1") }
+func (this *FixtureSkipAll) SkipTest2()     { invocations_F = append(invocations_F, "Test2") }
+func (this *FixtureSkipAll) LongTest3()     { invocations_F = append(invocations_F, "Test3") }
+func (this *FixtureSkipAll) SkipLongTest4() { invocations_F = append(invocations_F, "Test4") }
+
+/**************************************************************************/
+/**************************************************************************/
+
+func TestRunnerFixtureLongRunning(t *testing.T) {
+	Run(new(PlainFixtureLongRunning), t, Options.SequentialTestCases(), Options.LongRunning())
+	assertInvocationsInCorrectOrder_LongRunning(t)
+}
+func assertInvocationsInCorrectOrder_LongRunning(t *testing.T) {
+	expectedInvocations := []string{"Test1", "Test3"} // Test2 and Test4 are always skipped
+	if testing.Short() {
+		expectedInvocations = nil
+	}
+	assertions.New(t).So(invocations_G, should.Resemble, expectedInvocations)
+}
+
+var invocations_G []string
+
+type PlainFixtureLongRunning struct{ *Fixture }
+
+func (this *PlainFixtureLongRunning) Test1()     { invocations_G = append(invocations_G, "Test1") }
+func (this *PlainFixtureLongRunning) SkipTest2() { invocations_G = append(invocations_G, "Test2") }
+func (this *PlainFixtureLongRunning) Test3()     { invocations_G = append(invocations_G, "Test3") }
+func (this *PlainFixtureLongRunning) SkipTest4() { invocations_G = append(invocations_G, "Test4") }
 
 /**************************************************************************/
 /**************************************************************************/

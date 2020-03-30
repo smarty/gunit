@@ -7,12 +7,20 @@ import (
 	"github.com/smartystreets/gunit/scan"
 )
 
-func newFixtureRunner(fixture interface{}, t *testing.T, parallel bool, positions scan.TestCasePositions) *fixtureRunner {
+func newFixtureRunner(
+	fixture interface{},
+	outerT *testing.T,
+	config configuration,
+	positions scan.TestCasePositions,
+) *fixtureRunner {
+	if config.ParallelFixture() {
+		outerT.Parallel()
+	}
 	return &fixtureRunner{
-		parallel:    parallel,
+		config:      config,
 		setup:       -1,
 		teardown:    -1,
-		outerT:      t,
+		outerT:      outerT,
 		fixtureType: reflect.ValueOf(fixture).Type(),
 		positions:   positions,
 	}
@@ -22,7 +30,7 @@ type fixtureRunner struct {
 	outerT      *testing.T
 	fixtureType reflect.Type
 
-	parallel  bool
+	config    configuration
 	setup     int
 	teardown  int
 	focus     []*testCase
@@ -44,10 +52,14 @@ func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMeth
 	case method.isTeardown:
 		this.teardown = methodIndex
 	case method.isFocusTest:
-		this.focus = append(this.focus, newTestCase(methodIndex, method, this.parallel, this.positions))
+		this.focus = append(this.focus, this.buildTestCase(methodIndex, method))
 	case method.isTest:
-		this.tests = append(this.tests, newTestCase(methodIndex, method, this.parallel, this.positions))
+		this.tests = append(this.tests, this.buildTestCase(methodIndex, method))
 	}
+}
+
+func (this *fixtureRunner) buildTestCase(methodIndex int, method fixtureMethodInfo) *testCase {
+	return newTestCase(methodIndex, method, this.config, this.positions)
 }
 
 func (this *fixtureRunner) RunTestCases() {

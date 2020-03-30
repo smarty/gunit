@@ -41,7 +41,7 @@ func (frame Frame) isFromStandardLibrary() bool {
 
 func (frame Frame) isFromGunit() bool {
 	const gunitBasicExamples = "github.com/smartystreets/gunit/basic_examples"
-	const gunitAdvancedExamples = "github.com/smartystreets/gunit/advanced_examples"
+	const gunitAdvancedExamples = "github.com/smartystreets/gunit/examples"
 	const gunitFolder = "github.com/smartystreets/gunit"
 	const goModuleVersionSeparator = "@" // Go module path w/ '@' separator example:
 	// /Users/mike/go/pkg/mod/github.com/smartystreets/gunit@v1.0.1-0.20190705210239-badfae8b004a/reports/failure_report.go:23

@@ -11,12 +11,12 @@ func TestPanicReport(t *testing.T) {
 
 const expectedPanicReport = `PANIC: runtime error: invalid memory address or nil pointer dereference
 ...
-github.com/smartystreets/gunit/advanced_examples.(*Game).Roll(...)
-	/Users/mike/src/github.com/smartystreets/gunit/advanced_examples/bowling_game.go:13
-github.com/smartystreets/gunit/advanced_examples.(*BowlingGameScoringFixture).rollMany(0xc000091310, 0x14, 0x0)
-	/Users/mike/src/github.com/smartystreets/gunit/advanced_examples/bowling_game_test.go:58 +0x38
-github.com/smartystreets/gunit/advanced_examples.(*BowlingGameScoringFixture).TestAfterAllGutterBallsTheScoreShouldBeZero(0xc000091310)
-	/Users/mike/src/github.com/smartystreets/gunit/advanced_examples/bowling_game_test.go:23 +0x3d`
+github.com/smartystreets/gunit/examples.(*Game).Roll(...)
+	/Users/mike/src/github.com/smartystreets/gunit/examples/bowling_game.go:13
+github.com/smartystreets/gunit/examples.(*BowlingGameScoringFixture).rollMany(0xc000091310, 0x14, 0x0)
+	/Users/mike/src/github.com/smartystreets/gunit/examples/bowling_game_test.go:58 +0x38
+github.com/smartystreets/gunit/examples.(*BowlingGameScoringFixture).TestAfterAllGutterBallsTheScoreShouldBeZero(0xc000091310)
+	/Users/mike/src/github.com/smartystreets/gunit/examples/bowling_game_test.go:23 +0x3d`
 
 const examplePanic = "runtime error: invalid memory address or nil pointer dereference"
 
@@ -38,12 +38,12 @@ github.com/smartystreets/gunit.(*Fixture).finalize(0xc0000b7f60)
 	/Users/mike/src/github.com/smartystreets/gunit/fixture.go:97 +0x211
 panic(0x1182b60, 0x12fe320)
 	/usr/local/go/src/runtime/panic.go:679 +0x1b2
-github.com/smartystreets/gunit/advanced_examples.(*Game).Roll(...)
-	/Users/mike/src/github.com/smartystreets/gunit/advanced_examples/bowling_game.go:13
-github.com/smartystreets/gunit/advanced_examples.(*BowlingGameScoringFixture).rollMany(0xc000091310, 0x14, 0x0)
-	/Users/mike/src/github.com/smartystreets/gunit/advanced_examples/bowling_game_test.go:58 +0x38
-github.com/smartystreets/gunit/advanced_examples.(*BowlingGameScoringFixture).TestAfterAllGutterBallsTheScoreShouldBeZero(0xc000091310)
-	/Users/mike/src/github.com/smartystreets/gunit/advanced_examples/bowling_game_test.go:23 +0x3d
+github.com/smartystreets/gunit/examples.(*Game).Roll(...)
+	/Users/mike/src/github.com/smartystreets/gunit/examples/bowling_game.go:13
+github.com/smartystreets/gunit/examples.(*BowlingGameScoringFixture).rollMany(0xc000091310, 0x14, 0x0)
+	/Users/mike/src/github.com/smartystreets/gunit/examples/bowling_game_test.go:58 +0x38
+github.com/smartystreets/gunit/examples.(*BowlingGameScoringFixture).TestAfterAllGutterBallsTheScoreShouldBeZero(0xc000091310)
+	/Users/mike/src/github.com/smartystreets/gunit/examples/bowling_game_test.go:23 +0x3d
 reflect.Value.call(0x11af5e0, 0xc000091310, 0x3e13, 0x11b8925, 0x4, 0x0, 0x0, 0x0, 0x15, 0xc00009fe40, ...)
 	/usr/local/go/src/reflect/value.go:460 +0x5f6
 reflect.Value.Call(0x11af5e0, 0xc000091310, 0x3e13, 0x0, 0x0, 0x0, 0x3e13, 0x0, 0x0)
