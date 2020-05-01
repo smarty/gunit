@@ -3,8 +3,7 @@ package gunit
 import (
 	"testing"
 
-	"github.com/smartystreets/assertions"
-	"github.com/smartystreets/assertions/should"
+	"github.com/smartystreets/gunit/assertions"
 )
 
 /**************************************************************************/
@@ -15,7 +14,7 @@ func TestRunnerEndsFatallyIfFixtureIsIncompatible(t *testing.T) {
 
 	test := Setup(false)
 	ensureEmbeddedFixture(new(FixtureWithoutEmbeddedGunitFixture), test.fakeT)
-	assertions.New(t).So(test.fixture.Failed(), should.BeTrue)
+	assertions.New(t).AssertTrue(test.fixture.Failed())
 }
 
 type FixtureWithoutEmbeddedGunitFixture struct {
@@ -47,7 +46,7 @@ func assertSetupTeardownInvocationsInCorrectOrder(t *testing.T) {
 	if testing.Short() {
 		expectedInvocations = expectedInvocations[3:]
 	}
-	assertions.New(t).So(invocations_A, should.Resemble, expectedInvocations)
+	assertions.New(t).AssertDeepEqual(expectedInvocations, invocations_A)
 }
 
 var invocations_A []string
@@ -73,7 +72,7 @@ func assertInvocationsInCorrectOrder(t *testing.T) {
 	if testing.Short() {
 		expectedInvocations = expectedInvocations[1:]
 	}
-	assertions.New(t).So(invocations_B, should.Resemble, expectedInvocations)
+	assertions.New(t).AssertDeepEqual(expectedInvocations, invocations_B)
 }
 
 var invocations_B []string
@@ -93,7 +92,7 @@ func TestRunnerFixtureWithFocus(t *testing.T) {
 	assertFocusIsOnlyInvocation(t)
 }
 func assertFocusIsOnlyInvocation(t *testing.T) {
-	assertions.New(t).So(invocations_C, should.Resemble, []string{"Test3"})
+	assertions.New(t).AssertDeepEqual([]string{"Test3"}, invocations_C)
 }
 
 var invocations_C []string
@@ -117,7 +116,7 @@ func assertFocusLongIsOnlyInvocation(t *testing.T) {
 	if testing.Short() {
 		expected = nil
 	}
-	assertions.New(t).So(invocations_D, should.Resemble, expected)
+	assertions.New(t).AssertDeepEqual(expected, invocations_D)
 }
 
 var invocations_D []string
@@ -137,7 +136,7 @@ func TestRunnerFixtureWithOnlyOneFocus(t *testing.T) {
 	assertSingleFocusIsOnlyInvocation(t)
 }
 func assertSingleFocusIsOnlyInvocation(t *testing.T) {
-	assertions.New(t).So(invocations_E, should.Resemble, []string{"Test1"})
+	assertions.New(t).AssertDeepEqual([]string{"Test1"}, invocations_E)
 }
 
 var invocations_E []string
@@ -153,7 +152,7 @@ func (this *RunnerFixtureWithOnlyOneFocus) FocusTest1() {
 
 func TestRunnerFixtureSkipAll(t *testing.T) {
 	Run(new(FixtureSkipAll), t, Options.SequentialTestCases(), Options.SkipAll())
-	assertions.New(t).So(invocations_F, should.BeNil)
+	assertions.New(t).AssertNil(invocations_F)
 }
 
 var invocations_F []string
@@ -179,7 +178,7 @@ func assertInvocationsInCorrectOrder_LongRunning(t *testing.T) {
 	if testing.Short() {
 		expectedInvocations = nil
 	}
-	assertions.New(t).So(invocations_G, should.Resemble, expectedInvocations)
+	assertions.New(t).AssertDeepEqual(expectedInvocations, invocations_G)
 }
 
 var invocations_G []string

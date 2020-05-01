@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strings"
 	"testing"
-
-	"github.com/smartystreets/assertions/should"
 )
 
 func TestFinalizeAfterNoActions(t *testing.T) {
@@ -43,7 +41,7 @@ func TestSoPasses(t *testing.T) {
 
 	test := Setup(false)
 
-	result := test.fixture.So(true, should.BeTrue)
+	result := test.fixture.So(true, ShouldBeTrue)
 	test.fixture.finalize()
 
 	if !result {
@@ -62,13 +60,13 @@ func TestSoFailsAndLogs(t *testing.T) {
 
 	test := Setup(false)
 
-	result := test.fixture.So(true, should.BeFalse)
+	result := test.fixture.So(true, ShouldBeFalse)
 	test.fixture.finalize()
 
 	if result {
 		t.Error("Expected false result, got true")
 	}
-	if output := test.out.String(); !strings.Contains(output, "Expected:") {
+	if output := strings.TrimSpace(test.out.String()); output != "Expected false, got true instead" {
 		t.Errorf("Unexpected output: '%s'", test.out.String())
 	}
 	if !test.fakeT.failed {
@@ -387,3 +385,17 @@ func (this *FakeTestingT) Fatalf(format string, args ...interface{}) {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+func ShouldBeTrue(actual interface{}, expected ...interface{}) string {
+	if actual != true {
+		return "Expected true, got false instead"
+	}
+	return ""
+}
+
+func ShouldBeFalse(actual interface{}, expected ...interface{}) string {
+	if actual == true {
+		return "Expected false, got true instead"
+	}
+	return ""
+}

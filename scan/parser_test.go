@@ -1,10 +1,8 @@
 package scan
 
 import (
+	"reflect"
 	"testing"
-
-	"github.com/smartystreets/assertions"
-	"github.com/smartystreets/assertions/should"
 )
 
 //////////////////////////////////////////////////////////////////////////////
@@ -57,8 +55,8 @@ func (this *FixtureParsingFixture) assertAllFixturesParsed() {
 func (this *FixtureParsingFixture) assertParsedFixturesAreCorrect() {
 	for x := 0; x < len(expected); x++ {
 		key := this.fixtures[x].StructName
-		if ok, message := assertions.So(this.fixtures[x], should.Resemble, expected[key]); !ok {
-			this.t.Errorf("Comparison failure for record: %d\n%s", x, message)
+		if !reflect.DeepEqual(expected[key], this.fixtures[x]) {
+			this.t.Errorf("\nExpected: [%v]\nActual:   [%v]", expected[key], this.fixtures[x])
 		}
 	}
 }

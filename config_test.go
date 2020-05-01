@@ -3,60 +3,77 @@ package gunit
 import (
 	"testing"
 
-	"github.com/smartystreets/assertions"
-	"github.com/smartystreets/assertions/should"
+	assertions2 "github.com/smartystreets/gunit/assertions"
 )
 
 func TestConfigOptions(t *testing.T) {
-	assert := assertions.New(t)
+	assert := assertions2.New(t)
 
-	assert.So(newConfig(), should.Resemble, configuration{})
+	assert.AssertDeepEqual(configuration{}, newConfig())
 
-	assert.So(newConfig(Options.LongRunning()), should.Resemble, configuration{
-		LongRunningTestCases: true,
-	})
+	assert.AssertDeepEqual(
+		configuration{
+			LongRunningTestCases: true,
+		},
+		newConfig(Options.LongRunning()),
+	)
 
-	assert.So(newConfig(Options.SkipAll()), should.Resemble, configuration{
-		SkippedTestCases: true,
-	})
+	assert.AssertDeepEqual(
+		configuration{
+			SkippedTestCases: true,
+		},
+		newConfig(Options.SkipAll()),
+	)
 
-	assert.So(newConfig(Options.SequentialFixture()), should.Resemble, configuration{
-		SequentialFixture: true,
-	})
+	assert.AssertDeepEqual(
+		configuration{
+			SequentialFixture: true,
+		},
+		newConfig(Options.SequentialFixture()),
+	)
 
-	assert.So(newConfig(Options.SequentialTestCases()), should.Resemble, configuration{
-		SequentialTestCases: true,
-	})
+	assert.AssertDeepEqual(
+		configuration{
+			SequentialTestCases: true,
+		},
+		newConfig(Options.SequentialTestCases()),
+	)
 
-	assert.So(newConfig(Options.AllSequential()), should.Resemble, configuration{
-		SequentialTestCases: true,
-		SequentialFixture:   true,
-	})
+	assert.AssertDeepEqual(
+		configuration{
+			SequentialTestCases: true,
+			SequentialFixture:   true,
+		},
+		newConfig(Options.AllSequential()),
+	)
 
-	assert.So(newConfig(Options.AllSequential(), Options.SkipAll(), Options.LongRunning()), should.Resemble, configuration{
-		SequentialFixture:    true,
-		SequentialTestCases:  true,
-		SkippedTestCases:     true,
-		LongRunningTestCases: true,
-	})
+	assert.AssertDeepEqual(
+		configuration{
+			SequentialFixture:    true,
+			SequentialTestCases:  true,
+			SkippedTestCases:     true,
+			LongRunningTestCases: true,
+		},
+		newConfig(Options.AllSequential(), Options.SkipAll(), Options.LongRunning()),
+	)
 }
 
 func TestConfigMethods(t *testing.T) {
-	assert := assertions.New(t)
+	assert := assertions2.New(t)
 
 	parallel := newConfig()
-	assert.So(parallel.ParallelFixture(), should.BeTrue)
-	assert.So(parallel.ParallelTestCases(), should.BeTrue)
+	assert.AssertTrue(parallel.ParallelFixture())
+	assert.AssertTrue(parallel.ParallelTestCases())
 
 	sequentialFixture := newConfig(Options.SequentialFixture())
-	assert.So(sequentialFixture.ParallelFixture(), should.BeFalse)
-	assert.So(sequentialFixture.ParallelTestCases(), should.BeTrue)
+	assert.AssertFalse(sequentialFixture.ParallelFixture())
+	assert.AssertTrue(sequentialFixture.ParallelTestCases())
 
 	sequentialTestCases := newConfig(Options.SequentialTestCases())
-	assert.So(sequentialTestCases.ParallelFixture(), should.BeTrue)
-	assert.So(sequentialTestCases.ParallelTestCases(), should.BeFalse)
+	assert.AssertTrue(sequentialTestCases.ParallelFixture())
+	assert.AssertFalse(sequentialTestCases.ParallelTestCases())
 
 	sequential := newConfig(Options.AllSequential())
-	assert.So(sequential.ParallelFixture(), should.BeFalse)
-	assert.So(sequential.ParallelTestCases(), should.BeFalse)
+	assert.AssertFalse(sequential.ParallelFixture())
+	assert.AssertFalse(sequential.ParallelTestCases())
 }

@@ -3,7 +3,6 @@ package examples
 import (
 	"testing"
 
-	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
 )
 
@@ -36,9 +35,10 @@ func (this *ExampleFixture) TestWithAssertions() {
 	this.AssertSprintfEqual(uint(1), int64(1), "%d")
 
 	// External assertion functions from the `should` package:
-	this.So(42, should.Equal, 42)
-	this.So("Hello, World!", should.ContainSubstring, "World")
-
+	// import "github.com/smartystreets/assertions/should"
+	// ...
+	// this.So(42, should.Equal, 42)
+	// this.So("Hello, World!", should.ContainSubstring, "World")
 }
 
 func (this *ExampleFixture) SkipTestWithNothing() {
