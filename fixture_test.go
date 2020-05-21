@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
+	"sync/atomic"
 	"testing"
+	"time"
 )
 
 func TestFinalizeAfterNoActions(t *testing.T) {
@@ -347,6 +349,17 @@ func TestFailed(t *testing.T) {
 
 	if !test.fixture.Failed() {
 		t.Error("Expected Failed() to return true, got false instead.")
+	}
+}
+
+func TestRunSubTests(t *testing.T) {
+	counter := int32(0)
+	outer := newFixture(t, true)
+	outer.Run("A", func(*Fixture) { atomic.AddInt32(&counter, 1) })
+	outer.Run("B", func(*Fixture) { atomic.AddInt32(&counter, 1) })
+	time.Sleep(time.Millisecond)
+	if counter != 2 {
+		t.Errorf("Expected 2, got %d instead.", counter)
 	}
 }
 

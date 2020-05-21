@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"runtime/debug"
 	"strings"
+	"testing"
 
 	"github.com/smartystreets/gunit/reports"
 )
@@ -38,6 +39,16 @@ func newFixture(t TestingT, verbose bool) *Fixture {
 
 // T exposes the TestingT (*testing.T) instance.
 func (this *Fixture) T() TestingT { return this.t }
+
+// Run is analogous to *testing.T.Run and allows for running subtests from
+// test fixture methods (such as for table-driven tests).
+func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
+	this.t.(*testing.T).Run(name, func(t *testing.T) {
+		fixture := newFixture(t, this.verbose)
+		defer fixture.finalize()
+		test(fixture)
+	})
+}
 
 // So is a convenience method for reporting assertion failure messages,
 // from the many assertion functions found in github.com/smartystreets/assertions/should.
