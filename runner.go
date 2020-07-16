@@ -11,6 +11,8 @@ import (
 // The struct definition may include Setup*, Teardown*, and Test*
 // methods which will be run as an xUnit-style test fixture.
 func Run(fixture interface{}, t *testing.T, options ...option) {
+	t.Helper()
+
 	if strings.Contains(runtime.Version(), "go1.14") {
 		options = allSequentialForGo1Dot14(options)
 	}
@@ -33,10 +35,14 @@ func allSequentialForGo1Dot14(options []option) []option {
 // Use Run(fixture, t, Options.AllSequential()) instead.
 //
 func RunSequential(fixture interface{}, t *testing.T) {
+	t.Helper()
+
 	Run(fixture, t, Options.AllSequential())
 }
 
 func run(fixture interface{}, t *testing.T, config configuration) {
+	t.Helper()
+
 	ensureEmbeddedFixture(fixture, t)
 
 	runner := newFixtureRunner(fixture, t, config)

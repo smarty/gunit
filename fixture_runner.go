@@ -54,10 +54,12 @@ func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMeth
 }
 
 func (this *fixtureRunner) buildTestCase(methodIndex int, method fixtureMethodInfo) *testCase {
-	return newTestCase(methodIndex, method, this.config, this.positions)
+	return newTestCase(methodIndex, method, this.config)
 }
 
 func (this *fixtureRunner) RunTestCases() {
+	this.outerT.Helper()
+
 	if len(this.focus) > 0 {
 		this.tests = append(this.focus, skipped(this.tests)...)
 	}
@@ -69,6 +71,8 @@ func (this *fixtureRunner) RunTestCases() {
 }
 
 func (this *fixtureRunner) runTestCases(cases []*testCase) {
+	this.outerT.Helper()
+
 	for _, test := range cases {
 		test.Prepare(this.setup, this.teardown, this.fixtureType)
 		test.Run(this.outerT)

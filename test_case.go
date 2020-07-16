@@ -36,6 +36,8 @@ func (this *testCase) Prepare(setup, teardown int, outerFixtureType reflect.Type
 }
 
 func (this *testCase) Run(t *testing.T) {
+	t.Helper()
+
 	if this.skipped {
 		t.Run(this.description, this.skip)
 	} else if this.long && testing.Short() {
@@ -52,6 +54,8 @@ func (this *testCase) skipLong(innerT *testing.T) {
 	innerT.Skipf("skipped long-running test")
 }
 func (this *testCase) run(innerT *testing.T) {
+	innerT.Helper()
+
 	if this.parallel {
 		innerT.Parallel()
 	}

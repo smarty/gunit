@@ -25,6 +25,18 @@ func (this *ExampleFixture) TeardownStuff() {
 	// method (because it starts with "Teardown"), even if the test method panics.
 }
 
+func (this *ExampleFixture) SkipTestWithError() {
+	this.Error("hi")
+}
+
+func (this *ExampleFixture) SkipTestWithErrorf() {
+	this.Errorf("hi")
+}
+
+func (this *ExampleFixture) TestWithPrint() {
+	this.Print("hi")
+}
+
 // This is an actual test case:
 func (this *ExampleFixture) TestWithAssertions() {
 	// Built-in assertion functions:

@@ -34,6 +34,8 @@ type Fixture struct {
 }
 
 func newFixture(t TestingT, verbose bool) *Fixture {
+	t.Helper()
+
 	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
 }
 
@@ -44,6 +46,8 @@ func (this *Fixture) T() TestingT { return this.t }
 // test fixture methods (such as for table-driven tests).
 func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
 	this.t.(*testing.T).Run(name, func(t *testing.T) {
+		t.Helper()
+
 		fixture := newFixture(t, this.verbose)
 		defer fixture.finalize()
 		test(fixture)
@@ -105,6 +109,8 @@ func (this *Fixture) fail(failure string) {
 }
 
 func (this *Fixture) finalize() {
+	this.t.Helper()
+
 	if r := recover(); r != nil {
 		this.recoverPanic(r)
 	}
