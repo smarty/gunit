@@ -3,8 +3,6 @@ package gunit
 import (
 	"reflect"
 	"testing"
-
-	"github.com/smartystreets/gunit/scan"
 )
 
 type testCase struct {
@@ -19,17 +17,15 @@ type testCase struct {
 	innerFixture     *Fixture
 	outerFixtureType reflect.Type
 	outerFixture     reflect.Value
-	positions        scan.TestCasePositions
 }
 
-func newTestCase(methodIndex int, method fixtureMethodInfo, config configuration, positions scan.TestCasePositions) *testCase {
+func newTestCase(methodIndex int, method fixtureMethodInfo, config configuration) *testCase {
 	return &testCase{
 		parallel:    config.ParallelTestCases(),
 		methodIndex: methodIndex,
 		description: method.name,
 		skipped:     method.isSkippedTest || config.SkippedTestCases,
 		long:        method.isLongTest || config.LongRunningTestCases,
-		positions:   positions,
 	}
 }
 
@@ -50,10 +46,10 @@ func (this *testCase) Run(t *testing.T) {
 }
 
 func (this *testCase) skip(innerT *testing.T) {
-	innerT.Skip("\n" + this.positions[innerT.Name()])
+	innerT.Skip()
 }
 func (this *testCase) skipLong(innerT *testing.T) {
-	innerT.Skipf("Skipped long-running test:\n" + this.positions[innerT.Name()])
+	innerT.Skipf("skipped long-running test")
 }
 func (this *testCase) run(innerT *testing.T) {
 	if this.parallel {
@@ -64,7 +60,6 @@ func (this *testCase) run(innerT *testing.T) {
 	this.runWithSetupAndTeardown()
 }
 func (this *testCase) initializeFixture(innerT *testing.T) {
-	innerT.Log("Test definition:\n" + this.positions[innerT.Name()])
 	this.innerFixture = newFixture(innerT, testing.Verbose())
 	this.outerFixture = reflect.New(this.outerFixtureType.Elem())
 	this.outerFixture.Elem().FieldByName("Fixture").Set(reflect.ValueOf(this.innerFixture))
