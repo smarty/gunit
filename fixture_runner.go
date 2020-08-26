@@ -59,7 +59,7 @@ func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMeth
 }
 
 func (this *fixtureRunner) buildTestCase(methodIndex int, method fixtureMethodInfo) *testCase {
-	return newTestCase(methodIndex, method, this.config)
+	return newTestCase(methodIndex, method, this.config, this.positions)
 }
 
 func (this *fixtureRunner) RunTestCases() {
