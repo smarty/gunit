@@ -3,12 +3,15 @@ package gunit
 import (
 	"reflect"
 	"testing"
+
+	"github.com/smartystreets/gunit/scan"
 )
 
 func newFixtureRunner(
 	fixture interface{},
 	outerT *testing.T,
 	config configuration,
+	positions scan.TestCasePositions,
 ) *fixtureRunner {
 	if config.ParallelFixture() {
 		outerT.Parallel()
@@ -19,6 +22,7 @@ func newFixtureRunner(
 		teardown:    -1,
 		outerT:      outerT,
 		fixtureType: reflect.ValueOf(fixture).Type(),
+		positions:   positions,
 	}
 }
 
@@ -26,11 +30,12 @@ type fixtureRunner struct {
 	outerT      *testing.T
 	fixtureType reflect.Type
 
-	config   configuration
-	setup    int
-	teardown int
-	focus    []*testCase
-	tests    []*testCase
+	config    configuration
+	setup     int
+	teardown  int
+	focus     []*testCase
+	tests     []*testCase
+	positions scan.TestCasePositions
 }
 
 func (this *fixtureRunner) ScanFixtureForTestCases() {

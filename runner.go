@@ -5,6 +5,8 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+
+	"github.com/smartystreets/gunit/scan"
 )
 
 // Run receives an instance of a struct that embeds *Fixture.
@@ -45,7 +47,10 @@ func run(fixture interface{}, t *testing.T, config configuration) {
 
 	ensureEmbeddedFixture(fixture, t)
 
-	runner := newFixtureRunner(fixture, t, config)
+	_, filename, _, _ := runtime.Caller(2)
+	positions := scan.LocateTestCases(filename)
+
+	runner := newFixtureRunner(fixture, t, config, positions)
 	runner.ScanFixtureForTestCases()
 	runner.RunTestCases()
 }
