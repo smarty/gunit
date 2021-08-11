@@ -17,12 +17,14 @@ func newFixtureRunner(
 		outerT.Parallel()
 	}
 	return &fixtureRunner{
-		config:      config,
-		setup:       -1,
-		teardown:    -1,
-		outerT:      outerT,
-		fixtureType: reflect.ValueOf(fixture).Type(),
-		positions:   positions,
+		config:          config,
+		fixtureSetup:    -1,
+		fixtureTeardown: -1,
+		setup:           -1,
+		teardown:        -1,
+		outerT:          outerT,
+		fixtureType:     reflect.ValueOf(fixture).Type(),
+		positions:       positions,
 	}
 }
 
