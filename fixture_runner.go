@@ -30,12 +30,14 @@ type fixtureRunner struct {
 	outerT      *testing.T
 	fixtureType reflect.Type
 
-	config    configuration
-	setup     int
-	teardown  int
-	focus     []*testCase
-	tests     []*testCase
-	positions scan.TestCasePositions
+	fixtureSetup    int
+	fixtureTeardown int
+	config          configuration
+	setup           int
+	teardown        int
+	focus           []*testCase
+	tests           []*testCase
+	positions       scan.TestCasePositions
 }
 
 func (this *fixtureRunner) ScanFixtureForTestCases() {
@@ -47,6 +49,10 @@ func (this *fixtureRunner) ScanFixtureForTestCases() {
 
 func (this *fixtureRunner) scanFixtureMethod(methodIndex int, method fixtureMethodInfo) {
 	switch {
+	case method.isFixTureSetup:
+		this.fixtureSetup = methodIndex
+	case method.isFixTureTeardown:
+		this.fixtureTeardown = methodIndex
 	case method.isSetup:
 		this.setup = methodIndex
 	case method.isTeardown:
@@ -64,6 +70,9 @@ func (this *fixtureRunner) buildTestCase(methodIndex int, method fixtureMethodIn
 
 func (this *fixtureRunner) RunTestCases() {
 	this.outerT.Helper()
+
+	defer this.runFixTureTeardown()
+	this.runFixTureSetup()
 
 	if len(this.focus) > 0 {
 		this.tests = append(this.focus, skipped(this.tests)...)
@@ -95,4 +104,16 @@ func skipped(cases []*testCase) []*testCase {
 		test.skipped = true
 	}
 	return cases
+}
+
+func (this *fixtureRunner) runFixTureSetup() {
+	if this.fixtureSetup >= 0 {
+		reflect.New(this.fixtureType.Elem()).Method(this.fixtureSetup).Call(nil)
+	}
+}
+
+func (this *fixtureRunner) runFixTureTeardown() {
+	if this.fixtureTeardown >= 0 {
+		reflect.New(this.fixtureType.Elem()).Method(this.fixtureTeardown).Call(nil)
+	}
 }
