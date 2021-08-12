@@ -33,10 +33,10 @@ func newTestCase(methodIndex int, method fixtureMethodInfo, config configuration
 	}
 }
 
-func (this *testCase) Prepare(setup, teardown int, outerFixtureType reflect.Type) {
+func (this *testCase) Prepare(setup, teardown int, outerFixture reflect.Value) {
 	this.setup = setup
 	this.teardown = teardown
-	this.outerFixtureType = outerFixtureType
+	this.outerFixture = outerFixture
 }
 
 func (this *testCase) Run(t *testing.T) {
@@ -70,7 +70,6 @@ func (this *testCase) run(innerT *testing.T) {
 func (this *testCase) initializeFixture(innerT *testing.T) {
 	innerT.Log("Test definition:\n" + this.positions[innerT.Name()])
 	this.innerFixture = newFixture(innerT, testing.Verbose())
-	this.outerFixture = reflect.New(this.outerFixtureType.Elem())
 	this.outerFixture.Elem().FieldByName("Fixture").Set(reflect.ValueOf(this.innerFixture))
 }
 
