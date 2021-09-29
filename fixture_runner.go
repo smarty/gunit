@@ -81,14 +81,8 @@ func (this *fixtureRunner) runTestCases(cases []*testCase) {
 	for _, test := range cases {
 		test.Prepare(this.setup, this.teardown, this.fixtureType)
 		test.Run(this.outerT)
-
-		if len(this.focus) > 0 {
-			this.outerT.Log(focusWarning)
-		}
 	}
 }
-
-const focusWarning = "[ATTENTION] 'Focus' mode ENGAGED (\"Debugging again, are we?\")"
 
 func skipped(cases []*testCase) []*testCase {
 	for _, test := range cases {
