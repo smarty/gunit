@@ -68,8 +68,8 @@ func TestSoFailsAndLogs(t *testing.T) {
 	if result {
 		t.Error("Expected false result, got true")
 	}
-	if output := strings.TrimSpace(test.out.String()); output != "Expected false, got true instead" {
-		t.Errorf("Unexpected output: '%s'", test.out.String())
+	if output := strings.TrimSpace(test.out.String()); !strings.Contains(output, "Expected false, got true instead") {
+		t.Errorf("Unexpected output: [%s]", test.out.String())
 	}
 	if !test.fakeT.failed {
 		t.Error("Test should have been marked as failed.")
