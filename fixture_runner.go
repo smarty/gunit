@@ -78,11 +78,17 @@ func (this *fixtureRunner) RunTestCases() {
 	if len(this.focus) > 0 {
 		this.tests = append(this.focus, skipped(this.tests)...)
 	}
-	if len(this.tests) > 0 {
-		this.runTestCases(this.tests)
+
+	if this.config.SkippedTestCases {
+		this.outerT.Skipf("Skip this Fixture:(%v)", this.fixtureType)
 	} else {
-		this.outerT.Skipf("Fixture (%v) has no test cases.", this.fixtureType)
+		if len(this.tests) > 0 {
+			this.runTestCases(this.tests)
+		} else {
+			this.outerT.Skipf("Fixture (%v) has no test cases.", this.fixtureType)
+		}
 	}
+
 }
 
 func (this *fixtureRunner) runTestCases(cases []*testCase) {
