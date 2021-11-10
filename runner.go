@@ -50,7 +50,11 @@ func run(fixture interface{}, t *testing.T, config configuration) {
 	_, filename, _, _ := runtime.Caller(2)
 	positions := scan.LocateTestCases(filename)
 
+	// Init Fixture for fixtureSetup and fixtureTeardown
+	tmpFixture := newFixture(t, testing.Verbose())
+
 	runner := newFixtureRunner(fixture, t, config, positions)
+	runner.SetInnerFixture(tmpFixture)
 	runner.ScanFixtureForTestCases()
 	runner.RunTestCases()
 }

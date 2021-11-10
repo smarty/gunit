@@ -126,3 +126,7 @@ func (this *fixtureRunner) runFixtureTeardown() {
 		this.fixture.Method(this.fixtureTeardown).Call(nil)
 	}
 }
+
+func (this *fixtureRunner) SetInnerFixture(innerFixture *Fixture) {
+	this.fixture.Elem().FieldByName("Fixture").Set(reflect.ValueOf(innerFixture))
+}
