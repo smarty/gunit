@@ -38,6 +38,7 @@ func (this *ExampleFixture) FixtureSetupStuff() {
 	this.name = "yu.he"
 	this.age = 30
 	log.Println("in FixtureSetupStuff...")
+	this.T().Log("in setup")
 	fmt.Println("test name in setup", this.Name())
 }
 func (this *ExampleFixture) FixtureTeardownStuff() {
@@ -45,7 +46,7 @@ func (this *ExampleFixture) FixtureTeardownStuff() {
 	// method (because it starts with "Teardown"), even if the test method panics.
 	this.name = "gannicus"
 	log.Println("in FixtureTeardownStuff...")
-	fmt.Println(this.name, time.Now())
+	fmt.Println(this.name, time.Now(), this.Name())
 }
 
 func (this *ExampleFixture) SkipTestWithError() {
@@ -59,7 +60,8 @@ func (this *ExampleFixture) SkipTestWithErrorf() {
 func (this *ExampleFixture) TestWithPrint() {
 	this.Print("hi")
 	log.Println(this.name, time.Now())
-	time.Sleep(5 * time.Second)
+	time.Sleep(2 * time.Second)
+	panic("panic one")
 	this.T().Log("my name is ", this.name)
 }
 
