@@ -75,6 +75,12 @@ func (this *fixtureRunner) buildTestCase(methodIndex int, method fixtureMethodIn
 func (this *fixtureRunner) RunTestCases() {
 	this.outerT.Helper()
 
+	// Init Fixture for fixtureSetup and fixtureTeardown
+	tmpFixture := newFixture(this.outerT, testing.Verbose())
+	this.setInnerFixture(tmpFixture)
+	defer this.runFixtureTeardown()
+	this.runFixtureSetup()
+
 	if len(this.focus) > 0 {
 		this.tests = append(this.focus, skipped(this.tests)...)
 	}
@@ -88,14 +94,14 @@ func (this *fixtureRunner) RunTestCases() {
 			this.outerT.Skipf("Fixture (%v) has no test cases.", this.fixtureType)
 		}
 	}
+	// fix: replace inner testing
+	this.setInnerFixture(tmpFixture)
 
 }
 
 func (this *fixtureRunner) runTestCases(cases []*testCase) {
 	this.outerT.Helper()
 
-	defer this.runFixtureTeardown()
-	this.runFixtureSetup()
 	for _, test := range cases {
 		test.Prepare(this.setup, this.teardown, this.fixture)
 		test.Run(this.outerT)
@@ -127,6 +133,6 @@ func (this *fixtureRunner) runFixtureTeardown() {
 	}
 }
 
-func (this *fixtureRunner) SetInnerFixture(innerFixture *Fixture) {
+func (this *fixtureRunner) setInnerFixture(innerFixture *Fixture) {
 	this.fixture.Elem().FieldByName("Fixture").Set(reflect.ValueOf(innerFixture))
 }
