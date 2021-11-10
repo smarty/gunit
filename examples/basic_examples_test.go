@@ -10,7 +10,8 @@ import (
 )
 
 func TestExampleFixture(t *testing.T) {
-	gunit.Run(new(ExampleFixture), t, gunit.Options.SkipAll())
+	t.Name()
+	gunit.Run(new(ExampleFixture), t, gunit.Options.SequentialTestCases())
 }
 
 type ExampleFixture struct {
@@ -37,6 +38,7 @@ func (this *ExampleFixture) FixtureSetupStuff() {
 	this.name = "yu.he"
 	this.age = 30
 	log.Println("in FixtureSetupStuff...")
+	fmt.Println("test name in setup", this.Name())
 }
 func (this *ExampleFixture) FixtureTeardownStuff() {
 	// This optional method will be executed after each "Test"
