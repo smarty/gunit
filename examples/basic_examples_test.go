@@ -61,7 +61,6 @@ func (this *ExampleFixture) TestWithPrint() {
 	this.Print("hi")
 	log.Println(this.name, time.Now())
 	time.Sleep(2 * time.Second)
-	panic("panic one")
 	this.T().Log("my name is ", this.name)
 }
 
