@@ -62,6 +62,15 @@ func (this *ExampleFixture) TeardownStuff() {
 	// method (because it starts with "Teardown"), even if the test method panics.
 }
 
+func (this *ExampleFixture) FixtureSetupStuff() {
+	// This optional method will be executed before all "Test"
+	// method (because it starts with "FixtureSetup").
+}
+func (this *ExampleFixture) FixtureTeardownStuff() {
+	// This optional method will be executed after all "Test"
+	// method (because it starts with "FixtureTeardown"), even if any test method panics.
+}
+
 
 // This is an actual test case:
 func (this *ExampleFixture) TestWithAssertions() {
@@ -87,7 +96,7 @@ func (this *ExampleFixture) LongTestSlowOperation() {
 
 > So, I see just one traditional test function and it's only one line long. What's the deal with that?
 
-Astute observations. `gunit` allows the test author to use a _struct_ as the scope for a group of related test cases, in the style of [xUnit](https://en.wikipedia.org/wiki/XUnit) fixtures. This makes extraction of setup/teardown behavior (as well as invoking the system under test) much simpler because all state for the test can be declared as fields on a struct which embeds the `Fixture` type from the `gunit` package. All you have to do is create a Test function and pass a new instance of your fixture struct to gunit's Run function along with the *testing.T and it will run all defined Test methods along with the Setup and Teardown method.
+Astute observations. `gunit` allows the test author to use a _struct_ as the scope for a group of related test cases, in the style of [xUnit](https://en.wikipedia.org/wiki/XUnit) fixtures. This makes extraction of setup/teardown behavior (as well as invoking the system under test) much simpler because all state for the test can be declared as fields on a struct which embeds the `Fixture` type from the `gunit` package. All you have to do is create a Test function and pass a new instance of your fixture struct to gunit's Run function along with the *testing.T and it will run all defined Test methods along with the Setup and Teardown method. Also, you can define some actions before or after all tests execution with FixtureSetup and FixtureTeardown method.
 
 Enjoy.
 
@@ -122,8 +131,15 @@ type $NAME$ struct {
 func (this *$NAME$) Setup() {
 }
 
+func (this *$NAME$) FixtureSetup() {
+}
+
+func (this *$NAME$) FixtureTeardown() {
+}
+
 func (this *$NAME$) Test$END$() {
 }
+
 
 ```
 
