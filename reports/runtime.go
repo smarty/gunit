@@ -1,6 +1,7 @@
 package reports
 
 import (
+	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -35,6 +36,10 @@ func (frame Frame) isBlank() bool {
 }
 
 func (frame Frame) isFromStandardLibrary() bool {
+	home, err := os.UserHomeDir()
+	if err == nil && strings.HasPrefix(frame.File, home) {
+		return false
+	}
 	return strings.Contains(frame.File, "/libexec/src/") || // homebrew
 		strings.Contains(frame.File, "/go/src/") // traditional
 }
