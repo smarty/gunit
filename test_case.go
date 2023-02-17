@@ -66,9 +66,11 @@ func (this *testCase) run(innerT *testing.T) {
 	this.initializeFixture(innerT)
 	defer this.innerFixture.finalize()
 	this.runWithSetupAndTeardown()
+	if innerT.Failed() {
+		innerT.Log("Test definition:\n" + this.positions[innerT.Name()])
+	}
 }
 func (this *testCase) initializeFixture(innerT *testing.T) {
-	innerT.Log("Test definition:\n" + this.positions[innerT.Name()])
 	this.innerFixture = newFixture(innerT, testing.Verbose())
 	this.outerFixture = reflect.New(this.outerFixtureType.Elem())
 	this.outerFixture.Elem().FieldByName("Fixture").Set(reflect.ValueOf(this.innerFixture))

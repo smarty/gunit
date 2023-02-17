@@ -27,15 +27,14 @@ func allSequentialForGo1Dot14(options []option) []option {
 	return append(options, Options.AllSequential())
 }
 
-// RunSequential, like Run receives an instance of a struct that embeds *Fixture.
+// RunSequential (like Run) receives an instance of a struct that embeds *Fixture.
 // The fixture is run in much the same way, except that it will not be run in
 // parallel with other fixtures in the same package, nor will test cases of the
 // corresponding fixture be run in parallel with each other.
 //
-// Deprecated
+// # Deprecated
 //
 // Use Run(fixture, t, Options.AllSequential()) instead.
-//
 func RunSequential(fixture interface{}, t *testing.T) {
 	t.Helper()
 
