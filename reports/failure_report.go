@@ -81,7 +81,7 @@ func (this *failureReport) parseTestName(name string) {
 	}
 }
 
-func (this failureReport) composeReport() string {
+func (this *failureReport) composeReport() string {
 	buffer := new(bytes.Buffer)
 	for i, stack := range this.stack {
 		fmt.Fprintf(buffer, "(%d): %s\n", len(this.stack)-i-1, stack)
