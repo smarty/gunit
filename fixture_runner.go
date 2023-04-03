@@ -8,7 +8,7 @@ import (
 )
 
 func newFixtureRunner(
-	fixture interface{},
+	fixture any,
 	outerT *testing.T,
 	config configuration,
 	positions scan.TestCasePositions,
