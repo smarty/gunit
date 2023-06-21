@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/smartystreets/gunit/reports"
+	"github.com/smarty/gunit/reports"
 )
 
 // Fixture keeps track of test status (failed, passed, skipped) and
@@ -29,7 +29,7 @@ import (
 //
 // We don't use these methods much, preferring instead to lean heavily
 // on Fixture.So and the rich set of should-style assertions provided at
-// github.com/smartystreets/assertions/should
+// github.com/smarty/assertions/should
 type Fixture struct {
 	t       TestingT
 	log     *bytes.Buffer
@@ -58,7 +58,7 @@ func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
 }
 
 // So is a convenience method for reporting assertion failure messages,
-// from the many assertion functions found in github.com/smartystreets/assertions/should.
+// from the many assertion functions found in github.com/smarty/assertions/should.
 // Example: this.So(actual, should.Equal, expected)
 func (this *Fixture) So(actual any, assert assertion, expected ...any) bool {
 	failure := assert(actual, expected...)
@@ -129,5 +129,5 @@ func (this *Fixture) recoverPanic(r any) {
 
 const comparisonFormat = "Expected: [%s]\nActual:   [%s]"
 
-// assertion is a copy of github.com/smartystreets/assertions.assertion.
+// assertion is a copy of github.com/smarty/assertions.assertion.
 type assertion func(actual any, expected ...any) string

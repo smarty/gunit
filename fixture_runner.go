@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/smartystreets/gunit/scan"
+	"github.com/smarty/gunit/scan"
 )
 
 func newFixtureRunner(

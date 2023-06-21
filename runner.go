@@ -5,7 +5,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/smartystreets/gunit/scan"
+	"github.com/smarty/gunit/scan"
 )
 
 // Run receives an instance of a struct that embeds *Fixture.
