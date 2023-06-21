@@ -3,7 +3,6 @@ package gunit
 import (
 	"reflect"
 	"runtime"
-	"strings"
 	"testing"
 
 	"github.com/smartystreets/gunit/scan"
@@ -14,17 +13,7 @@ import (
 // methods which will be run as an xUnit-style test fixture.
 func Run(fixture any, t *testing.T, options ...option) {
 	t.Helper()
-
-	if strings.Contains(runtime.Version(), "go1.14") {
-		options = allSequentialForGo1Dot14(options)
-	}
 	run(fixture, t, newConfig(options...))
-}
-
-func allSequentialForGo1Dot14(options []option) []option {
-	// HACK to accommodate for https://github.com/smartystreets/gunit/issues/28
-	// Also see: https://github.com/golang/go/issues/38050
-	return append(options, Options.AllSequential())
 }
 
 // RunSequential (like Run) receives an instance of a struct that embeds *Fixture.
