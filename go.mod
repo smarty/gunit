@@ -1,4 +1,4 @@
-module github.com/smartystreets/gunit
+module github.com/smarty/gunit
 
 go 1.17
 

@@ -1,48 +1,46 @@
-#### SMARTY DISCLAIMER: Subject to the terms of the associated license agreement, this software is freely available for your use. This software is FREE, AS IN PUPPIES, and is a gift. Enjoy your new responsibility. This means that while we may consider enhancement requests, we may or may not choose to entertain requests at our sole and absolute discretion.
-
-[![Build Status](https://travis-ci.org/smartystreets/gunit.svg?branch=master)](https://travis-ci.org/smartystreets/gunit)
-[![Code Coverage](https://codecov.io/gh/smartystreets/gunit/branch/master/graph/badge.svg)](https://codecov.io/gh/smartystreets/gunit)
-[![Go Report Card](https://goreportcard.com/badge/github.com/smartystreets/gunit)](https://goreportcard.com/report/github.com/smartystreets/gunit)
-[![GoDoc](https://godoc.org/github.com/smartystreets/gunit?status.svg)](http://godoc.org/github.com/smartystreets/gunit)
-
 # gunit
 
-## Installation
+## 安装
 
 ```
-$ go get github.com/smartystreets/gunit
+$ go get github.com/smarty/gunit
 ```
 
 -------------------------
 
-We now present `gunit`, yet another testing tool for Go.
+我们现在介绍`gunit`，又一个用于Go语言的测试工具。
 
-> Not again... ([GoConvey](http://goconvey.co) was crazy enough...but sort of cool, ok I'll pay attention...)
+> 不要再来了...（[GoConvey](http://goconvey.co)已经够疯狂了...但还挺酷，好吧我会关注一下...）
 
-No wait, this tool has some very interesting properties. It's a mix of good things provided by the built-in testing package, the [assertions](https://github.com/smartystreets/assertions) you know and love from the [GoConvey](http://goconvey.co) project, the [xUnit](https://en.wikipedia.org/wiki/XUnit) testing style (the first real unit testing framework), and it's all glued together with `go test`.
+等等，这个工具有一些非常有趣的特性。它是由内置测试包提供的好东西、[GoConvey](http://goconvey.co)
+项目中您所熟悉和喜爱的[断言](https://github.com/smarty/assertions)，[xUnit](https://en.wikipedia.org/wiki/XUnit)
+测试风格（第一个真正的Go单元测试框架）的混合体，所有这些都与`go test`紧密结合在一起。
 
-> Blah, blah, yeah, yeah. Ok, so what's wrong with just using the standard "testing" package? What's better about this `gunit` thing?
+## 编写
 
-The convention established by the "testing" package and the `go test` tool only allows for local function scope:
+> 啰哩啰嗦，，好吧。那么，为什么不只是使用标准的"testing"包呢？这个`gunit`有什么优势？
+
+由"testing"包和`go test`工具建立的约定只允许在局部函数范围内：
 
 ```
 func TestSomething(t *testing.T) {
-	// blah blah blah
+	// 巴拉 巴拉 巴拉
 }
 ```
 
-This limited scope makes extracting functions or structs inconvenient as state will have to be passed to such extractions or state returned from them. It can get messy to keep a test nice and short. Here's the basic idea of what the test author using `gunit` would implement in a `*_test.go` file:
+这种有限的作用域使得共享方法和数据变得麻烦。如果试图保持测试简洁而短小，可能会变得混乱。以下展示了如何使用`gunit`
+编写`*_test.go`文件：
 
 ```go
 
 package examples
 
 import (
-    "time"
+	"time"
 	"testing"
 
-	"github.com/smartystreets/assertions/should"
-	"github.com/smartystreets/gunit"
+	"github.com/smarty/assertions/should"
+	"github.com/smarty/gunit"
 )
 
 func TestExampleFixture(t *testing.T) {
@@ -73,11 +71,10 @@ func (this *ExampleFixture) FixtureTeardownStuff() {
 	// method (because it starts with "FixtureTeardown"), even if any test method panics.
 }
 
-
 // This is an actual test case:
 func (this *ExampleFixture) TestWithAssertions() {
 	// Here's how to use the functions from the `should`
-	// package at github.com/smartystreets/assertions/should
+	// package at github.com/smarty/assertions/should
 	// to perform assertions:
 	this.So(42, should.Equal, 42)
 	this.So("Hello, World!", should.ContainSubstring, "World")
@@ -96,29 +93,32 @@ func (this *ExampleFixture) LongTestSlowOperation() {
 
 -------------------------
 
-> So, I see just one traditional test function and it's only one line long. What's the deal with that?
+> 所以，你只会看到一个传统的测试函数，而且只有一行代码（当然，还有一个结构体和它的方法）。这是怎么回事？
 
-Astute observations. `gunit` allows the test author to use a _struct_ as the scope for a group of related test cases, in the style of [xUnit](https://en.wikipedia.org/wiki/XUnit) fixtures. This makes extraction of setup/teardown behavior (as well as invoking the system under test) much simpler because all state for the test can be declared as fields on a struct which embeds the `Fixture` type from the `gunit` package. All you have to do is create a Test function and pass a new instance of your fixture struct to gunit's Run function along with the *testing.T and it will run all defined Test methods along with the Setup and Teardown method. Also, you can define some actions before or after all tests execution with FixtureSetup and FixtureTeardown method.
+`gunit`允许用例编写者使用一个_结构体_"封装"一组相关测试用例，类似于[xUnit](https://en.wikipedia.org/wiki/XUnit)
+。这使得进行前置和后置行为变得更简单，因为测试的所有状态可以声明为嵌入`gunit`包中的`Fixture`
+类型的结构体字段。只需创建一个Test函数，并将fixture结构体的新实例与*
+testing.T一起传递给gunit的Run函数，它将运行所有已定义的Test方法以及Setup和Teardown方法。另外，还可以使用FixtureSetup和FixtureTeardown方法在所有测试执行之前或之后定义一些操作。
 
-Enjoy.
+### 并行执行
 
-### Parallelism
-By default all fixtures are run in parallel as they should be independent, but if you for some reason have fixtures which need to be run sequentially, you can change the `Run()` method to `RunSequential()`, e.g. in the above example
+默认情况下，所有fixture的方法都会并行运行，因为它们应该是独立的，但如果由于某种原因有需要按顺序运行fixture，可以向`Run()`
+方法传入参数`gunit.Options.SequentialTestCases()`，例如在下面的例子中，这样fixture中的Test*方法将会按照ASCII码顺序执行。
 
 ```go
 func TestExampleFixture(t *testing.T) {
-	gunit.RunSequential(new(ExampleFixture), t)
+gunit.Run(new(ExampleFixture), t, gunit.Options.SequentialTestCases())
 }
 ```
 
-[Advanced Examples](https://github.com/smartystreets/gunit/tree/master/advanced_examples)
+[Examples](https://github.com/bugVanisher/gunit/tree/master/examples)
 
 ----------------------------------------------------------------------------
 
-For users of JetBrains IDEs, here's LiveTemplate you can use for generating the scaffolding for a new fixture:
+对于JetBrains IDE的用户，以下是可以使用的LiveTemplate，用于生成新fixture的脚手架代码:
 
 - Abbreviation: `fixture`
-- Description: `Generate gunit Fixture boilerplate`
+- Description: `生成 gunit Fixture 脚手架代码`
 - Template Text:
 
 ```
@@ -145,4 +145,18 @@ func (this *$NAME$) Test$END$() {
 
 ```
 
-Be sure to specify that this LiveTemplate is applicable in Go files.
+请确保在Go文件中指定此LiveTemplate适用。
+
+## 执行&报告
+
+#### 单独执行
+
+`go test ./testcases/... -v`
+
+#### 执行并生成报告
+
+首次生成报告，先安装报告生成工具
+`go get -u github.com/bugVanisher/gunit-test-report`
+
+然后执行
+`go test ./testcases/... -json`

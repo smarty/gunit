@@ -3,7 +3,7 @@ package gunit
 import (
 	"testing"
 
-	"github.com/smartystreets/gunit/assertions"
+	"github.com/smarty/gunit/assertions"
 )
 
 /**************************************************************************/

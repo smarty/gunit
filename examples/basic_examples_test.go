@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/smartystreets/gunit"
+	"github.com/smarty/gunit"
 )
 
 func TestExampleFixture(t *testing.T) {
@@ -70,7 +70,7 @@ func (this *ExampleFixture) TestWithAssertions() {
 	this.AssertSprintfEqual(uint(1), int64(1), "%d")
 
 	// External assertion functions from the `should` package:
-	// import "github.com/smartystreets/assertions/should"
+	// import "github.com/smarty/assertions/should"
 	// ...
 	// this.So(42, should.Equal, 42)
 	// this.So("Hello, World!", should.ContainSubstring, "World")
