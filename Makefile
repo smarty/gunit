@@ -1,9 +1,9 @@
 #!/usr/bin/make -f
 
 test-dev: fmt
-	go test -timeout=1s -race -count=1 -covermode=atomic ./... && \
+	go test -timeout=1s -count=1 ./... && \
 	  echo "---- Running tests a second time with -short ----" && \
-	  go test -timeout=1s -race -count=1 -covermode=atomic -short ./...
+	  go test -timeout=1s -count=1 -short ./...
 
 fmt:
 	go fmt ./...
@@ -16,4 +16,4 @@ compile:
 
 build: test compile
 
-.PHONY: test-dev fmt test compile build
+.PHONY: test compile build

@@ -3,7 +3,7 @@ package examples
 import (
 	"testing"
 
-	"github.com/smarty/gunit"
+	"github.com/smartystreets/gunit"
 )
 
 func TestEnvironmentControllerFixture(t *testing.T) {

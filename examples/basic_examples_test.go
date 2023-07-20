@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/smarty/gunit"
+	"github.com/smartystreets/gunit"
 )
 
 func TestExampleFixture(t *testing.T) {
@@ -49,12 +49,8 @@ func (this *ExampleFixture) FixtureTeardownStuff() {
 	fmt.Println(this.name, time.Now(), this.Name())
 }
 
-func (this *ExampleFixture) SkipTestWithError() {
-	this.Error("hi")
-}
-
 func (this *ExampleFixture) SkipTestWithErrorf() {
-	this.Errorf("hi")
+	this.T().Errorf("hi")
 }
 
 func (this *ExampleFixture) TestWithPrint() {
@@ -74,7 +70,7 @@ func (this *ExampleFixture) TestWithAssertions() {
 	this.AssertSprintfEqual(uint(1), int64(1), "%d")
 
 	// External assertion functions from the `should` package:
-	// import "github.com/smarty/assertions/should"
+	// import "github.com/smartystreets/assertions/should"
 	// ...
 	// this.So(42, should.Equal, 42)
 	// this.So("Hello, World!", should.ContainSubstring, "World")

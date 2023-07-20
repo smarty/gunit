@@ -28,16 +28,6 @@ func (singleton) LongRunning() option {
 	}
 }
 
-// SequentialFixture is an option meant to be passed to
-// gunit.Run(...) and signals that the corresponding fixture
-// is not to be run in parallel with any tests (by not calling
-// t.Parallel() on the provided *testing.T).
-func (singleton) SequentialFixture() option {
-	return func(this *configuration) {
-		this.SequentialFixture = true
-	}
-}
-
 // SequentialTestCases is an option meant to be passed to
 // gunit.Run(...) and prevents gunit from calling t.Parallel()
 // on the inner instances of *testing.T passed to the 'subtests'
@@ -50,13 +40,11 @@ func (singleton) SequentialTestCases() option {
 	}
 }
 
-// AllSequential has the combined effect of passing the
+// AllSequential() has the combined effect of passing the
 // following options to gunit.Run(...):
-// 1. SequentialFixture
-// 2. SequentialTestCases
+// SequentialTestCases
 func (singleton) AllSequential() option {
 	return Options.composite(
-		Options.SequentialFixture(),
 		Options.SequentialTestCases(),
 	)
 }

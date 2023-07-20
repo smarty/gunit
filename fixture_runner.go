@@ -1,21 +1,23 @@
 package gunit
 
 import (
+	"os"
+	"os/signal"
 	"reflect"
 	"testing"
 
-	"github.com/smarty/gunit/scan"
+	"github.com/smartystreets/gunit/scan"
 )
 
+const FixtureParallel = "FixtureParallel"
+
 func newFixtureRunner(
-	fixture any,
+	fixture interface{},
 	outerT *testing.T,
 	config configuration,
 	positions scan.TestCasePositions,
 ) *fixtureRunner {
-	if config.ParallelFixture() {
-		outerT.Parallel()
-	}
+	outerT.Parallel()
 	return &fixtureRunner{
 		config:          config,
 		fixtureSetup:    -1,
@@ -76,9 +78,19 @@ func (this *fixtureRunner) RunTestCases() {
 	this.outerT.Helper()
 
 	// Init Fixture for fixtureSetup and fixtureTeardown
-	tmpFixture := newFixture(this.outerT, testing.Verbose())
+	tmpFixture := newFixture(this.outerT, testing.Verbose(), RetrieveTestPackageName())
 	this.setInnerFixture(tmpFixture)
 	defer this.runFixtureTeardown()
+	// Start goroutine to listen for SIGINT signal
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, os.Kill)
+	go func() {
+		<-sig
+		// Clean up and exit
+		this.runFixtureTeardown()
+		this.outerT.Error("Interrupted by user")
+		os.Exit(1)
+	}()
 	this.runFixtureSetup()
 
 	if len(this.focus) > 0 {
@@ -101,10 +113,19 @@ func (this *fixtureRunner) RunTestCases() {
 
 func (this *fixtureRunner) runTestCases(cases []*testCase) {
 	this.outerT.Helper()
-
-	for _, test := range cases {
-		test.Prepare(this.setup, this.teardown, this.fixture)
-		test.Run(this.outerT)
+	pkgName := RetrieveTestPackageName()
+	runCases := func(t *testing.T) {
+		for _, test := range cases {
+			test.Prepare(this.setup, this.teardown, this.fixture, pkgName)
+			test.Run(t)
+		}
+	}
+	if this.config.ParallelTestCases() {
+		this.outerT.Run(FixtureParallel, func(innerT *testing.T) {
+			runCases(innerT)
+		})
+	} else {
+		runCases(this.outerT)
 	}
 }
 

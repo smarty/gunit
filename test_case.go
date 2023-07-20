@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/smarty/gunit/scan"
+	"github.com/smartystreets/gunit/scan"
 )
 
 type testCase struct {
@@ -14,12 +14,12 @@ type testCase struct {
 	long        bool
 	parallel    bool
 
-	setup            int
-	teardown         int
-	innerFixture     *Fixture
-	outerFixtureType reflect.Type
-	outerFixture     reflect.Value
-	positions        scan.TestCasePositions
+	setup           int
+	teardown        int
+	innerFixture    *Fixture
+	outerFixture    reflect.Value
+	positions       scan.TestCasePositions
+	testPackageName string
 }
 
 func newTestCase(methodIndex int, method fixtureMethodInfo, config configuration, positions scan.TestCasePositions) *testCase {
@@ -33,10 +33,11 @@ func newTestCase(methodIndex int, method fixtureMethodInfo, config configuration
 	}
 }
 
-func (this *testCase) Prepare(setup, teardown int, outerFixture reflect.Value) {
+func (this *testCase) Prepare(setup, teardown int, outerFixture reflect.Value, pkgName string) {
 	this.setup = setup
 	this.teardown = teardown
 	this.outerFixture = outerFixture
+	this.testPackageName = pkgName
 }
 
 func (this *testCase) Run(t *testing.T) {
@@ -59,11 +60,11 @@ func (this *testCase) skipLong(innerT *testing.T) {
 }
 func (this *testCase) run(innerT *testing.T) {
 	innerT.Helper()
+	this.initializeFixture(innerT)
 
 	if this.parallel {
 		innerT.Parallel()
 	}
-	this.initializeFixture(innerT)
 	defer this.innerFixture.finalize()
 	this.runWithSetupAndTeardown()
 	if innerT.Failed() {
@@ -71,7 +72,13 @@ func (this *testCase) run(innerT *testing.T) {
 	}
 }
 func (this *testCase) initializeFixture(innerT *testing.T) {
-	this.innerFixture = newFixture(innerT, testing.Verbose())
+	this.innerFixture = newFixture(innerT, testing.Verbose(), this.testPackageName)
+	if this.parallel {
+		// new outerFixture in every parallel test
+		oldOuterFixture := this.outerFixture
+		this.outerFixture = reflect.New(this.outerFixture.Type().Elem())
+		this.outerFixture.Elem().Set(reflect.Indirect(oldOuterFixture))
+	}
 	this.outerFixture.Elem().FieldByName("Fixture").Set(reflect.ValueOf(this.innerFixture))
 }
 
