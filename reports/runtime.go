@@ -1,6 +1,7 @@
 package reports
 
 import (
+	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -35,16 +36,20 @@ func (frame Frame) isBlank() bool {
 }
 
 func (frame Frame) isFromStandardLibrary() bool {
+	home, err := os.UserHomeDir()
+	if err == nil && strings.HasPrefix(frame.File, home) {
+		return false
+	}
 	return strings.Contains(frame.File, "/libexec/src/") || // homebrew
 		strings.Contains(frame.File, "/go/src/") // traditional
 }
 
 func (frame Frame) isFromGunit() bool {
-	const gunitBasicExamples = "github.com/smartystreets/gunit/basic_examples"
-	const gunitAdvancedExamples = "github.com/smartystreets/gunit/examples"
-	const gunitFolder = "github.com/smartystreets/gunit"
+	const gunitBasicExamples = "github.com/smarty/gunit/basic_examples"
+	const gunitAdvancedExamples = "github.com/smarty/gunit/examples"
+	const gunitFolder = "github.com/smarty/gunit"
 	const goModuleVersionSeparator = "@" // Go module path w/ '@' separator example:
-	// /Users/mike/go/pkg/mod/github.com/smartystreets/gunit@v1.0.1-0.20190705210239-badfae8b004a/reports/failure_report.go:23
+	// /Users/mike/go/pkg/mod/github.com/smarty/gunit@v1.0.1-0.20190705210239-badfae8b004a/reports/failure_report.go:23
 
 	dir := filepath.Dir(frame.File)
 	parts := strings.Split(dir, goModuleVersionSeparator)

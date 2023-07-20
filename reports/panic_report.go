@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func PanicReport(r interface{}, stack []byte) string {
+func PanicReport(r any, stack []byte) string {
 	var builder strings.Builder
 	fmt.Fprintln(&builder, "PANIC:", r)
 	fmt.Fprintln(&builder, "...")

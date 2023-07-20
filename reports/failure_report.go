@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/smartystreets/gunit/scan"
+	"github.com/smarty/gunit/scan"
 )
 
 func FailureReport(failure string, stack []Frame) string {
@@ -81,7 +81,7 @@ func (this *failureReport) parseTestName(name string) {
 	}
 }
 
-func (this failureReport) composeReport() string {
+func (this *failureReport) composeReport() string {
 	buffer := new(bytes.Buffer)
 	for i, stack := range this.stack {
 		fmt.Fprintf(buffer, "(%d): %s\n", len(this.stack)-i-1, stack)

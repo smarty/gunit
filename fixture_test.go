@@ -387,27 +387,27 @@ type FakeTestingT struct {
 	failed bool
 }
 
-func (self *FakeTestingT) Helper()                                   {}
-func (self *FakeTestingT) Name() string                              { return "FakeTestingT" }
-func (self *FakeTestingT) Log(args ...interface{})                   { fmt.Fprint(self.log, args...) }
-func (self *FakeTestingT) Fail()                                     { self.failed = true }
-func (self *FakeTestingT) Failed() bool                              { return self.failed }
-func (this *FakeTestingT) Errorf(format string, args ...interface{}) {}
-func (this *FakeTestingT) Fatalf(format string, args ...interface{}) {
+func (self *FakeTestingT) Helper()                           {}
+func (self *FakeTestingT) Name() string                      { return "FakeTestingT" }
+func (self *FakeTestingT) Log(args ...any)                   { fmt.Fprint(self.log, args...) }
+func (self *FakeTestingT) Fail()                             { self.failed = true }
+func (self *FakeTestingT) Failed() bool                      { return self.failed }
+func (this *FakeTestingT) Errorf(format string, args ...any) {}
+func (this *FakeTestingT) Fatalf(format string, args ...any) {
 	this.Fail()
 	this.Log(fmt.Sprintf(format, args...))
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-func ShouldBeTrue(actual interface{}, expected ...interface{}) string {
+func ShouldBeTrue(actual any, expected ...any) string {
 	if actual != true {
 		return "Expected true, got false instead"
 	}
 	return ""
 }
 
-func ShouldBeFalse(actual interface{}, expected ...interface{}) string {
+func ShouldBeFalse(actual any, expected ...any) string {
 	if actual == true {
 		return "Expected false, got true instead"
 	}

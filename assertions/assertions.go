@@ -11,7 +11,7 @@ func New(t *testing.T) *Assertion {
 	return &Assertion{t: t}
 }
 
-func (this *Assertion) AssertEqual(expected, actual interface{}) bool {
+func (this *Assertion) AssertEqual(expected, actual any) bool {
 	this.t.Helper()
 
 	equal := expected == actual
@@ -21,7 +21,7 @@ func (this *Assertion) AssertEqual(expected, actual interface{}) bool {
 	return equal
 }
 
-func (this *Assertion) AssertNil(value interface{}) bool {
+func (this *Assertion) AssertNil(value any) bool {
 	this.t.Helper()
 
 	isNil := value == nil || reflect.ValueOf(value).IsNil()
@@ -49,7 +49,7 @@ func (this *Assertion) AssertFalse(value bool) bool {
 	return !value
 }
 
-func (this *Assertion) AssertDeepEqual(expected, actual interface{}) bool {
+func (this *Assertion) AssertDeepEqual(expected, actual any) bool {
 	this.t.Helper()
 
 	equal := reflect.DeepEqual(expected, actual)

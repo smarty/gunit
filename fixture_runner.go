@@ -4,11 +4,11 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/smartystreets/gunit/scan"
+	"github.com/smarty/gunit/scan"
 )
 
 func newFixtureRunner(
-	fixture interface{},
+	fixture any,
 	outerT *testing.T,
 	config configuration,
 	positions scan.TestCasePositions,

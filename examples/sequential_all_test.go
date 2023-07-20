@@ -3,7 +3,7 @@ package examples
 import (
 	"testing"
 
-	"github.com/smartystreets/gunit"
+	"github.com/smarty/gunit"
 )
 
 func TestHowToRegisterTheFixtureAndAllItsCasesAsSequential(t *testing.T) {

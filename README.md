@@ -1,14 +1,16 @@
-[![Build Status](https://travis-ci.org/smartystreets/gunit.svg?branch=master)](https://travis-ci.org/smartystreets/gunit)
-[![Code Coverage](https://codecov.io/gh/smartystreets/gunit/branch/master/graph/badge.svg)](https://codecov.io/gh/smartystreets/gunit)
-[![Go Report Card](https://goreportcard.com/badge/github.com/smartystreets/gunit)](https://goreportcard.com/report/github.com/smartystreets/gunit)
-[![GoDoc](https://godoc.org/github.com/smartystreets/gunit?status.svg)](http://godoc.org/github.com/smartystreets/gunit)
+#### SMARTY DISCLAIMER: Subject to the terms of the associated license agreement, this software is freely available for your use. This software is FREE, AS IN PUPPIES, and is a gift. Enjoy your new responsibility. This means that while we may consider enhancement requests, we may or may not choose to entertain requests at our sole and absolute discretion.
+
+[![Build Status](https://travis-ci.org/smarty/gunit.svg?branch=master)](https://travis-ci.org/smarty/gunit)
+[![Code Coverage](https://codecov.io/gh/smarty/gunit/branch/master/graph/badge.svg)](https://codecov.io/gh/smarty/gunit)
+[![Go Report Card](https://goreportcard.com/badge/github.com/smarty/gunit)](https://goreportcard.com/report/github.com/smarty/gunit)
+[![GoDoc](https://godoc.org/github.com/smarty/gunit?status.svg)](http://godoc.org/github.com/smarty/gunit)
 
 # gunit
 
 ## Installation
 
 ```
-$ go get github.com/smartystreets/gunit
+$ go get github.com/smarty/gunit
 ```
 
 -------------------------
@@ -17,7 +19,7 @@ We now present `gunit`, yet another testing tool for Go.
 
 > Not again... ([GoConvey](http://goconvey.co) was crazy enough...but sort of cool, ok I'll pay attention...)
 
-No wait, this tool has some very interesting properties. It's a mix of good things provided by the built-in testing package, the [assertions](https://github.com/smartystreets/assertions) you know and love from the [GoConvey](http://goconvey.co) project, the [xUnit](https://en.wikipedia.org/wiki/XUnit) testing style (the first real unit testing framework), and it's all glued together with `go test`.
+No wait, this tool has some very interesting properties. It's a mix of good things provided by the built-in testing package, the [assertions](https://github.com/smarty/assertions) you know and love from the [GoConvey](http://goconvey.co) project, the [xUnit](https://en.wikipedia.org/wiki/XUnit) testing style (the first real unit testing framework), and it's all glued together with `go test`.
 
 > Blah, blah, yeah, yeah. Ok, so what's wrong with just using the standard "testing" package? What's better about this `gunit` thing?
 
@@ -39,8 +41,8 @@ import (
     "time"
 	"testing"
 
-	"github.com/smartystreets/assertions/should"
-	"github.com/smartystreets/gunit"
+	"github.com/smarty/assertions/should"
+	"github.com/smarty/gunit"
 )
 
 func TestExampleFixture(t *testing.T) {
@@ -75,7 +77,7 @@ func (this *ExampleFixture) FixtureTeardownStuff() {
 // This is an actual test case:
 func (this *ExampleFixture) TestWithAssertions() {
 	// Here's how to use the functions from the `should`
-	// package at github.com/smartystreets/assertions/should
+	// package at github.com/smarty/assertions/should
 	// to perform assertions:
 	this.So(42, should.Equal, 42)
 	this.So("Hello, World!", should.ContainSubstring, "World")
@@ -109,7 +111,7 @@ func TestExampleFixture(t *testing.T) {
 }
 ```
 
-[Advanced Examples](https://github.com/smartystreets/gunit/tree/master/advanced_examples)
+[Advanced Examples](https://github.com/smarty/gunit/tree/master/advanced_examples)
 
 ----------------------------------------------------------------------------
 

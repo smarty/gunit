@@ -50,7 +50,7 @@ func (singleton) SequentialTestCases() option {
 	}
 }
 
-// AllSequential() has the combined effect of passing the
+// AllSequential has the combined effect of passing the
 // following options to gunit.Run(...):
 // 1. SequentialFixture
 // 2. SequentialTestCases
