@@ -1,13 +1,5 @@
 # gunit
 
-## 安装
-
-```
-$ go get github.com/smarty/gunit
-```
-
--------------------------
-
 我们现在介绍`gunit`，又一个用于Go语言的测试工具。
 
 > 不要再来了...（[GoConvey](http://goconvey.co)已经够疯狂了...但还挺酷，好吧我会关注一下...）
@@ -100,6 +92,66 @@ func (this *ExampleFixture) LongTestSlowOperation() {
 类型的结构体字段。只需创建一个Test函数，并将fixture结构体的新实例与*
 testing.T一起传递给gunit的Run函数，它将运行所有已定义的Test方法以及Setup和Teardown方法。另外，还可以使用FixtureSetup和FixtureTeardown方法在所有测试执行之前或之后定义一些操作。
 
+## 核心特性
+
+- xUnit风格：完整支持 Go 语言的 xUnit 风格用例编写
+- 同时支持串行和并行：Fixture粒度的串行、并行控制，大大提高执行效率
+- 丰富断言支持：提供多种断言方式
+- Readable测试报告：以包为单位组织报告，查看和定位简洁高效
+- 复杂场景：可根据实际情况继承Fixture，实现业务级的接口、UI自动化测试
+
+## 安装
+
+```
+$ go get github.com/smarty/gunit
+```
+
+-------------------------
+
+### 日志打印
+
+使用fixture logger中的Log/Debug/Info/Warn/Error方法打印日志，如下
+
+```go
+type MyFixture struct {
+    livetech.MMCHelper
+}
+// 所有Test方法执行前执行
+func (g *MyFixture) FixtureSetup() {
+    g.GetLogger().Info().Msg("in FixtureSetup...")
+}
+
+// 所有Test方法执行后执行
+func (g *MyFixture) FixtureTeardown() {
+    g.GetLogger().Info().Msg("in FixtureTearDown...")
+}
+
+// 每一个Test方法执行前执行
+func (g *MyFixture) Setup() {
+    g.WithLogger(c.T()).Info().Msg("in test setup...")
+}
+
+// 每一个Test方法执行后执行
+func (g *MyFixture) Teardown() {
+    g.GetLogger().Info().Msg("in test teardown...")
+}
+
+// 真正的测试方法A
+func (g *MyFixture) TestA() {
+    g.GetLogger().Description("这是TestA")
+    g.GetLogger().Info().Msg("hello TestA...")
+}
+
+// 真正的测试方法B
+func (g *MyFixture) TestB() {
+    g.GetLogger().Description("这是TestB")
+    g.GetLogger().Info().Msg("hello TestB...")
+}
+
+```
+
+必须调用Msg或Msgf才能输出！可使用不同日志级别打印，一般使用Info或Error。
+
 ### 并行执行
 
 默认情况下，所有fixture的方法都会并行运行，因为它们应该是独立的，但如果由于某种原因有需要按顺序运行fixture，可以向`Run()`
@@ -107,7 +159,7 @@ testing.T一起传递给gunit的Run函数，它将运行所有已定义的Test�
 
 ```go
 func TestExampleFixture(t *testing.T) {
-gunit.Run(new(ExampleFixture), t, gunit.Options.SequentialTestCases())
+    gunit.Run(new(ExampleFixture), t, gunit.Options.SequentialTestCases())
 }
 ```
 
@@ -121,7 +173,7 @@ gunit.Run(new(ExampleFixture), t, gunit.Options.SequentialTestCases())
 - Description: `生成 gunit Fixture 脚手架代码`
 - Template Text:
 
-```
+```go
 func Test$NAME$(t *testing.T) {
     gunit.Run(new($NAME$), t)
 }
@@ -156,7 +208,11 @@ func (this *$NAME$) Test$END$() {
 #### 执行并生成报告
 
 首次生成报告，先安装报告生成工具
-`go get -u github.com/bugVanisher/gunit-test-report`
+
+`go get github.com/bugVanisher/gunit-test-report`
 
 然后执行
-`go test ./testcases/... -json`
+
+`go test ./testcases/... -json | gunit-test-report`
+
+将会在当前目录生成test_report.html报告。
