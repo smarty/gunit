@@ -100,10 +100,18 @@ testing.T一起传递给gunit的Run函数，它将运行所有已定义的Test�
 - Readable测试报告：以包为单位组织报告，查看和定位简洁高效
 - 复杂场景：可根据实际情况继承Fixture，实现业务级的接口、UI自动化测试
 
-## 安装
+## 引用
+
+```go
+import (
+    "github.com/smarty/gunit"
+)
+```
+
+然后在你的测试用例工程的go.mod文件中添加如下语句：
 
 ```
-$ go get github.com/smarty/gunit
+replace github.com/smarty/gunit => github.com/bugVanisher/gunit v2.0.1
 ```
 
 -------------------------
@@ -114,7 +122,7 @@ $ go get github.com/smarty/gunit
 
 ```go
 type MyFixture struct {
-    livetech.MMCHelper
+    *gunit.Fixture
 }
 // 所有Test方法执行前执行
 func (g *MyFixture) FixtureSetup() {
@@ -150,7 +158,7 @@ func (g *MyFixture) TestB() {
 
 ```
 
-必须调用Msg或Msgf才能输出！可使用不同日志级别打印，一般使用Info或Error。
+必须调用Msg或Msgf才能输出！
 
 ### 并行执行
 
@@ -197,7 +205,7 @@ func (this *$NAME$) Test$END$() {
 
 ```
 
-请确保在Go文件中指定此LiveTemplate适用。
+----------------------------------------------------------------------------
 
 ## 执行&报告
 
