@@ -4,9 +4,9 @@ package gunit
 type TestingT interface {
 	Helper()
 	Name() string
-	Log(args ...any)
+	Log(args ...interface{})
 	Fail()
 	Failed() bool
-	Fatalf(format string, args ...any)
-	Errorf(format string, args ...any)
+	Fatalf(format string, args ...interface{})
+	Errorf(format string, args ...interface{})
 }

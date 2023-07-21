@@ -8,7 +8,7 @@ import (
 
 func TestHowToRegisterASequentialFixture(t *testing.T) {
 	gunit.Run(new(HowToRegisterASequentialFixture), t,
-		gunit.Options.SequentialFixture(), // <-- Just pass the SequentialFixture option to gunit.Run(...)!
+		gunit.Options.SequentialTestCases(), // <-- Just pass the SequentialFixture option to gunit.Run(...)!
 	)
 }
 

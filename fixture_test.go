@@ -266,7 +266,6 @@ func TestErrorFailsAndLogs(t *testing.T) {
 
 	test := Setup(false)
 
-	test.fixture.Error("1", "2", "3")
 	test.fixture.finalize()
 
 	if !test.fakeT.failed {
@@ -282,7 +281,6 @@ func TestErrorfFailsAndLogs(t *testing.T) {
 
 	test := Setup(false)
 
-	test.fixture.Errorf("%s%s%s", "1", "2", "3")
 	test.fixture.finalize()
 
 	if !test.fakeT.failed {
@@ -345,8 +343,6 @@ func TestFailed(t *testing.T) {
 		t.Error("Expected Failed() to return false, got true instead.")
 	}
 
-	test.fixture.Error("HI")
-
 	if !test.fixture.Failed() {
 		t.Error("Expected Failed() to return true, got false instead.")
 	}
@@ -354,7 +350,7 @@ func TestFailed(t *testing.T) {
 
 func TestRunSubTests(t *testing.T) {
 	counter := int32(0)
-	outer := newFixture(t, true)
+	outer := newFixture(t, true, RetrieveTestPackageName())
 	outer.Run("A", func(*Fixture) { atomic.AddInt32(&counter, 1) })
 	outer.Run("B", func(*Fixture) { atomic.AddInt32(&counter, 1) })
 	time.Sleep(time.Millisecond)
@@ -376,7 +372,7 @@ func Setup(verbose bool) *FixtureTestState {
 	this := &FixtureTestState{}
 	this.out = &bytes.Buffer{}
 	this.fakeT = &FakeTestingT{log: this.out}
-	this.fixture = newFixture(this.fakeT, verbose)
+	this.fixture = newFixture(this.fakeT, verbose, RetrieveTestPackageName())
 	return this
 }
 
@@ -387,27 +383,27 @@ type FakeTestingT struct {
 	failed bool
 }
 
-func (self *FakeTestingT) Helper()                           {}
-func (self *FakeTestingT) Name() string                      { return "FakeTestingT" }
-func (self *FakeTestingT) Log(args ...any)                   { fmt.Fprint(self.log, args...) }
-func (self *FakeTestingT) Fail()                             { self.failed = true }
-func (self *FakeTestingT) Failed() bool                      { return self.failed }
-func (this *FakeTestingT) Errorf(format string, args ...any) {}
-func (this *FakeTestingT) Fatalf(format string, args ...any) {
+func (self *FakeTestingT) Helper()                                   {}
+func (self *FakeTestingT) Name() string                              { return "FakeTestingT" }
+func (self *FakeTestingT) Log(args ...interface{})                   { fmt.Fprint(self.log, args...) }
+func (self *FakeTestingT) Fail()                                     { self.failed = true }
+func (self *FakeTestingT) Failed() bool                              { return self.failed }
+func (this *FakeTestingT) Errorf(format string, args ...interface{}) {}
+func (this *FakeTestingT) Fatalf(format string, args ...interface{}) {
 	this.Fail()
 	this.Log(fmt.Sprintf(format, args...))
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-func ShouldBeTrue(actual any, expected ...any) string {
+func ShouldBeTrue(actual interface{}, expected ...interface{}) string {
 	if actual != true {
 		return "Expected true, got false instead"
 	}
 	return ""
 }
 
-func ShouldBeFalse(actual any, expected ...any) string {
+func ShouldBeFalse(actual interface{}, expected ...interface{}) string {
 	if actual == true {
 		return "Expected false, got true instead"
 	}
