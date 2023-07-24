@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/smarty/gunit"
+	"github.com/bugVanisher/gunit"
 )
 
 func TestExampleFixture(t *testing.T) {

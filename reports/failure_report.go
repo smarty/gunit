@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/smarty/gunit/scan"
+	"github.com/bugVanisher/gunit/scan"
 )
 
 func FailureReport(failure string, stack []Frame) string {

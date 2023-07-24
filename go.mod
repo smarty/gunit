@@ -1,4 +1,4 @@
-module github.com/smarty/gunit
+module github.com/bugVanisher/gunit
 
 go 1.17
 

@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/smarty/gunit/scan"
+	"github.com/bugVanisher/gunit/scan"
 )
 
 type testCase struct {

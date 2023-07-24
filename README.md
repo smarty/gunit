@@ -1,6 +1,8 @@
+#### 声明：这个项目是基于 [smarty/gunit](https://github.com/smarty/gunit) 改造的，原作者已经不维护所以移到本仓库继续更新。
+
 # gunit
 
-我们现在介绍`gunit`，又一个用于Go语言的测试工具。
+`gunit`，又一个用于Go语言的测试工具。
 
 > 不要再来了...（[GoConvey](http://goconvey.co)已经够疯狂了...但还挺酷，好吧我会关注一下...）
 
@@ -32,7 +34,7 @@ import (
 	"testing"
 
 	"github.com/smarty/assertions/should"
-	"github.com/smarty/gunit"
+	"github.com/bugVanisher/gunit"
 )
 
 func TestExampleFixture(t *testing.T) {
@@ -104,14 +106,14 @@ testing.T一起传递给gunit的Run函数，它将运行所有已定义的Test�
 
 ```go
 import (
-    "github.com/smarty/gunit"
+    "github.com/bugVanisher/gunit"
 )
 ```
 
 然后在你的测试用例工程的go.mod文件中添加如下语句：
 
 ```
-replace github.com/smarty/gunit => github.com/bugVanisher/gunit v2.0.1
+replace github.com/bugVanisher/gunit => github.com/bugVanisher/gunit v2.0.1
 ```
 
 -------------------------

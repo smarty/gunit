@@ -4,7 +4,7 @@ const comprehensiveTestCode = `package parse
 
 import (
 	"github.com/smarty/assertions/should"
-	"github.com/smarty/gunit"
+	"github.com/bugVanisher/gunit"
 )
 
 type BowlingGameScoringTests struct {

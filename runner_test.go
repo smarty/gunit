@@ -3,7 +3,7 @@ package gunit
 import (
 	"testing"
 
-	"github.com/smarty/gunit/assertions"
+	"github.com/bugVanisher/gunit/assertions"
 )
 
 /**************************************************************************/

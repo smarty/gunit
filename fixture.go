@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/smarty/gunit/reports"
+	"github.com/bugVanisher/gunit/reports"
 )
 
 // Fixture keeps track of test status (failed, passed, skipped) and

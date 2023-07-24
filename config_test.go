@@ -3,7 +3,7 @@ package gunit
 import (
 	"testing"
 
-	assertions2 "github.com/smarty/gunit/assertions"
+	assertions2 "github.com/bugVanisher/gunit/assertions"
 )
 
 func TestConfigOptions(t *testing.T) {

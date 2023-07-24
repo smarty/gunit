@@ -3,7 +3,7 @@ package examples
 import (
 	"testing"
 
-	"github.com/smarty/gunit"
+	"github.com/bugVanisher/gunit"
 )
 
 func TestBowlingGameScoringFixture(t *testing.T) {

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/smarty/gunit/scan"
+	"github.com/bugVanisher/gunit/scan"
 )
 
 // Run receives an instance of a struct that embeds *Fixture.
@@ -22,7 +22,7 @@ func Run(fixture interface{}, t *testing.T, options ...option) {
 }
 
 func allSequentialForGo1Dot14(options []option) []option {
-	// HACK to accommodate for https://github.com/smarty/gunit/issues/28
+	// HACK to accommodate for https://github.com/bugVanisher/gunit/issues/28
 	// Also see: https://github.com/golang/go/issues/38050
 	return append(options, Options.AllSequential())
 }
