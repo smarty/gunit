@@ -3,7 +3,7 @@ package reports
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -95,7 +95,7 @@ const maxStackDepth = 32
 type fileReader func(path string) string
 
 func readFile(path string) string {
-	raw, err := ioutil.ReadFile(path)
+	raw, err := os.ReadFile(path)
 	if err != nil {
 		return ""
 	}

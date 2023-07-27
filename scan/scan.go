@@ -2,7 +2,7 @@ package scan
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ func gatherTestCaseLineNumbers(fixtures []*fixtureInfo) TestCasePositions {
 }
 
 func parseFixtures(filename string) (fixtures []*fixtureInfo) {
-	source, err := ioutil.ReadFile(filename)
+	source, err := os.ReadFile(filename)
 	if err != nil {
 		return nil
 	}
