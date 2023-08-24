@@ -1,9 +1,9 @@
 #!/usr/bin/make -f
 
 test-dev: fmt
-	go test -timeout=1s -race -count=1 -covermode=atomic ./... && \
+	GORACE="atexit_sleep_ms=50" go test -timeout=1s -race -count=1 -covermode=atomic ./... && \
 	  echo "---- Running tests a second time with -short ----" && \
-	  go test -timeout=1s -race -count=1 -covermode=atomic -short ./...
+	  GORACE="atexit_sleep_ms=50" go test -timeout=1s -race -count=1 -covermode=atomic -short ./...
 
 fmt:
 	go fmt ./...
