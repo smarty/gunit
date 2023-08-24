@@ -9,7 +9,7 @@ fmt:
 	go fmt ./...
 
 test:
-	go test -timeout=1s -race -covermode=atomic .
+	GORACE="atexit_sleep_ms=50" go test -timeout=1s -race -covermode=atomic .
 
 compile:
 	go build ./...
