@@ -73,11 +73,11 @@ var expected = map[string]*fixtureInfo{
 	"BowlingGameScoringTests": {
 		StructName: "BowlingGameScoringTests",
 		TestCases: []*testCaseInfo{
-			{CharacterPosition: 335, Name: "TestAfterAllGutterBallsTheScoreShouldBeZero"},
-			{CharacterPosition: 490, Name: "TestAfterAllOnesTheScoreShouldBeTwenty"},
-			{CharacterPosition: 641, Name: "SkipTestASpareDeservesABonus"},
-			{CharacterPosition: 718, Name: "LongTestPerfectGame"},
-			{CharacterPosition: 852, Name: "SkipLongTestPerfectGame"},
+			{CharacterPosition: 321, Name: "TestAfterAllGutterBallsTheScoreShouldBeZero"},
+			{CharacterPosition: 476, Name: "TestAfterAllOnesTheScoreShouldBeTwenty"},
+			{CharacterPosition: 627, Name: "SkipTestASpareDeservesABonus"},
+			{CharacterPosition: 704, Name: "LongTestPerfectGame"},
+			{CharacterPosition: 838, Name: "SkipLongTestPerfectGame"},
 		},
 	},
 }
