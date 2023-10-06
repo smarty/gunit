@@ -76,6 +76,29 @@ func TestSoFailsAndLogs(t *testing.T) {
 	}
 }
 
+func TestSoFatal(t *testing.T) {
+	t.Parallel()
+
+	test := Setup(false)
+
+	result := test.fixture.So(true, MustBeFalse)
+	test.fixture.finalize()
+
+	if result {
+		t.Error("Expected false result, got true")
+	}
+	output := strings.TrimSpace(test.out.String())
+	if !strings.Contains(output, "Expected false, got true instead") {
+		t.Errorf("Unexpected output: [%s]", test.out.String())
+	}
+	if strings.Contains(output, "<<FATAL>>") {
+		t.Errorf("Unexpected internal prefix should have been trimmed.")
+	}
+	if !test.fakeT.fatal {
+		t.Error("Test should have been marked as fatal.")
+	}
+}
+
 func TestAssertPasses(t *testing.T) {
 	t.Parallel()
 
@@ -385,6 +408,7 @@ func Setup(verbose bool) *FixtureTestState {
 type FakeTestingT struct {
 	log    *bytes.Buffer
 	failed bool
+	fatal  bool
 }
 
 func (self *FakeTestingT) Helper()                           {}
@@ -394,22 +418,30 @@ func (self *FakeTestingT) Fail()                             { self.failed = tru
 func (self *FakeTestingT) Failed() bool                      { return self.failed }
 func (this *FakeTestingT) Errorf(format string, args ...any) {}
 func (this *FakeTestingT) Fatalf(format string, args ...any) {
-	this.Fail()
+	this.fatal = true
 	this.Log(fmt.Sprintf(format, args...))
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-func ShouldBeTrue(actual any, expected ...any) string {
+func ShouldBeTrue(actual any, _ ...any) string {
 	if actual != true {
 		return "Expected true, got false instead"
 	}
 	return ""
 }
 
-func ShouldBeFalse(actual any, expected ...any) string {
+func ShouldBeFalse(actual any, _ ...any) string {
 	if actual == true {
 		return "Expected false, got true instead"
+	}
+	return ""
+}
+
+func MustBeFalse(actual any, _ ...any) string {
+	result := ShouldBeFalse(actual)
+	if len(result) > 0 {
+		return "<<FATAL>>" + result
 	}
 	return ""
 }
