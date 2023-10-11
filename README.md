@@ -113,18 +113,18 @@ For users of JetBrains IDEs, here's LiveTemplate you can use for generating the 
 - Template Text:
 
 ```
-func Test$NAME$(t *testing.T) {
-    gunit.Run(new($NAME$), t)
+func Test$NAME$Fixture(t *testing.T) {
+    gunit.Run(new($NAME$Fixture), t)
 }
 
-type $NAME$ struct {
+type $NAME$Fixture struct {
     *gunit.Fixture
 }
 
-func (this *$NAME$) Setup() {
+func (this *$NAME$Fixture) Setup() {
 }
 
-func (this *$NAME$) Test$END$() {
+func (this *$NAME$Fixture) Test$END$() {
 }
 
 ```
