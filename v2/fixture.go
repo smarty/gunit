@@ -15,7 +15,7 @@ func (this *Fixture) Write(p []byte) (int, error) {
 // Example: this.So(actual, should.Equal, expected)
 func (this *Fixture) So(actual any, assert assertion, expected ...any) bool {
 	err := assert(actual, expected...)
-	if err != nil {
+	if err != nil { // TODO: differentiate between should.* and must.*
 		this.Helper()
 		this.Error(err)
 	}
