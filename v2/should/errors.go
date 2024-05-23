@@ -18,21 +18,21 @@ var (
 )
 
 func failure(format string, args ...any) error {
-	trace := stack()
+	trace := stack(readLines, string(debug.Stack()))
 	if len(trace) > 0 {
 		format += "\nStack: (filtered)\n%s"
 		args = append(args, trace)
 	}
 	return wrap(ErrAssertionFailure, format, args...)
 }
-func stack() string {
-	lines := strings.Split(string(debug.Stack()), "\n")
+func stack(readLines func(string) []string, stackTrace string) string {
+	lines := strings.Split(stackTrace, "\n")
 	var filtered []string
 	for x := 1; x < len(lines)-1; x += 2 {
 		fileLineRaw := lines[x+1]
 		if strings.Contains(fileLineRaw, "_test.go:") {
 			filtered = append(filtered, lines[x], fileLineRaw)
-			line, ok := readSourceCodeLine(fileLineRaw)
+			line, ok := readSourceCodeLine(readLines, fileLineRaw)
 			if ok {
 				filtered = append(filtered, "  "+line)
 			}
@@ -44,11 +44,14 @@ func stack() string {
 	}
 	return "> " + strings.Join(filtered, "\n> ")
 }
-func readSourceCodeLine(fileLineRaw string) (string, bool) {
+func readLines(path string) []string {
+	content, _ := os.ReadFile(path)
+	return strings.Split(string(content), "\n")
+}
+func readSourceCodeLine(readLines func(string) []string, fileLineRaw string) (string, bool) {
 	fileLineJoined := strings.Fields(strings.TrimSpace(fileLineRaw))[0]
 	fileLine := strings.Split(fileLineJoined, ":")
-	sourceCode, _ := os.ReadFile(fileLine[0])
-	sourceCodeLines := strings.Split(string(sourceCode), "\n")
+	sourceCodeLines := readLines(fileLine[0])
 	lineNumber, _ := strconv.Atoi(fileLine[1])
 	lineNumber--
 	if len(sourceCodeLines) <= lineNumber {
