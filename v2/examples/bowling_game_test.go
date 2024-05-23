@@ -1,17 +1,19 @@
 package examples
 
 import (
+	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/smarty/gunit/v2"
 )
 
 func TestBowlingGameScoringFixture(t *testing.T) {
-	gunit.Run(&BowlingGameScoringFixture{T: gunit.New(t)})
+	gunit.Run(new(BowlingGameScoringFixture), t)
 }
 
 type BowlingGameScoringFixture struct {
-	*gunit.T
+	*gunit.Fixture
 	game *Game
 }
 
@@ -46,8 +48,9 @@ func (this *BowlingGameScoringFixture) TestPerfection() {
 }
 
 func (this *BowlingGameScoringFixture) assertScore(expected int) {
-	this.AssertEqual(expected, this.game.CalculateScore())
+	this.So(expected, shouldEqual, this.game.CalculateScore())
 }
+
 func (this *BowlingGameScoringFixture) rollMany(times, pins int) {
 	for x := 0; x < times; x++ {
 		this.game.RecordRoll(pins)
@@ -57,4 +60,12 @@ func (this *BowlingGameScoringFixture) rollSeveral(rolls ...int) {
 	for _, roll := range rolls {
 		this.game.RecordRoll(roll)
 	}
+}
+
+// TODO: use should.Equal (once it is defined)
+func shouldEqual(actual any, expected ...any) error {
+	if reflect.DeepEqual(actual, expected[0]) {
+		return nil
+	}
+	return fmt.Errorf("shouldEqual failed: %v vs %v", actual, expected[0])
 }

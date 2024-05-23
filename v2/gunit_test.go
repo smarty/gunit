@@ -1,10 +1,8 @@
 package gunit_test
 
 import (
-	"bytes"
-	"errors"
 	"fmt"
-	"io"
+	"reflect"
 	"testing"
 
 	"github.com/smarty/gunit/v2"
@@ -12,24 +10,25 @@ import (
 
 func TestSuiteWithoutEmbeddedFixture(t *testing.T) {
 	defer func() {
-		r := recover()
-		if r == nil {
+		if recover() == nil {
 			t.Error("Expected panic didn't occur.")
 		}
 	}()
-	gunit.Run(&Suite00{})
+	gunit.Run(&Suite00{}, t)
 }
 
 type Suite00 struct{}
 
+func (this *Suite00) Test() {}
+
 ///////////////////////////
 
 func TestSuiteWithSetupsAndTeardowns(t *testing.T) {
-	fixture := &Suite01{T: gunit.New(t)}
+	fixture := &Suite01{}
 
-	gunit.Run(fixture, gunit.Options.IntegrationTests())
+	gunit.Run(fixture, t, gunit.Options.IntegrationTests())
 
-	fixture.AssertEqual(fixture.events, []string{
+	fixture.So(fixture.events, shouldEqual, []string{
 		"SetupSuite",
 		"Setup",
 		"Test",
@@ -39,7 +38,7 @@ func TestSuiteWithSetupsAndTeardowns(t *testing.T) {
 }
 
 type Suite01 struct {
-	*gunit.T
+	*gunit.Fixture
 	events []string
 }
 
@@ -53,13 +52,13 @@ func (this *Suite01) record(event string) { this.events = append(this.events, ev
 ///////////////////////////
 
 func TestFreshFixture(t *testing.T) {
-	fixture := &Suite02{T: gunit.New(t)}
-	gunit.Run(fixture, gunit.Options.UnitTests())
-	fixture.AssertEqual(fixture.counter, 0)
+	fixture := &Suite02{}
+	gunit.Run(fixture, t, gunit.Options.UnitTests())
+	fixture.So(fixture.counter, shouldEqual, 0)
 }
 
 type Suite02 struct {
-	*gunit.T
+	*gunit.Fixture
 	counter int
 }
 
@@ -71,33 +70,30 @@ func (this *Suite02) TestSomething() {
 ///////////////////////////
 
 func TestSkip(t *testing.T) {
-	fixture := &Suite03{T: gunit.New(t)}
-	gunit.Run(fixture)
-	fixture.AssertFalse(t.Failed())
+	fixture := &Suite03{}
+	gunit.Run(fixture, t)
+	fixture.So(t.Failed(), shouldEqual, false)
 }
 
-type Suite03 struct{ *gunit.T }
+type Suite03 struct{ *gunit.Fixture }
 
 func (this *Suite03) SkipTestThatFails() {
-	this.AssertEqual(1, 2)
+	this.So(1, shouldEqual, 2)
 }
 
 ///////////////////////////
 
 func TestFocus(t *testing.T) {
-	fixture := &Suite04{
-		T:      gunit.New(t),
-		events: make(map[string]struct{}),
-	}
+	fixture := &Suite04{events: make(map[string]struct{})}
 
-	gunit.Run(fixture, gunit.Options.SharedFixture())
+	gunit.Run(fixture, t, gunit.Options.SharedFixture())
 
-	fixture.AssertFalse(t.Failed())
-	fixture.AssertEqual(fixture.events, map[string]struct{}{"1": {}})
+	fixture.So(t.Failed(), shouldEqual, false)
+	fixture.So(fixture.events, shouldEqual, map[string]struct{}{"1": {}})
 }
 
 type Suite04 struct {
-	*gunit.T
+	*gunit.Fixture
 	events map[string]struct{}
 }
 
@@ -105,21 +101,21 @@ func (this *Suite04) FocusTest1() {
 	this.events["1"] = struct{}{}
 }
 func (this *Suite04) TestThatFails() {
-	this.AssertEqual(1, 2)
+	this.So(1, shouldEqual, 2)
 }
 
 ///////////////////////////
 
 func TestSuiteWithSetupsAndTeardownsSkippedEntirelyIfAllTestsSkipped(t *testing.T) {
-	fixture := &Suite05{T: gunit.New(t)}
+	fixture := &Suite05{}
 
-	gunit.Run(fixture, gunit.Options.SharedFixture())
+	gunit.Run(fixture, t, gunit.Options.SharedFixture())
 
-	fixture.AssertNil(fixture.events)
+	fixture.So(fixture.events, shouldEqual, nil)
 }
 
 type Suite05 struct {
-	*gunit.T
+	*gunit.Fixture
 	events []string
 }
 
@@ -133,11 +129,11 @@ func (this *Suite05) record(event string) { this.events = append(this.events, ev
 ///////////////////////////
 
 func TestSuiteWithSkippedTests(t *testing.T) {
-	fixture := &Suite06{T: gunit.New(t)}
+	fixture := &Suite06{}
 
-	gunit.Run(fixture, gunit.Options.SharedFixture())
+	gunit.Run(fixture, t, gunit.Options.SharedFixture())
 
-	fixture.AssertEqual(fixture.events, []string{
+	fixture.So(fixture.events, shouldEqual, []string{
 		"SetupSuite",
 		"Setup",
 		"Test1",
@@ -147,7 +143,7 @@ func TestSuiteWithSkippedTests(t *testing.T) {
 }
 
 type Suite06 struct {
-	*gunit.T
+	*gunit.Fixture
 	events []string
 }
 
@@ -161,50 +157,10 @@ func (this *Suite06) record(event string) { this.events = append(this.events, ev
 
 ///////////////////////////
 
-func shouldEqual(actual any, expected ...any) string {
-	if actual == expected[0] {
-		return ""
+// TODO: replace with should.Equal when defined
+func shouldEqual(actual any, expected ...any) error {
+	if reflect.DeepEqual(actual, expected[0]) {
+		return nil
 	}
-	return fmt.Sprintf("shouldEqual failed: %v vs %v", actual, expected)
-}
-func TestFixture_PassingAssertions(t *testing.T) {
-	fixture := gunit.New(t)
-	_, _ = io.WriteString(fixture, "Hello, world!")
-	fixture.AssertNil(nil)
-	fixture.AssertNotNil(42)
-	fixture.AssertTrue(true)
-	fixture.AssertFalse(false)
-	fixture.AssertEqual(1, 1)
-	fixture.AssertNotEqual(1, 2)
-	fixture.AssertError(nil, nil)
-	fixture.So(1, shouldEqual, 1)
-}
-
-type FakeT struct {
-	failCount int
-	failures  *bytes.Buffer
-}
-
-func (this *FakeT) Helper()      {}
-func (this *FakeT) Log(a ...any) {}
-func (this *FakeT) Error(a ...any) {
-	this.failCount++
-	_, _ = fmt.Fprintln(this.failures, a...)
-}
-
-func TestFixture_FailingAssertions(t *testing.T) {
-	fakeT := &FakeT{failures: bytes.NewBuffer(nil)}
-	fixture := gunit.New(fakeT)
-	fixture.AssertNil(42)
-	fixture.AssertNotNil(nil)
-	fixture.AssertTrue(false)
-	fixture.AssertFalse(true)
-	fixture.AssertEqual(1, 2)
-	fixture.AssertNotEqual(1, 1)
-	fixture.AssertError(errors.New("boink"), errors.New("yoink"))
-	fixture.So(1, shouldEqual, 2)
-	t.Log(fakeT.failures.String())
-	if fakeT.failCount != 8 {
-		t.Error("Expected 8 failures, got:", fakeT.failCount)
-	}
+	return fmt.Errorf("shouldEqual failed: %v vs %v", actual, expected[0])
 }

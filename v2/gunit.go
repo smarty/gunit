@@ -1,8 +1,6 @@
 package gunit
 
 import (
-	"errors"
-	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -12,7 +10,7 @@ import (
 Run accepts a fixture with Test* methods and
 optional setup/teardown methods and executes
 the suite. Fixtures must be struct types which
-embeds a *gunit.T. Assuming a fixture struct
+embeds a *gunit.Fixture. Assuming a fixture struct
 with test methods 'Test1' and 'Test2' execution
 would proceed as follows:
 
@@ -28,25 +26,21 @@ would proceed as follows:
 The methods provided by Options may be supplied
 to this function to tweak the execution.
 */
-func Run(fixture any, options ...Option) {
+func Run(outerFixture any, t *testing.T, options ...Option) {
 	config := new(config)
 	for _, option := range append(defaultOptions, options...) {
 		option(config)
 	}
 
-	fixtureValue := reflect.ValueOf(fixture)
-	fixtureType := reflect.TypeOf(fixture)
-	t, ok := tryExtractT(fixtureValue)
-	if !ok {
-		panic("Failed to extract *testing.T via embedded *Fixture instance.")
-	}
+	fixtureValue := reflect.ValueOf(outerFixture)
+	fixtureType := reflect.TypeOf(outerFixture)
 
 	var (
 		testNames        []string
 		skippedTestNames []string
 		focusedTestNames []string
 	)
-	for x := 0; x < fixtureType.NumMethod(); x++ {
+	for x := range fixtureType.NumMethod() {
 		name := fixtureType.Method(x).Name
 		method := fixtureValue.MethodByName(name)
 		_, isNiladic := method.Interface().(func())
@@ -76,32 +70,40 @@ func Run(fixture any, options ...Option) {
 		t.Parallel()
 	}
 
-	setup, hasSetup := fixture.(setupSuite)
+	setInnerFixture(fixtureValue, t)
+
+	setup, hasSetup := outerFixture.(setupSuite)
 	if hasSetup {
 		setup.SetupSuite()
 	}
 
-	teardown, hasTeardown := fixture.(teardownSuite)
+	teardown, hasTeardown := outerFixture.(teardownSuite)
 	if hasTeardown {
 		defer teardown.TeardownSuite()
 	}
 
 	for _, name := range skippedTestNames {
-		testCase{t: t, manualSkip: true, name: name}.Run()
+		testCase{t: t, manualSkip: true, name: name}.run()
 	}
 
 	for _, name := range testNames {
-		testCase{t, name, config, false, fixtureType, fixtureValue}.Run()
+		testCase{
+			t:            t,
+			name:         name,
+			config:       config,
+			fixtureType:  fixtureType,
+			fixtureValue: fixtureValue,
+		}.run()
 	}
 }
 
-func tryExtractT(fixtureValue reflect.Value) (t *testing.T, ok bool) {
+func setInnerFixture(fixtureValue reflect.Value, t *testing.T) {
 	defer func() {
-		if r := recover(); r != nil {
-			ok = false
+		if recover() != nil {
+			panic("must embed a *gunit.Fixture on the provided fixture")
 		}
 	}()
-	return fixtureValue.Elem().FieldByName("T").Elem().FieldByName("TestingT").Interface().(*testing.T), true
+	fixtureValue.Elem().FieldByName("Fixture").Set(reflect.ValueOf(&Fixture{TestingT: t}))
 }
 
 type testCase struct {
@@ -113,7 +115,7 @@ type testCase struct {
 	fixtureValue reflect.Value
 }
 
-func (this testCase) Run() {
+func (this testCase) run() {
 	_ = this.t.Run(this.name, this.decideRun())
 }
 func (this testCase) decideRun() func(*testing.T) {
@@ -134,7 +136,7 @@ func (this testCase) runTest(t *testing.T) {
 	if this.config.freshFixture {
 		fixtureValue = reflect.New(this.fixtureType.Elem())
 	}
-	fixtureValue.Elem().FieldByName("T").Set(reflect.ValueOf(New(t)))
+	setInnerFixture(fixtureValue, t)
 
 	setup, hasSetup := fixtureValue.Interface().(setupTest)
 	if hasSetup {
@@ -154,75 +156,4 @@ type (
 	setupTest     interface{ Setup() }
 	teardownTest  interface{ Teardown() }
 	teardownSuite interface{ TeardownSuite() }
-
-	assertion func(actual any, expected ...any) string
 )
-
-type TestingT interface {
-	Helper()
-	Log(...any)
-	Error(...any)
-}
-type T struct{ TestingT }
-
-func New(t TestingT) *T { return &T{TestingT: t} }
-
-func (this *T) Write(p []byte) (int, error) {
-	this.Helper()
-	this.Log(string(p))
-	return len(p), nil
-}
-
-// So is a convenience method for reporting assertion failure messages
-// with the many assertion functions found in github.com/smarty/assertions/should.
-// Example: this.So(actual, should.Equal, expected)
-func (this *T) So(actual any, assert assertion, expected ...any) bool {
-	failure := assert(actual, expected...)
-	failed := len(failure) > 0
-	if failed {
-		this.Error(failure)
-	}
-	return !failed
-}
-func (this *T) AssertNil(v any) {
-	this.Helper()
-	if v != nil {
-		this.Error("Expected nil, got:", v)
-	}
-}
-func (this *T) AssertNotNil(v any) {
-	this.Helper()
-	if v == nil {
-		this.Error("Expected non-nil, but it was.")
-	}
-}
-func (this *T) AssertTrue(b bool) {
-	this.Helper()
-	if !b {
-		this.Error("Expected true, got false.")
-	}
-}
-func (this *T) AssertFalse(b bool) {
-	this.Helper()
-	if b {
-		this.Error("Expected false, got true.")
-	}
-}
-func (this *T) AssertEqual(a, b any) {
-	this.Helper()
-	if err := equal(a, b); err != nil {
-		this.Error(err)
-	}
-}
-func (this *T) AssertNotEqual(a, b any) {
-	this.Helper()
-	if err := equal(a, b); err == nil {
-		this.Error("Provided values were equal.")
-	}
-}
-func (this *T) AssertError(a, b error) {
-	this.Helper()
-	if !errors.Is(a, b) && !errors.Is(b, a) {
-		this.Error(fmt.Sprintf("Provided errors are unrelated:\n"+"a: %s\n"+"b: %s", a, b))
-	}
-}
