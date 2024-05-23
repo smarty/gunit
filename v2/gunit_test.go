@@ -1,11 +1,10 @@
 package gunit_test
 
 import (
-	"fmt"
-	"reflect"
 	"testing"
 
 	"github.com/smarty/gunit/v2"
+	"github.com/smarty/gunit/v2/should"
 )
 
 func TestSuiteWithoutEmbeddedFixture(t *testing.T) {
@@ -28,7 +27,7 @@ func TestSuiteWithSetupsAndTeardowns(t *testing.T) {
 
 	gunit.Run(fixture, t, gunit.Options.IntegrationTests())
 
-	fixture.So(fixture.events, shouldEqual, []string{
+	fixture.So(fixture.events, should.Equal, []string{
 		"SetupSuite",
 		"Setup",
 		"Test",
@@ -54,7 +53,7 @@ func (this *Suite01) record(event string) { this.events = append(this.events, ev
 func TestFreshFixture(t *testing.T) {
 	fixture := &Suite02{}
 	gunit.Run(fixture, t, gunit.Options.UnitTests())
-	fixture.So(fixture.counter, shouldEqual, 0)
+	fixture.So(fixture.counter, should.Equal, 0)
 }
 
 type Suite02 struct {
@@ -72,13 +71,13 @@ func (this *Suite02) TestSomething() {
 func TestSkip(t *testing.T) {
 	fixture := &Suite03{}
 	gunit.Run(fixture, t)
-	fixture.So(t.Failed(), shouldEqual, false)
+	fixture.So(t.Failed(), should.Equal, false)
 }
 
 type Suite03 struct{ *gunit.Fixture }
 
 func (this *Suite03) SkipTestThatFails() {
-	this.So(1, shouldEqual, 2)
+	this.So(1, should.Equal, 2)
 }
 
 ///////////////////////////
@@ -88,8 +87,8 @@ func TestFocus(t *testing.T) {
 
 	gunit.Run(fixture, t, gunit.Options.SharedFixture())
 
-	fixture.So(t.Failed(), shouldEqual, false)
-	fixture.So(fixture.events, shouldEqual, map[string]struct{}{"1": {}})
+	fixture.So(t.Failed(), should.Equal, false)
+	fixture.So(fixture.events, should.Equal, map[string]struct{}{"1": {}})
 }
 
 type Suite04 struct {
@@ -101,7 +100,7 @@ func (this *Suite04) FocusTest1() {
 	this.events["1"] = struct{}{}
 }
 func (this *Suite04) TestThatFails() {
-	this.So(1, shouldEqual, 2)
+	this.So(1, should.Equal, 2)
 }
 
 ///////////////////////////
@@ -111,7 +110,7 @@ func TestSuiteWithSetupsAndTeardownsSkippedEntirelyIfAllTestsSkipped(t *testing.
 
 	gunit.Run(fixture, t, gunit.Options.SharedFixture())
 
-	fixture.So(fixture.events, shouldEqual, nil)
+	fixture.So(fixture.events, should.Equal, nil)
 }
 
 type Suite05 struct {
@@ -133,7 +132,7 @@ func TestSuiteWithSkippedTests(t *testing.T) {
 
 	gunit.Run(fixture, t, gunit.Options.SharedFixture())
 
-	fixture.So(fixture.events, shouldEqual, []string{
+	fixture.So(fixture.events, should.Equal, []string{
 		"SetupSuite",
 		"Setup",
 		"Test1",
@@ -154,13 +153,3 @@ func (this *Suite06) Teardown()           { this.record("Teardown") }
 func (this *Suite06) Test1()              { this.record("Test1") }
 func (this *Suite06) SkipTest2()          { this.record("SkipTest2") }
 func (this *Suite06) record(event string) { this.events = append(this.events, event) }
-
-///////////////////////////
-
-// TODO: replace with should.Equal when defined
-func shouldEqual(actual any, expected ...any) error {
-	if reflect.DeepEqual(actual, expected[0]) {
-		return nil
-	}
-	return fmt.Errorf("shouldEqual failed: %v vs %v", actual, expected[0])
-}

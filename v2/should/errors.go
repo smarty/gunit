@@ -10,10 +10,11 @@ import (
 )
 
 var (
-	ErrExpectedCountInvalid = errors.New("expected count invalid")
-	ErrTypeMismatch         = errors.New("type mismatch")
-	ErrKindMismatch         = errors.New("kind mismatch")
-	ErrAssertionFailure     = errors.New("assertion failure")
+	ErrExpectedCountInvalid  = errors.New("expected count invalid")
+	ErrTypeMismatch          = errors.New("type mismatch")
+	ErrKindMismatch          = errors.New("kind mismatch")
+	ErrAssertionFailure      = errors.New("assertion failure")
+	ErrFatalAssertionFailure = errors.New("fatal")
 )
 
 func failure(format string, args ...any) error {

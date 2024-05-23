@@ -1,11 +1,10 @@
 package examples
 
 import (
-	"fmt"
-	"reflect"
 	"testing"
 
 	"github.com/smarty/gunit/v2"
+	"github.com/smarty/gunit/v2/should"
 )
 
 func TestBowlingGameScoringFixture(t *testing.T) {
@@ -48,7 +47,7 @@ func (this *BowlingGameScoringFixture) TestPerfection() {
 }
 
 func (this *BowlingGameScoringFixture) assertScore(expected int) {
-	this.So(expected, shouldEqual, this.game.CalculateScore())
+	this.So(expected, should.Equal, this.game.CalculateScore())
 }
 
 func (this *BowlingGameScoringFixture) rollMany(times, pins int) {
@@ -60,12 +59,4 @@ func (this *BowlingGameScoringFixture) rollSeveral(rolls ...int) {
 	for _, roll := range rolls {
 		this.game.RecordRoll(roll)
 	}
-}
-
-// TODO: use should.Equal (once it is defined)
-func shouldEqual(actual any, expected ...any) error {
-	if reflect.DeepEqual(actual, expected[0]) {
-		return nil
-	}
-	return fmt.Errorf("shouldEqual failed: %v vs %v", actual, expected[0])
 }

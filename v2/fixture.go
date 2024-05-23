@@ -1,5 +1,9 @@
 package gunit
 
+import (
+	"github.com/smarty/gunit/v2/should"
+)
+
 type Fixture struct{ TestingT }
 
 // Write implements io.Writer, which is convenient when using a fixture
@@ -13,16 +17,10 @@ func (this *Fixture) Write(p []byte) (int, error) {
 // So is a convenience method for reporting assertion failure messages
 // with the many assertion functions found in github.com/smarty/gunit/v2/should.
 // Example: this.So(actual, should.Equal, expected)
-func (this *Fixture) So(actual any, assert assertion, expected ...any) bool {
-	err := assert(actual, expected...)
-	if err != nil { // TODO: differentiate between should.* and must.*
-		this.Helper()
-		this.Error(err)
-	}
-	return err == nil
+func (this *Fixture) So(actual any, assert should.Assertion, expected ...any) {
+	this.Helper()
+	should.So(this, actual, assert, expected...)
 }
-
-type assertion func(actual any, expected ...any) error
 
 type TestingT interface {
 	Cleanup(func())
