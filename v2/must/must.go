@@ -33,46 +33,33 @@ var (
 	WrapError              = wrapFatal(should.WrapError)
 )
 
-// NOT (a singleton) constrains all negated assertions to their own namespace.
-var NOT negated
-
-type negated struct{}
-
-func (negated) BeChronological(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.BeChronological)(actual, expected...)
-}
-func (negated) BeEmpty(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.BeEmpty)(actual, expected...)
-}
-func (negated) BeGreaterThan(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.BeGreaterThan)(actual, expected...)
-}
-func (negated) BeGreaterThanOrEqualTo(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.BeGreaterThanOrEqualTo)(actual, expected...)
-}
-func (negated) BeIn(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.BeIn)(actual, expected...)
-}
-func (negated) BeLessThan(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.BeLessThan)(actual, expected...)
-}
-func (negated) BeLessThanOrEqualTo(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.BeLessThanOrEqualTo)(actual, expected...)
-}
-func (negated) BeNil(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.BeNil)(actual, expected...)
-}
-func (negated) Contain(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.Contain)(actual, expected...)
-}
-func (negated) Equal(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.Equal)(actual, expected...)
-}
-func (negated) HappenOn(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.HappenOn)(actual, expected...)
-}
-func (negated) Panic(actual any, expected ...any) error {
-	return wrapFatal(should.NOT.Panic)(actual, expected...)
+// NOT constrains all negated assertions to their own 'namespace'.
+var NOT = struct {
+	BeChronological        should.Assertion
+	BeEmpty                should.Assertion
+	BeGreaterThan          should.Assertion
+	BeGreaterThanOrEqualTo should.Assertion
+	BeIn                   should.Assertion
+	BeLessThan             should.Assertion
+	BeLessThanOrEqualTo    should.Assertion
+	BeNil                  should.Assertion
+	Contain                should.Assertion
+	Equal                  should.Assertion
+	HappenOn               should.Assertion
+	Panic                  should.Assertion
+}{
+	BeChronological:        wrapFatal(should.NOT.BeChronological),
+	BeEmpty:                wrapFatal(should.NOT.BeEmpty),
+	BeGreaterThan:          wrapFatal(should.NOT.BeGreaterThan),
+	BeGreaterThanOrEqualTo: wrapFatal(should.NOT.BeGreaterThanOrEqualTo),
+	BeIn:                   wrapFatal(should.NOT.BeIn),
+	BeLessThan:             wrapFatal(should.NOT.BeLessThan),
+	BeLessThanOrEqualTo:    wrapFatal(should.NOT.BeLessThanOrEqualTo),
+	BeNil:                  wrapFatal(should.NOT.BeNil),
+	Contain:                wrapFatal(should.NOT.Contain),
+	Equal:                  wrapFatal(should.NOT.Equal),
+	HappenOn:               wrapFatal(should.NOT.HappenOn),
+	Panic:                  wrapFatal(should.NOT.Panic),
 }
 
 func wrapFatal(original should.Assertion) should.Assertion {
