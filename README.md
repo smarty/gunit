@@ -7,7 +7,12 @@
 
 # gunit
 
-## Installation
+## v2 Installation
+
+$ go get github.com/smarty/gunit/v2
+
+
+## v1 Installation
 
 ```
 $ go get github.com/smarty/gunit
@@ -41,8 +46,8 @@ import (
     "time"
 	"testing"
 
-	"github.com/smarty/assertions/should"
-	"github.com/smarty/gunit"
+	"github.com/smarty/gunit/v2"
+	"github.com/smarty/gunit/v2/should"
 )
 
 func TestExampleFixture(t *testing.T) {
