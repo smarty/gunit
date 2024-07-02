@@ -47,7 +47,7 @@ func (this *BowlingGameScoringFixture) TestPerfection() {
 }
 
 func (this *BowlingGameScoringFixture) assertScore(expected int) {
-	this.So(expected, should.Equal, this.game.CalculateScore())
+	this.So(this.game.CalculateScore(), should.Equal, expected)
 }
 
 func (this *BowlingGameScoringFixture) rollMany(times, pins int) {
