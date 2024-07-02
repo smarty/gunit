@@ -153,3 +153,20 @@ func (this *Suite06) Teardown()           { this.record("Teardown") }
 func (this *Suite06) Test1()              { this.record("Test1") }
 func (this *Suite06) SkipTest2()          { this.record("SkipTest2") }
 func (this *Suite06) record(event string) { this.events = append(this.events, event) }
+///////////////////////////
+
+func TestSuiteThatPanics(t *testing.T) {
+	t.Skip("Unskip to see this test fail with a nicely filtered and formatted stack trace.")
+
+	fixture := &Suite08{}
+
+	gunit.Run(fixture, t, gunit.Options.SharedFixture())
+}
+
+type Suite08 struct {
+	*gunit.Fixture
+}
+
+func (this *Suite08) Test1() {
+	panic("boink")
+}

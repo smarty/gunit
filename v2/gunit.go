@@ -1,7 +1,9 @@
 package gunit
 
 import (
+	"fmt"
 	"reflect"
+	"runtime/debug"
 	"strings"
 	"testing"
 )
@@ -128,6 +130,12 @@ func (this testCase) skipFunc(message string) func(*testing.T) {
 	return func(t *testing.T) { t.Skip(message) }
 }
 func (this testCase) runTest(t *testing.T) {
+	defer func() {
+		if r := recover(); r != nil {
+			t.Fail()
+			t.Log(panicReport(r, debug.Stack()))
+		}
+	}()
 	if this.config.parallelTests {
 		t.Parallel()
 	}
@@ -157,3 +165,26 @@ type (
 	teardownTest  interface{ Teardown() }
 	teardownSuite interface{ TeardownSuite() }
 )
+
+func panicReport(r any, stack []byte) string {
+	var builder strings.Builder
+	_, _ = fmt.Fprintln(&builder, "PANIC:", r)
+	_, _ = fmt.Fprintln(&builder, "...")
+
+	opened, closed := false, false
+	for _, line := range strings.Split(string(stack), "\n") {
+		if strings.Contains(line, "/runtime/panic.go:") {
+			opened = true
+			continue
+		}
+		if !opened || closed {
+			continue
+		}
+		if strings.Contains(line, "reflect.Value.call({0x") {
+			closed = true
+			continue
+		}
+		_, _ = fmt.Fprintln(&builder, line)
+	}
+	return strings.TrimSpace(builder.String())
+}
