@@ -153,6 +153,33 @@ func (this *Suite06) Teardown()           { this.record("Teardown") }
 func (this *Suite06) Test1()              { this.record("Test1") }
 func (this *Suite06) SkipTest2()          { this.record("SkipTest2") }
 func (this *Suite06) record(event string) { this.events = append(this.events, event) }
+
+///////////////////////////
+
+func TestSuiteWithSubTests(t *testing.T) {
+	fixture := &Suite07{}
+
+	gunit.Run(fixture, t, gunit.Options.SharedFixture())
+
+	fixture.So(fixture.events, should.Equal, []string{
+		"TestSuiteWithSubTests/Test1/a",
+		"TestSuiteWithSubTests/Test1/b",
+		"TestSuiteWithSubTests/Test1/c",
+	})
+}
+
+type Suite07 struct {
+	*gunit.Fixture
+	events []string
+}
+
+func (this *Suite07) Test1() {
+	this.Run("a", func(fixture *gunit.Fixture) { this.record(fixture.Name()) })
+	this.Run("b", func(fixture *gunit.Fixture) { this.record(fixture.Name()) })
+	this.Run("c", func(fixture *gunit.Fixture) { this.record(fixture.Name()) })
+}
+func (this *Suite07) record(event string) { this.events = append(this.events, event) }
+
 ///////////////////////////
 
 func TestSuiteThatPanics(t *testing.T) {

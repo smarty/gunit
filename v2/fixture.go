@@ -1,6 +1,9 @@
 package gunit
 
 import (
+	"runtime/debug"
+	"testing"
+
 	"github.com/smarty/gunit/v2/should"
 )
 
@@ -20,6 +23,22 @@ func (this *Fixture) Write(p []byte) (int, error) {
 func (this *Fixture) So(actual any, assert should.Assertion, expected ...any) {
 	this.Helper()
 	should.So(this, actual, assert, expected...)
+}
+
+// Run is analogous to *testing.T.Run and allows for running subtests from
+// test fixture methods (such as for table-driven tests).
+func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
+	this.TestingT.(*testing.T).Run(name, func(t *testing.T) {
+		t.Helper()
+		fixture := &Fixture{t}
+		defer func() {
+			if r := recover(); r != nil {
+				fixture.Fail()
+				fixture.Log(panicReport(r, debug.Stack()))
+			}
+		}()
+		test(fixture)
+	})
 }
 
 type TestingT interface {
