@@ -97,9 +97,9 @@ func (this *Fixture) AssertDeepEqual(expected, actual any) bool {
 func (this *Fixture) Error(args ...any)            { this.fail(fmt.Sprint(args...)) }
 func (this *Fixture) Errorf(f string, args ...any) { this.fail(fmt.Sprintf(f, args...)) }
 
-func (this *Fixture) Print(a ...any)                 { fmt.Fprint(this.log, a...) }
-func (this *Fixture) Printf(format string, a ...any) { fmt.Fprintf(this.log, format, a...) }
-func (this *Fixture) Println(a ...any)               { fmt.Fprintln(this.log, a...) }
+func (this *Fixture) Print(a ...any)            { fmt.Fprintln(this.log, a...) }
+func (this *Fixture) Printf(f string, a ...any) { fmt.Fprintln(this.log, fmt.Sprintf(f, a...)) }
+func (this *Fixture) Println(a ...any)          { fmt.Fprintln(this.log, a...) }
 
 // Write implements io.Writer. There are rare times when this is convenient (debugging via `log.SetOutput(fixture)`).
 func (this *Fixture) Write(p []byte) (int, error) { return this.log.Write(p) }
