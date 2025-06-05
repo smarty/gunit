@@ -3,8 +3,6 @@ package gunit
 import (
 	"runtime/debug"
 	"testing"
-
-	"github.com/smarty/gunit/v2/should"
 )
 
 type Fixture struct{ TestingT }
@@ -20,9 +18,8 @@ func (this *Fixture) Write(p []byte) (int, error) {
 // So is a convenience method for reporting assertion failure messages
 // with the many assertion functions found in github.com/smarty/gunit/v2/should.
 // Example: this.So(actual, should.Equal, expected)
-func (this *Fixture) So(actual any, assert should.Assertion, expected ...any) {
-	this.Helper()
-	should.So(this, actual, assert, expected...)
+func (this *Fixture) So(actual any, assert Assertion, expected ...any) {
+	So(this, actual, assert, expected...)
 }
 
 // Run is analogous to *testing.T.Run and allows for running subtests from

@@ -1,11 +1,15 @@
-package should
+package gunit
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/smarty/gunit/v2/should"
+)
 
 func So(t testingT, actual any, assertion Assertion, expected ...any) {
 	t.Helper()
 	err := assertion(actual, expected...)
-	if errors.Is(err, ErrFatalAssertionFailure) {
+	if errors.Is(err, should.ErrFatalAssertionFailure) {
 		t.Fatal(err)
 	}
 	if err != nil {
