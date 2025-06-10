@@ -60,13 +60,17 @@ func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
 // So is a convenience method for reporting assertion failure messages,
 // from the many assertion functions found in github.com/smarty/assertions/should.
 // Example: this.So(actual, should.Equal, expected)
+// Example: this.So(actual, must.Equal, expected) // ends test IMMEDIATELY in case of failure
 func (this *Fixture) So(actual any, assert assertion, expected ...any) bool {
+	const fatalPrefix = "<<FATAL>>"
 	failure := assert(actual, expected...)
-	failed := len(failure) > 0
-	if failed {
+	if strings.HasPrefix(failure, fatalPrefix) {
+		failure = strings.TrimPrefix(failure, fatalPrefix)
+		this.t.Fatalf(reports.FailureReport(failure, reports.StackTrace()))
+	} else if len(failure) > 0 {
 		this.fail(failure)
 	}
-	return !failed
+	return len(failure) == 0
 }
 
 // Assert tests a boolean which, if not true, marks the current test case as failed and
