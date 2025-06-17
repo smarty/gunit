@@ -2,6 +2,7 @@ package gunit
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"strings"
 	"testing"
@@ -42,22 +43,23 @@ type FakeT struct {
 	buffer    *bytes.Buffer
 }
 
-func (this *FakeT) Cleanup(func())        { panic("not implemented") }
-func (this *FakeT) Errorf(string, ...any) { panic("not implemented") }
-func (this *FakeT) Fail()                 { panic("not implemented") }
-func (this *FakeT) FailNow()              { panic("not implemented") }
-func (this *FakeT) Failed() bool          { panic("not implemented") }
-func (this *FakeT) Fatal(a ...any)        { panic("not implemented") }
-func (this *FakeT) Fatalf(string, ...any) { panic("not implemented") }
-func (this *FakeT) Logf(string, ...any)   { panic("not implemented") }
-func (this *FakeT) Name() string          { panic("not implemented") }
-func (this *FakeT) Setenv(string, string) { panic("not implemented") }
-func (this *FakeT) Skip(...any)           { panic("not implemented") }
-func (this *FakeT) SkipNow()              { panic("not implemented") }
-func (this *FakeT) Skipf(string, ...any)  { panic("not implemented") }
-func (this *FakeT) Skipped() bool         { panic("not implemented") }
-func (this *FakeT) TempDir() string       { panic("not implemented") }
-func (this *FakeT) Helper()               {}
+func (this *FakeT) Cleanup(func())           { panic("not implemented") }
+func (this *FakeT) Context() context.Context { panic("not implemented") }
+func (this *FakeT) Errorf(string, ...any)    { panic("not implemented") }
+func (this *FakeT) Fail()                    { panic("not implemented") }
+func (this *FakeT) FailNow()                 { panic("not implemented") }
+func (this *FakeT) Failed() bool             { panic("not implemented") }
+func (this *FakeT) Fatal(a ...any)           { panic("not implemented") }
+func (this *FakeT) Fatalf(string, ...any)    { panic("not implemented") }
+func (this *FakeT) Logf(string, ...any)      { panic("not implemented") }
+func (this *FakeT) Name() string             { panic("not implemented") }
+func (this *FakeT) Setenv(string, string)    { panic("not implemented") }
+func (this *FakeT) Skip(...any)              { panic("not implemented") }
+func (this *FakeT) SkipNow()                 { panic("not implemented") }
+func (this *FakeT) Skipf(string, ...any)     { panic("not implemented") }
+func (this *FakeT) Skipped() bool            { panic("not implemented") }
+func (this *FakeT) TempDir() string          { panic("not implemented") }
+func (this *FakeT) Helper()                  {}
 func (this *FakeT) Log(a ...any) {
 	_, _ = this.buffer.Write([]byte(fmt.Sprint(a...)))
 }

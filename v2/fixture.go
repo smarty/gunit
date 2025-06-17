@@ -1,6 +1,7 @@
 package gunit
 
 import (
+	"context"
 	"runtime/debug"
 	"testing"
 )
@@ -40,6 +41,7 @@ func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
 
 type TestingT interface {
 	Cleanup(func())
+	Context() context.Context
 	Error(args ...any)
 	Errorf(format string, args ...any)
 	Fail()
