@@ -62,7 +62,7 @@ type Suite02 struct {
 }
 
 func (this *Suite02) TestSomething() {
-	_, _ = this.Write([]byte("*** this should appear in the test log!"))
+	this.Printf("*** this should appear in the test log!")
 	this.counter++
 }
 

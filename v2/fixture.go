@@ -2,19 +2,17 @@ package gunit
 
 import (
 	"context"
+	"fmt"
+	"io"
 	"runtime/debug"
 	"testing"
 )
 
 type Fixture struct{ TestingT }
 
-// Write implements io.Writer, which is convenient when using a fixture
-// as a log target.
-func (this *Fixture) Write(p []byte) (int, error) {
-	this.Helper()
-	this.Log(string(p))
-	return len(p), nil
-}
+func (this *Fixture) Print(a ...any)            { _, _ = fmt.Fprint(this.Output(), a...) }
+func (this *Fixture) Printf(f string, a ...any) { _, _ = fmt.Fprintf(this.Output(), f, a...) }
+func (this *Fixture) Println(a ...any)          { _, _ = fmt.Fprintln(this.Output(), a...) }
 
 // So is a convenience method for reporting assertion failure messages
 // with the many assertion functions found in github.com/smarty/gunit/v2/should.
@@ -28,7 +26,7 @@ func (this *Fixture) So(actual any, assert Assertion, expected ...any) {
 func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
 	this.TestingT.(*testing.T).Run(name, func(t *testing.T) {
 		t.Helper()
-		fixture := &Fixture{t}
+		fixture := &Fixture{TestingT: t}
 		defer func() {
 			if r := recover(); r != nil {
 				fixture.Fail()
@@ -53,6 +51,7 @@ type TestingT interface {
 	Log(args ...any)
 	Logf(format string, args ...any)
 	Name() string
+	Output() io.Writer
 	Setenv(key, value string)
 	Skip(args ...any)
 	SkipNow()

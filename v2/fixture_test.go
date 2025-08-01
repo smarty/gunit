@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"strings"
 	"testing"
 
@@ -53,6 +54,7 @@ func (this *FakeT) Fatal(a ...any)           { panic("not implemented") }
 func (this *FakeT) Fatalf(string, ...any)    { panic("not implemented") }
 func (this *FakeT) Logf(string, ...any)      { panic("not implemented") }
 func (this *FakeT) Name() string             { panic("not implemented") }
+func (this *FakeT) Output() io.Writer        { panic("not implemented") }
 func (this *FakeT) Setenv(string, string)    { panic("not implemented") }
 func (this *FakeT) Skip(...any)              { panic("not implemented") }
 func (this *FakeT) SkipNow()                 { panic("not implemented") }
