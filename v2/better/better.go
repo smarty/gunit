@@ -1,7 +1,7 @@
-// Package must provides the same assertions as the should package, but the
+// Package better provides the same assertions as the should package, but the
 // error returned in failure conditions results in a call to *testing.T.Fatal(),
 // halting the currently running test.
-package must
+package better
 
 import (
 	"fmt"

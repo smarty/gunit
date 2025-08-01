@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/smarty/gunit/v2"
-	"github.com/smarty/gunit/v2/must"
+	"github.com/smarty/gunit/v2/better"
 	"github.com/smarty/gunit/v2/should"
 )
 
@@ -36,7 +36,7 @@ func TestSoFailure(t *testing.T) {
 }
 func TestSoFatalSuccess(t *testing.T) {
 	fakeT := &FakeT{buffer: &bytes.Buffer{}}
-	gunit.So(fakeT, 1, must.Equal, 1)
+	gunit.So(fakeT, 1, better.Equal, 1)
 	if fakeT.buffer.String() != "" {
 		t.Errorf("\n"+
 			"expected: <blank>\n"+
@@ -45,7 +45,7 @@ func TestSoFatalSuccess(t *testing.T) {
 }
 func TestSoFatalFailure(t *testing.T) {
 	fakeT := &FakeT{buffer: &bytes.Buffer{}}
-	gunit.So(fakeT, 1, must.Equal, 2)
+	gunit.So(fakeT, 1, better.Equal, 2)
 	actual := strings.Join(strings.Fields(fakeT.buffer.String()), " ")
 	expected := "fatal assertion failure: Expected: (int) 2 Actual: (int) 1 ^ Stack: (filtered)"
 	if !strings.HasPrefix(actual, expected) {
