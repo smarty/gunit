@@ -26,12 +26,14 @@ func TestShouldFailure(t *testing.T) {
 		t.Error("Expected 1 failure, got:", fakeT.failCount)
 	}
 }
-func TestWrite(t *testing.T) {
+func TestPrint(t *testing.T) {
 	fakeT := &FakeT{buffer: &bytes.Buffer{}}
 	fixture := &Fixture{TestingT: fakeT}
-	fixture.Log("Hello, world!")
+	fixture.Print("one")
+	fixture.Printf("%s", "two")
+	fixture.Println("three")
 	actual := fakeT.buffer.String()
-	expected := "Hello, world!"
+	expected := "one" + "two" + "three\n"
 	if actual != expected {
 		t.Errorf("\n"+
 			"expected: %s\n"+
@@ -54,7 +56,7 @@ func (this *FakeT) Fatal(a ...any)           { panic("not implemented") }
 func (this *FakeT) Fatalf(string, ...any)    { panic("not implemented") }
 func (this *FakeT) Logf(string, ...any)      { panic("not implemented") }
 func (this *FakeT) Name() string             { panic("not implemented") }
-func (this *FakeT) Output() io.Writer        { panic("not implemented") }
+func (this *FakeT) Output() io.Writer        { return this.buffer }
 func (this *FakeT) Setenv(string, string)    { panic("not implemented") }
 func (this *FakeT) Skip(...any)              { panic("not implemented") }
 func (this *FakeT) SkipNow()                 { panic("not implemented") }
