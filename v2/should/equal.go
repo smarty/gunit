@@ -7,6 +7,9 @@ import (
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/smarty/gunit/v2/should/internal/go-diff/diffmatchpatch"
+	"github.com/smarty/gunit/v2/should/internal/go-render/render"
 )
 
 // Equal verifies that the actual value is equal to the expected value.
@@ -60,6 +63,14 @@ var equalitySpecs = []specification{
 }
 
 func report(a, b any) string {
+	builder := new(strings.Builder)
+	builder.WriteString(simpleDiff(a, b))
+	builder.WriteString(prettyDiff(a, b))
+	builder.WriteString("\n")
+	return builder.String()
+}
+
+func simpleDiff(a, b any) string {
 	aType := fmt.Sprintf("(%v)", reflect.TypeOf(a))
 	bType := fmt.Sprintf("(%v)", reflect.TypeOf(b))
 	longestType := int(math.Max(float64(len(aType)), float64(len(bType))))
@@ -67,10 +78,11 @@ func report(a, b any) string {
 	bType += strings.Repeat(" ", longestType-len(bType))
 	aFormat := fmt.Sprintf(format(a), a)
 	bFormat := fmt.Sprintf(format(b), b)
+
+	builder := new(strings.Builder)
 	typeDiff := diff(bType, aType)
 	valueDiff := diff(bFormat, aFormat)
 
-	builder := new(strings.Builder)
 	_, _ = fmt.Fprintf(builder, "\n")
 	_, _ = fmt.Fprintf(builder, "Expected: %s %s\n", bType, bFormat)
 	_, _ = fmt.Fprintf(builder, "Actual:   %s %s\n", aType, aFormat)
@@ -83,9 +95,39 @@ func report(a, b any) string {
 		_, _ = fmt.Fprintf(builder, "... %s\n", aFormat[start:])
 		_, _ = fmt.Fprintf(builder, "    %s", valueDiff[start:])
 	}
-
 	return builder.String()
 }
+
+func prettyDiff(actual, expected any) string {
+	diff := diffmatchpatch.New()
+	diffs := diff.DiffMain(render.Render(expected), render.Render(actual), false)
+	if prettyDiffIsLikelyToBeHelpful(diffs) {
+		return fmt.Sprintf("\nDiff: '%s'", diff.DiffPrettyText(diffs))
+	}
+	return ""
+}
+
+// prettyDiffIsLikelyToBeHelpful returns true if the diff listing contains
+// more 'equal' segments than 'deleted'/'inserted' segments.
+func prettyDiffIsLikelyToBeHelpful(diffs []diffmatchpatch.Diff) bool {
+	equal, deleted, inserted := measureDiffTypeLengths(diffs)
+	return equal > deleted && equal > inserted
+}
+
+func measureDiffTypeLengths(diffs []diffmatchpatch.Diff) (equal, deleted, inserted int) {
+	for _, segment := range diffs {
+		switch segment.Type {
+		case diffmatchpatch.DiffEqual:
+			equal += len(segment.Text)
+		case diffmatchpatch.DiffDelete:
+			deleted += len(segment.Text)
+		case diffmatchpatch.DiffInsert:
+			inserted += len(segment.Text)
+		}
+	}
+	return equal, deleted, inserted
+}
+
 func format(v any) string {
 	if isNumeric(v) || isTime(v) {
 		return "%v"
