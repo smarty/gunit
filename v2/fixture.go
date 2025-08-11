@@ -18,6 +18,7 @@ func (this *Fixture) Println(a ...any)          { _, _ = fmt.Fprintln(this.Outpu
 // with the many assertion functions found in github.com/smarty/gunit/v2/should.
 // Example: this.So(actual, should.Equal, expected)
 func (this *Fixture) So(actual any, assert Assertion, expected ...any) {
+	this.Helper()
 	So(this, actual, assert, expected...)
 }
 
