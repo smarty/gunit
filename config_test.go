@@ -3,11 +3,11 @@ package gunit
 import (
 	"testing"
 
-	assertions2 "github.com/smarty/gunit/assertions"
+	"github.com/smarty/gunit/assertions"
 )
 
 func TestConfigOptions(t *testing.T) {
-	assert := assertions2.New(t)
+	assert := assertions.New(t)
 
 	assert.AssertDeepEqual(configuration{}, newConfig())
 
@@ -59,7 +59,7 @@ func TestConfigOptions(t *testing.T) {
 }
 
 func TestConfigMethods(t *testing.T) {
-	assert := assertions2.New(t)
+	assert := assertions.New(t)
 
 	parallel := newConfig()
 	assert.AssertTrue(parallel.ParallelFixture())
