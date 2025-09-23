@@ -14,13 +14,13 @@ $ go get github.com/smarty/gunit/v2
 
 For users of JetBrains IDEs, here's LiveTemplate you can use for generating the scaffolding for a new fixture:
 
-- Abbreviation: `fixture-v2`
+- Abbreviation: `fixture`
 - Description: `Generate gunit Fixture boilerplate`
 - Template Text:
 
 ```
 func Test$NAME$Fixture(t *testing.T) {
-    gunit.Run(&$NAME$Fixture{T: gunit.New(t)})
+    gunit.Run(new($NAME$Fixture), t)
 }
 
 type $NAME$Fixture struct {
