@@ -52,11 +52,15 @@ func Run(outerFixture any, t *testing.T, options ...Option) {
 
 		if strings.HasPrefix(name, "Test") {
 			testNames = append(testNames, name)
-		} else if strings.HasPrefix(name, "SkipTest") {
+		} else if config.skipAllTests || strings.HasPrefix(name, "SkipTest") {
 			skippedTestNames = append(skippedTestNames, name)
 		} else if strings.HasPrefix(name, "FocusTest") {
 			focusedTestNames = append(focusedTestNames, name)
 		}
+	}
+
+	for _, name := range skippedTestNames {
+		testCase{t: t, manualSkip: true, name: name}.run()
 	}
 
 	if len(focusedTestNames) > 0 {
@@ -82,10 +86,6 @@ func Run(outerFixture any, t *testing.T, options ...Option) {
 	teardown, hasTeardown := outerFixture.(teardownSuite)
 	if hasTeardown {
 		defer teardown.TeardownSuite()
-	}
-
-	for _, name := range skippedTestNames {
-		testCase{t: t, manualSkip: true, name: name}.run()
 	}
 
 	for _, name := range testNames {

@@ -1,6 +1,7 @@
 package gunit
 
 type config struct {
+	skipAllTests    bool
 	freshFixture    bool
 	parallelFixture bool
 	parallelTests   bool
@@ -16,6 +17,16 @@ type singleton struct{}
 // to the option functions provided by
 // this package.
 var Options singleton
+
+// SkipAll causes each and every "Test" method in the corresponding
+// fixture to be skipped (as if each had been prefixed with
+// "Skip"). Even "Test" methods marked with the "Focus" prefix
+// will be skipped.
+func (singleton) SkipAll() Option {
+	return func(this *config) {
+		this.skipAllTests = true
+	}
+}
 
 // FreshFixture signals to Run that the
 // new instances of the provided fixture
