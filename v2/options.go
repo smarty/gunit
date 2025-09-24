@@ -26,7 +26,7 @@ var Options singleton
 // NOTE: the SetupSuite and TeardownSuite
 // methods are always run on the provided
 // fixture instance, regardless of this
-// options having been provided.
+// option having been provided.
 func (singleton) FreshFixture() Option {
 	return func(c *config) {
 		c.freshFixture = true
@@ -71,10 +71,9 @@ func (singleton) ParallelTests() Option {
 	}
 }
 
-// UnitTests is a composite option that
-// signals to Run that the test suite can
-// be treated as a unit-test suite by
-// employing parallelism and fresh fixtures
+// UnitTests signals to Run that the test
+// suite can be treated as a unit-test suite
+// by employing parallelism and fresh fixtures
 // to maximize the chances of exposing
 // unwanted coupling between tests.
 func (singleton) UnitTests() Option {
