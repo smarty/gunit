@@ -3,16 +3,17 @@ package assert_test
 import (
 	"bytes"
 	"fmt"
-	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/smarty/gunit/assert"
+	"github.com/smarty/gunit/assert/better"
+	"github.com/smarty/gunit/assert/should"
 )
 
 func TestSoSuccess(t *testing.T) {
 	fakeT := &FakeT{buffer: &bytes.Buffer{}}
-	assert.So(fakeT, 1, shouldEqual, 1)
+	assert.So(fakeT, 1, should.Equal, 1)
 	if fakeT.buffer.String() != "" {
 		t.Errorf("\n"+
 			"expected: <blank>\n"+
@@ -22,24 +23,31 @@ func TestSoSuccess(t *testing.T) {
 }
 func TestSoFailure(t *testing.T) {
 	fakeT := &FakeT{buffer: &bytes.Buffer{}}
-	assert.So(fakeT, 1, shouldEqual, 2)
+	assert.So(fakeT, 1, should.Equal, 2)
 	actual := strings.Join(strings.Fields(fakeT.buffer.String()), " ")
-	expected := `1 != 2`
+	expected := `Expected: 2 Actual: 1 (Should equal)!`
 	if !strings.HasPrefix(actual, expected) {
 		t.Errorf("\n"+
 			"expected: %s\n"+
 			"actual:   %s", expected, actual)
 	}
 	if fakeT.failCount != 1 {
-		t.Error("Expected 1 fatal failure, got:", fakeT.failCount)
+		t.Error("Expected 1 failure, got:", fakeT.failCount)
 	}
 }
-
-func shouldEqual(actual any, expected ...any) string {
-	if reflect.DeepEqual(actual, expected[0]) {
-		return ""
+func TestSoFatal(t *testing.T) {
+	fakeT := &FakeT{buffer: &bytes.Buffer{}}
+	assert.So(fakeT, 1, better.Equal, 2)
+	actual := strings.Join(strings.Fields(fakeT.buffer.String()), " ")
+	expected := "<<<FATAL>>> Expected: 2 Actual: 1 (Should equal)!"
+	if !strings.HasPrefix(actual, expected) {
+		t.Errorf("\n"+
+			"expected: %s\n"+
+			"actual:   %s", expected, actual)
 	}
-	return fmt.Sprintf("%v != %v", actual, expected[0])
+	if fakeT.fatalCount != 1 {
+		t.Error("Expected 1 fatal failure, got:", fakeT.failCount)
+	}
 }
 
 type FakeT struct {
@@ -51,5 +59,9 @@ type FakeT struct {
 func (this *FakeT) Helper() {}
 func (this *FakeT) Error(a ...any) {
 	this.failCount++
+	_, _ = fmt.Fprint(this.buffer, a...)
+}
+func (this *FakeT) Fatal(a ...any) {
+	this.fatalCount++
 	_, _ = fmt.Fprint(this.buffer, a...)
 }
