@@ -35,8 +35,8 @@ func (this *AssertionsFixture) TestShouldPanicWith() {
 	this.fail(so(1, ShouldPanicWith, 1), shouldUseVoidNiladicFunction)
 	this.fail(so(func(i int) {}, ShouldPanicWith, "hi"), shouldUseVoidNiladicFunction)
 	this.fail(so(func() {}, ShouldPanicWith, "bye"), shouldHavePanicked)
-	this.fail(so(func() { panic("hi") }, ShouldPanicWith, "bye"), "bye|hi|Expected func() to panic with 'bye' (but it panicked with 'hi')!")
-	this.fail(so(func() { panic(errInner) }, ShouldPanicWith, errOuter), "outer inner|inner|Expected func() to panic with 'outer inner' (but it panicked with 'inner')!")
+	this.fail(so(func() { panic("hi") }, ShouldPanicWith, "bye"), "Expected func() to panic with 'bye' (but it panicked with 'hi')!")
+	this.fail(so(func() { panic(errInner) }, ShouldPanicWith, errOuter), "Expected func() to panic with 'outer inner' (but it panicked with 'inner')!")
 
 	this.pass(so(func() { panic("hi") }, ShouldPanicWith, "hi"))
 	this.pass(so(func() { panic(errOuter) }, ShouldPanicWith, errInner))

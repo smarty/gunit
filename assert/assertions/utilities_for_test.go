@@ -1,7 +1,6 @@
 package assertions
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 
@@ -16,18 +15,6 @@ func TestAssertionsFixture(t *testing.T) {
 
 type AssertionsFixture struct {
 	*unit.Fixture
-}
-
-func (this *AssertionsFixture) Setup() {
-	serializer = this
-}
-
-func (self *AssertionsFixture) serialize(expected, actual any, message string) string {
-	return fmt.Sprintf("%v|%v|%s", expected, actual, message)
-}
-
-func (self *AssertionsFixture) serializeDetailed(expected, actual any, message string) string {
-	return fmt.Sprintf("%v|%v|%s", expected, actual, message)
 }
 
 func (this *AssertionsFixture) pass(result string) {
@@ -51,13 +38,13 @@ func (this *AssertionsFixture) fail(actual string, expected string) {
 	}
 }
 func format(message string) string {
-	message = strings.Replace(message, "\n", " ", -1)
+	message = strings.ReplaceAll(message, "\n", " ")
 	for strings.Contains(message, "  ") {
-		message = strings.Replace(message, "  ", " ", -1)
+		message = strings.ReplaceAll(message, "  ", " ")
 	}
-	message = strings.Replace(message, "\x1b[32m", "", -1)
-	message = strings.Replace(message, "\x1b[31m", "", -1)
-	message = strings.Replace(message, "\x1b[0m", "", -1)
+	message = strings.ReplaceAll(message, "\x1b[32m", "")
+	message = strings.ReplaceAll(message, "\x1b[31m", "")
+	message = strings.ReplaceAll(message, "\x1b[0m", "")
 	return message
 }
 
@@ -77,18 +64,3 @@ type ThingInterface interface {
 type ThingImplementation struct{}
 
 func (self *ThingImplementation) Hi() {}
-
-type IntAlias int
-type StringAlias string
-type StringSliceAlias []string
-type StringStringMapAlias map[string]string
-
-/**************************************************************************/
-
-type ThingWithEqualMethod struct {
-	a string
-}
-
-func (this ThingWithEqualMethod) Equal(that ThingWithEqualMethod) bool {
-	return this.a == that.a
-}

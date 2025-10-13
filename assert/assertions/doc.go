@@ -18,25 +18,6 @@ import (
 	"runtime"
 )
 
-// By default, we use a no-op serializer. The actual Serializer provides a JSON
-// representation of failure results on selected assertions so the goconvey
-// web UI can display a convenient diff.
-var serializer Serializer = new(noopSerializer)
-
-// GoConveyMode provides control over JSON serialization of failures. When
-// using the assertions in this package from the convey package JSON results
-// are very helpful and can be rendered in a DIFF view. In that case, this function
-// will be called with a true value to enable the JSON serialization. By default,
-// the assertions in this package will not serializer a JSON result, making
-// standalone usage more convenient.
-func GoConveyMode(yes bool) {
-	if yes {
-		serializer = newSerializer()
-	} else {
-		serializer = new(noopSerializer)
-	}
-}
-
 type testingT interface {
 	Error(args ...any)
 }

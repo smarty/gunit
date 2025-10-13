@@ -8,18 +8,13 @@ const (
 	shouldHaveBeenEqualButTypeDiff = "Expected: %s\nActual:   %s\n(Should equal, but there is a type difference within the two)!"
 	shouldNotHaveBeenEqual         = "Expected     '%v'\nto NOT equal '%v'\n(but it did)!"
 
-	shouldBePointers            = "Both arguments should be pointers "
-	shouldHaveBeenNonNilPointer = shouldBePointers + "(the %s was %s)!"
-	shouldHavePointedTo         = "Expected '%+v' (address: '%v') and '%+v' (address: '%v') to be the same address (but their weren't)!"
-	shouldNotHavePointedTo      = "Expected '%+v' and '%+v' to be different references (but they matched: '%v')!"
-
 	shouldHaveBeenNil    = "Expected: nil\nActual:   '%v'"
 	shouldNotHaveBeenNil = "Expected '%+v' to NOT be nil (but it was)!"
 
 	shouldHaveBeenTrue  = "Expected: true\nActual:   %v"
 	shouldHaveBeenFalse = "Expected: false\nActual:   %v"
 
-	shouldHaveBeenZeroValue    = "'%+v' should have been the zero value" //"Expected: (zero value)\nActual:   %v"
+	shouldHaveBeenZeroValue    = "'%+v' should have been the zero value" // "Expected: (zero value)\nActual:   %v"
 	shouldNotHaveBeenZeroValue = "'%+v' should NOT have been the zero value"
 
 	shouldHaveBeenGreater        = "Expected '%v' to be greater than '%v' (but it wasn't)!"
@@ -60,7 +55,6 @@ const (
 	shouldHaveEndedWith    = "Expected    '%v'\nto end with '%v'\n(but it didn't)!"
 	shouldNotHaveEndedWith = "Expected        '%v'\nNOT to end with '%v'\n(but it did)!"
 
-	shouldAllBeStrings  = "All arguments to this assertion must be strings (you provided: %v)."
 	shouldBothBeStrings = "Both arguments to this assertion must be strings (you provided %v and %v)."
 
 	shouldHaveContainedSubstring    = "Expected '%s' to contain substring '%s' (but it didn't)!"
@@ -79,14 +73,6 @@ const (
 
 	shouldHaveBeenA    = "Expected '%v' to be: '%v' (but was: '%v')!"
 	shouldNotHaveBeenA = "Expected '%v' to NOT be: '%v' (but it was)!"
-
-	shouldHaveImplemented             = "Expected: '%v interface support'\nActual:   '%v' does not implement the interface!"
-	shouldNotHaveImplemented          = "Expected         '%v'\nto NOT implement '%v'\n(but it did)!"
-	shouldCompareWithInterfacePointer = "The expected value must be a pointer to an interface type (eg. *fmt.Stringer)"
-	shouldNotBeNilActual              = "The actual value was 'nil' and should be a value or a pointer to a value!"
-
-	shouldBeError                       = "Expected an error value (but was '%v' instead)!"
-	shouldBeErrorInvalidComparisonValue = "The final argument to this assertion must be a string or an error value (you provided: '%v')."
 
 	shouldWrapInvalidTypes = "The first and last arguments to this assertion must both be error values (you provided: '%v' and '%v')."
 

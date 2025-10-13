@@ -1,12 +1,10 @@
 package assertions
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"math"
 	"reflect"
-	"strings"
 
 	"github.com/smarty/gunit/assert/assertions/internal/go-render/render"
 )
@@ -34,12 +32,10 @@ func shouldEqual(actual, expected any) string {
 	}
 	renderedExpected, renderedActual := render.Render(expected), render.Render(actual)
 	if renderedActual == renderedExpected {
-		message := fmt.Sprintf(shouldHaveBeenEqualButTypeDiff, renderedExpected, renderedActual)
-		return serializer.serializeDetailed(expected, actual, message)
+		return fmt.Sprintf(shouldHaveBeenEqualButTypeDiff, renderedExpected, renderedActual)
 	}
-	message := fmt.Sprintf(shouldHaveBeenEqual, renderedExpected, renderedActual) +
+	return fmt.Sprintf(shouldHaveBeenEqual, renderedExpected, renderedActual) +
 		composePrettyDiff(renderedExpected, renderedActual)
-	return serializer.serializeDetailed(expected, actual, message)
 }
 
 // ShouldNotEqual receives exactly two parameters and does an inequality check.
@@ -140,88 +136,6 @@ func getFloat(num any) (float64, error) {
 	}
 }
 
-// ShouldEqualJSON receives exactly two parameters and does an equality check by marshalling to JSON
-func ShouldEqualJSON(actual any, expected ...any) string {
-	if message := need(1, expected); message != success {
-		return message
-	}
-
-	expectedString, expectedErr := remarshal(expected[0].(string))
-	if expectedErr != nil {
-		return "Expected value not valid JSON: " + expectedErr.Error()
-	}
-
-	actualString, actualErr := remarshal(actual.(string))
-	if actualErr != nil {
-		return "Actual value not valid JSON: " + actualErr.Error()
-	}
-
-	return ShouldEqual(actualString, expectedString)
-}
-func remarshal(value string) (string, error) {
-	var structured any
-	err := json.Unmarshal([]byte(value), &structured)
-	if err != nil {
-		return "", err
-	}
-	canonical, _ := json.Marshal(structured)
-	return string(canonical), nil
-}
-
-// ShouldResemble is an alias for ShouldEqual.
-func ShouldResemble(actual any, expected ...any) string {
-	return ShouldEqual(actual, expected...)
-}
-
-// ShouldNotResemble is an alias for ShouldNotEqual.
-func ShouldNotResemble(actual any, expected ...any) string {
-	return ShouldNotEqual(actual, expected...)
-}
-
-// ShouldPointTo receives exactly two parameters and checks to see that they point to the same address.
-func ShouldPointTo(actual any, expected ...any) string {
-	if message := need(1, expected); message != success {
-		return message
-	}
-	return shouldPointTo(actual, expected[0])
-
-}
-func shouldPointTo(actual, expected any) string {
-	actualValue := reflect.ValueOf(actual)
-	expectedValue := reflect.ValueOf(expected)
-
-	if ShouldNotBeNil(actual) != success {
-		return fmt.Sprintf(shouldHaveBeenNonNilPointer, "first", "nil")
-	} else if ShouldNotBeNil(expected) != success {
-		return fmt.Sprintf(shouldHaveBeenNonNilPointer, "second", "nil")
-	} else if actualValue.Kind() != reflect.Ptr {
-		return fmt.Sprintf(shouldHaveBeenNonNilPointer, "first", "not")
-	} else if expectedValue.Kind() != reflect.Ptr {
-		return fmt.Sprintf(shouldHaveBeenNonNilPointer, "second", "not")
-	} else if ShouldEqual(actualValue.Pointer(), expectedValue.Pointer()) != success {
-		actualAddress := reflect.ValueOf(actual).Pointer()
-		expectedAddress := reflect.ValueOf(expected).Pointer()
-		return serializer.serialize(expectedAddress, actualAddress, fmt.Sprintf(shouldHavePointedTo,
-			actual, actualAddress,
-			expected, expectedAddress))
-	}
-	return success
-}
-
-// ShouldNotPointTo receives exactly two parameters and checks to see that they point to different addresess.
-func ShouldNotPointTo(actual any, expected ...any) string {
-	if message := need(1, expected); message != success {
-		return message
-	}
-	compare := ShouldPointTo(actual, expected[0])
-	if strings.HasPrefix(compare, shouldBePointers) {
-		return compare
-	} else if compare == success {
-		return fmt.Sprintf(shouldNotHavePointedTo, actual, expected[0], reflect.ValueOf(actual).Pointer())
-	}
-	return success
-}
-
 // ShouldBeNil receives a single parameter and ensures that it is nil.
 func ShouldBeNil(actual any, expected ...any) string {
 	if fail := need(0, expected); fail != success {
@@ -285,7 +199,7 @@ func ShouldBeZeroValue(actual any, expected ...any) string {
 	}
 	zeroVal := reflect.Zero(reflect.TypeOf(actual)).Interface()
 	if !reflect.DeepEqual(zeroVal, actual) {
-		return serializer.serialize(zeroVal, actual, fmt.Sprintf(shouldHaveBeenZeroValue, actual))
+		return fmt.Sprintf(shouldHaveBeenZeroValue, actual)
 	}
 	return success
 }
@@ -298,7 +212,7 @@ func ShouldNotBeZeroValue(actual any, expected ...any) string {
 	}
 	zeroVal := reflect.Zero(reflect.TypeOf(actual)).Interface()
 	if reflect.DeepEqual(zeroVal, actual) {
-		return serializer.serialize(zeroVal, actual, fmt.Sprintf(shouldNotHaveBeenZeroValue, actual))
+		return fmt.Sprintf(shouldNotHaveBeenZeroValue, actual)
 	}
 	return success
 }

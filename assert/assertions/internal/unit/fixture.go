@@ -11,6 +11,8 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+
+	"github.com/smarty/gunit/assert"
 )
 
 func Run(fixture any, t *testing.T) {
@@ -52,7 +54,7 @@ func newFixture(t *testing.T, verbose bool) *Fixture {
 	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
 }
 
-func (this *Fixture) So(actual any, assert assertion, expected ...any) bool {
+func (this *Fixture) So(actual any, assert assert.Func, expected ...any) bool {
 	failure := assert(actual, expected...)
 	failed := len(failure) > 0
 	if failed {
@@ -96,9 +98,9 @@ const comparisonFormat = "Expected: [%s]\nActual:   [%s]"
 func (this *Fixture) Error(args ...any)            { this.fail(fmt.Sprint(args...)) }
 func (this *Fixture) Errorf(f string, args ...any) { this.fail(fmt.Sprintf(f, args...)) }
 
-func (this *Fixture) Print(a ...any)                 { fmt.Fprint(this.log, a...) }
-func (this *Fixture) Printf(format string, a ...any) { fmt.Fprintf(this.log, format, a...) }
-func (this *Fixture) Println(a ...any)               { fmt.Fprintln(this.log, a...) }
+func (this *Fixture) Print(a ...any)                 { _, _ = fmt.Fprint(this.log, a...) }
+func (this *Fixture) Printf(format string, a ...any) { _, _ = fmt.Fprintf(this.log, format, a...) }
+func (this *Fixture) Println(a ...any)               { _, _ = fmt.Fprintln(this.log, a...) }
 
 func (this *Fixture) Write(p []byte) (int, error) { return this.log.Write(p) }
 func (this *Fixture) Failed() bool                { return this.t.Failed() }
@@ -120,6 +122,3 @@ func (this *Fixture) recoverPanic(r any) {
 	this.Println(strings.TrimSpace(string(buffer)))
 	this.t.Fail()
 }
-
-// assertion is a copy of github.com/smarty/assertions.assertion.
-type assertion func(actual any, expected ...any) string

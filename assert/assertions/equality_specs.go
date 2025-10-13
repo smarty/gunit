@@ -16,7 +16,6 @@ var equalitySpecs = []specification{
 	timeEquality{},
 	pointerEquality{},
 	deepEquality{},
-	equalityMethodSpecification{}, // Now that we have the timeEquality spec, this could probably be removed..
 }
 
 // deepEquality compares any two values using reflect.DeepEqual.

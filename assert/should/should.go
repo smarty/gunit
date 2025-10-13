@@ -11,7 +11,6 @@ var (
 	BeBlank                = assertions.ShouldBeBlank
 	BeChronological        = assertions.ShouldBeChronological
 	BeEmpty                = assertions.ShouldBeEmpty
-	BeError                = assertions.ShouldBeError
 	BeFalse                = assertions.ShouldBeFalse
 	BeGreaterThan          = assertions.ShouldBeGreaterThan
 	BeGreaterThanOrEqualTo = assertions.ShouldBeGreaterThanOrEqualTo
@@ -26,9 +25,6 @@ var (
 	ContainSubstring       = assertions.ShouldContainSubstring
 	EndWith                = assertions.ShouldEndWith
 	Equal                  = assertions.ShouldEqual
-	EqualJSON              = assertions.ShouldEqualJSON
-	EqualTrimSpace         = assertions.ShouldEqualTrimSpace
-	EqualWithout           = assertions.ShouldEqualWithout
 	HappenAfter            = assertions.ShouldHappenAfter
 	HappenBefore           = assertions.ShouldHappenBefore
 	HappenBetween          = assertions.ShouldHappenBetween
@@ -38,7 +34,6 @@ var (
 	HappenWithin           = assertions.ShouldHappenWithin
 	HaveLength             = assertions.ShouldHaveLength
 	HaveSameTypeAs         = assertions.ShouldHaveSameTypeAs
-	Implement              = assertions.ShouldImplement
 	NotAlmostEqual         = assertions.ShouldNotAlmostEqual
 	NotBeBetween           = assertions.ShouldNotBeBetween
 	NotBeBetweenOrEqual    = assertions.ShouldNotBeBetweenOrEqual
@@ -56,33 +51,11 @@ var (
 	NotHappenOnOrBetween   = assertions.ShouldNotHappenOnOrBetween
 	NotHappenWithin        = assertions.ShouldNotHappenWithin
 	NotHaveSameTypeAs      = assertions.ShouldNotHaveSameTypeAs
-	NotImplement           = assertions.ShouldNotImplement
 	NotPanic               = assertions.ShouldNotPanic
 	NotPanicWith           = assertions.ShouldNotPanicWith
-	NotPointTo             = assertions.ShouldNotPointTo
-	NotResemble            = assertions.ShouldNotResemble
 	NotStartWith           = assertions.ShouldNotStartWith
 	Panic                  = assertions.ShouldPanic
 	PanicWith              = assertions.ShouldPanicWith
-	PointTo                = assertions.ShouldPointTo
-	Resemble               = assertions.ShouldResemble
 	StartWith              = assertions.ShouldStartWith
 	Wrap                   = assertions.ShouldWrap
 )
-
-// So is a variation on other such functions/methods in this module.
-// Since it is defined alongside all these assertion definitions it allows
-// performing assertions in tests with a single import of this package.
-// Example:
-// should.So(t, 1, should.Equal, 1)
-func So(t testingT, actual any, assertion assertions.SoFunc, expected ...any) {
-	if ok, result := assertions.So(actual, assertion, expected...); !ok {
-		t.Helper()
-		t.Errorf("\n%s", result)
-	}
-}
-
-type testingT interface {
-	Helper()
-	Errorf(string, ...any)
-}

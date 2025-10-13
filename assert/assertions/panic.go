@@ -81,7 +81,7 @@ func ShouldPanicWith(actual any, expected ...any) (message string) {
 			if errFound && expectedFound && errors.Is(recoveredErr, expectedErr) {
 				message = success
 			} else if equal := ShouldEqual(recovered, expected[0]); equal != success {
-				message = serializer.serialize(expected[0], recovered, fmt.Sprintf(shouldHavePanickedWith, expected[0], recovered))
+				message = fmt.Sprintf(shouldHavePanickedWith, expected[0], recovered)
 			} else {
 				message = success
 			}
