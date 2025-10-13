@@ -62,7 +62,7 @@ func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
 // Example: this.So(actual, should.Equal, expected)
 func (this *Fixture) So(actual any, assert assert.Func, expected ...any) bool {
 	result := assert(actual, expected...)
-	if strings.HasPrefix(result, "<<<FATAL>>> ") {
+	if strings.HasPrefix(result, "<<<FATAL>>>\n") {
 		this.fatal(result)
 	}
 	failed := result != ""
