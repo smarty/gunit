@@ -59,8 +59,8 @@ func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
 // So is a convenience method for reporting assertion failure messages,
 // from the many assertion functions found in github.com/smarty/gunit/assert/should.
 // Example: this.So(actual, should.Equal, expected)
-func (this *Fixture) So(actual any, assert assert.Func, expected ...any) bool {
-	result := assert(actual, expected...)
+func (this *Fixture) So(actual any, assertion assert.Func, expected ...any) bool {
+	result := assertion(actual, expected...)
 	if strings.HasPrefix(result, "<<<FATAL>>>\n") {
 		this.fatal(result)
 	}
