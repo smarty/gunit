@@ -39,8 +39,8 @@ import (
     "time"
 	"testing"
 
-	"github.com/smarty/gunit/v2"
-	"github.com/smarty/gunit/v2/should"
+	"github.com/smarty/gunit/"
+	"github.com/smarty/gunit/assert/should"
 )
 
 func TestExampleFixture(t *testing.T) {
