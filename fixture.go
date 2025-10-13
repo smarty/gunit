@@ -12,6 +12,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/smarty/gunit/assert"
 	"github.com/smarty/gunit/reports"
 )
 
@@ -59,13 +60,16 @@ func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
 }
 
 // So is a convenience method for reporting assertion failure messages,
-// from the many assertion functions found in github.com/smarty/assertions/should.
+// from the many assertion functions found in github.com/smarty/gunit/assert/should.
 // Example: this.So(actual, should.Equal, expected)
-func (this *Fixture) So(actual any, assert assertion, expected ...any) bool {
-	failure := assert(actual, expected...)
-	failed := len(failure) > 0
+func (this *Fixture) So(actual any, assert assert.Func, expected ...any) bool {
+	result := assert(actual, expected...)
+	if strings.HasPrefix(result, "<<<FATAL>>> ") {
+		this.fatal(result)
+	}
+	failed := result != ""
 	if failed {
-		this.fail(failure)
+		this.fail(result)
 	}
 	return !failed
 }
@@ -111,6 +115,9 @@ func (this *Fixture) fail(failure string) {
 	this.t.Fail()
 	this.Print(reports.FailureReport(failure, reports.StackTrace()))
 }
+func (this *Fixture) fatal(failure string) {
+	this.t.Fatalf(reports.FailureReport(failure, reports.StackTrace()))
+}
 
 func (this *Fixture) finalize() {
 	this.t.Helper()
@@ -129,6 +136,3 @@ func (this *Fixture) recoverPanic(r any) {
 }
 
 const comparisonFormat = "Expected: [%s]\nActual:   [%s]"
-
-// assertion is a copy of github.com/smarty/assertions.assertion.
-type assertion func(actual any, expected ...any) string

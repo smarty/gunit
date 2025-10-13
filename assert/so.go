@@ -1,6 +1,6 @@
 package assert
 
-func So(t testingT, actual any, assertion assertion, expected ...any) {
+func So(t testingT, actual any, assertion Func, expected ...any) {
 	t.Helper()
 	result := assertion(actual, expected...)
 	if result != "" {
@@ -13,5 +13,4 @@ type testingT interface {
 	Error(...any)
 }
 
-// assertion is a copy of github.com/smarty/gunit.assertion. TODO: export and make this the canonical definition.
-type assertion func(actual any, expected ...any) string
+type Func func(actual any, expected ...any) string
