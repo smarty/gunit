@@ -2,7 +2,13 @@
 // functions in the assertions package.
 package should
 
-import "github.com/smarty/gunit/assert/assertions"
+import (
+	"github.com/smarty/gunit/assert"
+	"github.com/smarty/gunit/assert/assertions"
+)
+
+// So is an alias of assert.So, preserved by popular demand, though use of assert.So is preferred for new code.
+var So = assert.So
 
 var (
 	AlmostEqual            = assertions.ShouldAlmostEqual
