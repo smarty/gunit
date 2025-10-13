@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/smarty/gunit"
+	"github.com/smarty/gunit/assert/should"
 )
 
 func TestExampleFixture(t *testing.T) {
@@ -39,18 +40,8 @@ func (this *ExampleFixture) TestWithPrint() {
 
 // This is an actual test case:
 func (this *ExampleFixture) TestWithAssertions() {
-	// Built-in assertion functions:
-	this.Assert(1 == 1, "One should equal one")
-	this.AssertEqual(1, 1)
-	this.AssertDeepEqual(1, 1)
-	this.AssertSprintEqual(1, 1.0)
-	this.AssertSprintfEqual(uint(1), int64(1), "%d")
-
-	// External assertion functions from the `should` package:
-	// import "github.com/smarty/assertions/should"
-	// ...
-	// this.So(42, should.Equal, 42)
-	// this.So("Hello, World!", should.ContainSubstring, "World")
+	this.So(42, should.Equal, 42)
+	this.So("Hello, World!", should.ContainSubstring, "World")
 }
 
 func (this *ExampleFixture) SkipTestWithNothing() {

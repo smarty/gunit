@@ -55,7 +55,7 @@ func (this *testCase) skip(innerT *testing.T) {
 	innerT.Skip("\n" + this.positions[innerT.Name()])
 }
 func (this *testCase) skipLong(innerT *testing.T) {
-	innerT.Skipf("Skipped long-running test:\n" + this.positions[innerT.Name()])
+	innerT.Skip("Skipped long-running test:\n" + this.positions[innerT.Name()])
 }
 func (this *testCase) run(innerT *testing.T) {
 	innerT.Helper()

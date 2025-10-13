@@ -36,7 +36,7 @@ func (this *FixtureParsingFixture) AssertFixturesParsedAccuratelyAndCompletely()
 }
 func (this *FixtureParsingFixture) assertFileWasReadWithoutError() {
 	if this.readError != nil {
-		this.t.Error("Problem: cound't read the input file:", this.readError)
+		this.t.Error("Problem: couldn't read the input file:", this.readError)
 		this.t.FailNow()
 	}
 }
@@ -56,7 +56,7 @@ func (this *FixtureParsingFixture) assertParsedFixturesAreCorrect() {
 	for x := 0; x < len(expected); x++ {
 		key := this.fixtures[x].StructName
 		if !reflect.DeepEqual(expected[key], this.fixtures[x]) {
-			this.t.Errorf("\nExpected: [%v]\nActual:   [%v]", expected[key], this.fixtures[x])
+			this.t.Errorf("\nExpected: [%#v]\nActual:   [%#v]", expected[key], this.fixtures[x])
 		}
 	}
 }
@@ -73,11 +73,11 @@ var expected = map[string]*fixtureInfo{
 	"BowlingGameScoringTests": {
 		StructName: "BowlingGameScoringTests",
 		TestCases: []*testCaseInfo{
-			{CharacterPosition: 321, Name: "TestAfterAllGutterBallsTheScoreShouldBeZero"},
-			{CharacterPosition: 476, Name: "TestAfterAllOnesTheScoreShouldBeTwenty"},
-			{CharacterPosition: 627, Name: "SkipTestASpareDeservesABonus"},
-			{CharacterPosition: 704, Name: "LongTestPerfectGame"},
-			{CharacterPosition: 838, Name: "SkipLongTestPerfectGame"},
+			{CharacterPosition: 323, Name: "TestAfterAllGutterBallsTheScoreShouldBeZero"},
+			{CharacterPosition: 478, Name: "TestAfterAllOnesTheScoreShouldBeTwenty"},
+			{CharacterPosition: 629, Name: "SkipTestASpareDeservesABonus"},
+			{CharacterPosition: 706, Name: "LongTestPerfectGame"},
+			{CharacterPosition: 840, Name: "SkipLongTestPerfectGame"},
 		},
 	},
 }

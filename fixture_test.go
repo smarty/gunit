@@ -2,7 +2,9 @@ package gunit
 
 import (
 	"bytes"
+	"context"
 	"fmt"
+	"io"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -387,11 +389,13 @@ type FakeTestingT struct {
 	failed bool
 }
 
-func (self *FakeTestingT) Helper()                           {}
-func (self *FakeTestingT) Name() string                      { return "FakeTestingT" }
-func (self *FakeTestingT) Log(args ...any)                   { fmt.Fprint(self.log, args...) }
-func (self *FakeTestingT) Fail()                             { self.failed = true }
-func (self *FakeTestingT) Failed() bool                      { return self.failed }
+func (this *FakeTestingT) Helper()                           {}
+func (this *FakeTestingT) Name() string                      { return "FakeTestingT" }
+func (this *FakeTestingT) Context() context.Context          { return context.Background() }
+func (this *FakeTestingT) Output() io.Writer                 { return this.log }
+func (this *FakeTestingT) Log(args ...any)                   { _, _ = fmt.Fprint(this.log, args...) }
+func (this *FakeTestingT) Fail()                             { this.failed = true }
+func (this *FakeTestingT) Failed() bool                      { return this.failed }
 func (this *FakeTestingT) Errorf(format string, args ...any) {}
 func (this *FakeTestingT) Fatalf(format string, args ...any) {
 	this.Fail()

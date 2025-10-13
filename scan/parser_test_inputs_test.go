@@ -3,8 +3,8 @@ package scan
 const comprehensiveTestCode = `package parse
 
 import (
-	"github.com/smarty/assertions/should"
 	"github.com/smarty/gunit"
+	"github.com/smarty/gunit/assert/should"
 )
 
 type BowlingGameScoringTests struct {

@@ -4,13 +4,13 @@
 package gunit
 
 import (
-	"bytes"
 	"fmt"
 	"reflect"
 	"runtime/debug"
 	"strings"
 	"testing"
 
+	"github.com/smarty/gunit/assert"
 	"github.com/smarty/gunit/reports"
 )
 
@@ -32,14 +32,13 @@ import (
 // github.com/smarty/assertions/should
 type Fixture struct {
 	t       TestingT
-	log     *bytes.Buffer
 	verbose bool
 }
 
 func newFixture(t TestingT, verbose bool) *Fixture {
 	t.Helper()
 
-	return &Fixture{t: t, verbose: verbose, log: &bytes.Buffer{}}
+	return &Fixture{t: t, verbose: verbose}
 }
 
 // T exposes the TestingT (*testing.T) instance.
@@ -58,13 +57,16 @@ func (this *Fixture) Run(name string, test func(fixture *Fixture)) {
 }
 
 // So is a convenience method for reporting assertion failure messages,
-// from the many assertion functions found in github.com/smarty/assertions/should.
+// from the many assertion functions found in github.com/smarty/gunit/assert/should.
 // Example: this.So(actual, should.Equal, expected)
-func (this *Fixture) So(actual any, assert assertion, expected ...any) bool {
-	failure := assert(actual, expected...)
-	failed := len(failure) > 0
+func (this *Fixture) So(actual any, assertion assert.Func, expected ...any) bool {
+	result := assertion(actual, expected...)
+	if strings.HasPrefix(result, "<<<FATAL>>>\n") {
+		this.fatal(result)
+	}
+	failed := result != ""
 	if failed {
-		this.fail(failure)
+		this.fail(result)
 	}
 	return !failed
 }
@@ -97,18 +99,27 @@ func (this *Fixture) AssertDeepEqual(expected, actual any) bool {
 func (this *Fixture) Error(args ...any)            { this.fail(fmt.Sprint(args...)) }
 func (this *Fixture) Errorf(f string, args ...any) { this.fail(fmt.Sprintf(f, args...)) }
 
-func (this *Fixture) Print(a ...any)            { fmt.Fprintln(this.log, a...) }
-func (this *Fixture) Printf(f string, a ...any) { fmt.Fprintln(this.log, fmt.Sprintf(f, a...)) }
-func (this *Fixture) Println(a ...any)          { fmt.Fprintln(this.log, a...) }
+func (this *Fixture) Print(a ...any) {
+	_, _ = fmt.Fprintln(this.t.Output(), a...)
+}
+func (this *Fixture) Printf(f string, a ...any) {
+	_, _ = fmt.Fprintln(this.t.Output(), fmt.Sprintf(f, a...))
+}
+func (this *Fixture) Println(a ...any) {
+	_, _ = fmt.Fprintln(this.t.Output(), a...)
+}
 
 // Write implements io.Writer. There are rare times when this is convenient (debugging via `log.SetOutput(fixture)`).
-func (this *Fixture) Write(p []byte) (int, error) { return this.log.Write(p) }
+func (this *Fixture) Write(p []byte) (int, error) { return this.t.Output().Write(p) }
 func (this *Fixture) Failed() bool                { return this.t.Failed() }
 func (this *Fixture) Name() string                { return this.t.Name() }
 
 func (this *Fixture) fail(failure string) {
 	this.t.Fail()
 	this.Print(reports.FailureReport(failure, reports.StackTrace()))
+}
+func (this *Fixture) fatal(failure string) {
+	this.t.Fatalf(reports.FailureReport(failure, reports.StackTrace()))
 }
 
 func (this *Fixture) finalize() {
@@ -117,10 +128,6 @@ func (this *Fixture) finalize() {
 	if r := recover(); r != nil {
 		this.recoverPanic(r)
 	}
-
-	if this.t.Failed() || (this.verbose && this.log.Len() > 0) {
-		this.t.Log("\n" + strings.TrimSpace(this.log.String()) + "\n")
-	}
 }
 func (this *Fixture) recoverPanic(r any) {
 	this.t.Fail()
@@ -128,6 +135,3 @@ func (this *Fixture) recoverPanic(r any) {
 }
 
 const comparisonFormat = "Expected: [%s]\nActual:   [%s]"
-
-// assertion is a copy of github.com/smarty/assertions.assertion.
-type assertion func(actual any, expected ...any) string

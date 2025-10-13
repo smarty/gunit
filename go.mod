@@ -1,3 +1,3 @@
 module github.com/smarty/gunit
 
-go 1.22
+go 1.25
