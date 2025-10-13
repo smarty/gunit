@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/smarty/gunit"
+	"github.com/smarty/gunit/assert/should"
 )
 
 func TestBowlingGameScoringFixture(t *testing.T) {
@@ -51,7 +52,7 @@ func (this *BowlingGameScoringFixture) TestPerfectGame() {
 }
 
 func (this *BowlingGameScoringFixture) assertScore(expected int) {
-	this.AssertEqual(expected, this.game.Score())
+	this.So(this.game.Score(), should.Equal, expected)
 }
 func (this *BowlingGameScoringFixture) rollMany(times, pins int) {
 	for x := 0; x < times; x++ {
