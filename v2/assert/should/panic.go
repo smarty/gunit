@@ -33,10 +33,7 @@ func (negated) Panic(actual any, expected ...any) (err error) {
 	defer func() {
 		r := recover()
 		if panicked {
-			err = failure(""+
-				"provided func should not have"+
-				"panicked but it did with: %s", r,
-			)
+			err = failure("provided func should not have panicked but it did with: %s", r)
 		}
 	}()
 
