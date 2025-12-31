@@ -3,6 +3,19 @@
 
 # gunit
 
+## v2
+
+[![GoDoc](https://godoc.org/github.com/smarty/gunit/v2?status.svg)](http://godoc.org/github.com/smarty/gunit/v2)
+
+Installation:
+
+```
+$ go get github.com/smarty/gunit/v2
+```
+
+
+## v1
+
 [![GoDoc](https://godoc.org/github.com/smarty/gunit?status.svg)](http://godoc.org/github.com/smarty/gunit)
 
 Installation:
@@ -39,8 +52,8 @@ import (
     "time"
 	"testing"
 
-	"github.com/smarty/gunit/"
-	"github.com/smarty/gunit/assert/should"
+	"github.com/smarty/gunit/v2"
+	"github.com/smarty/gunit/v2/should"
 )
 
 func TestExampleFixture(t *testing.T) {
