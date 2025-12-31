@@ -78,7 +78,6 @@ func (singleton) ParallelTests() Option {
 	return func(c *config) {
 		c.parallelTests = true
 		c.freshFixture = true
-		Options.FreshFixture()(c)
 	}
 }
 
