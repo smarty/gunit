@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/smarty/gunit/v2/should/internal/go-diff/diffmatchpatch"
-	"github.com/smarty/gunit/v2/should/internal/go-render/render"
+	diffmatchpatch2 "github.com/smarty/gunit/v2/assert/should/internal/go-diff/diffmatchpatch"
+	"github.com/smarty/gunit/v2/assert/should/internal/go-render/render"
 )
 
 // Equal verifies that the actual value is equal to the expected value.
@@ -99,7 +99,7 @@ func simpleDiff(a, b any) string {
 }
 
 func prettyDiff(actual, expected any) string {
-	diff := diffmatchpatch.New()
+	diff := diffmatchpatch2.New()
 	diffs := diff.DiffMain(render.Render(expected), render.Render(actual), false)
 	if prettyDiffIsLikelyToBeHelpful(diffs) {
 		return fmt.Sprintf("\nDiff: '%s'", diff.DiffPrettyText(diffs))
@@ -109,19 +109,19 @@ func prettyDiff(actual, expected any) string {
 
 // prettyDiffIsLikelyToBeHelpful returns true if the diff listing contains
 // more 'equal' segments than 'deleted'/'inserted' segments.
-func prettyDiffIsLikelyToBeHelpful(diffs []diffmatchpatch.Diff) bool {
+func prettyDiffIsLikelyToBeHelpful(diffs []diffmatchpatch2.Diff) bool {
 	equal, deleted, inserted := measureDiffTypeLengths(diffs)
 	return equal > deleted && equal > inserted
 }
 
-func measureDiffTypeLengths(diffs []diffmatchpatch.Diff) (equal, deleted, inserted int) {
+func measureDiffTypeLengths(diffs []diffmatchpatch2.Diff) (equal, deleted, inserted int) {
 	for _, segment := range diffs {
 		switch segment.Type {
-		case diffmatchpatch.DiffEqual:
+		case diffmatchpatch2.DiffEqual:
 			equal += len(segment.Text)
-		case diffmatchpatch.DiffDelete:
+		case diffmatchpatch2.DiffDelete:
 			deleted += len(segment.Text)
-		case diffmatchpatch.DiffInsert:
+		case diffmatchpatch2.DiffInsert:
 			inserted += len(segment.Text)
 		}
 	}

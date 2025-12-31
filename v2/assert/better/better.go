@@ -6,8 +6,8 @@ package better
 import (
 	"fmt"
 
-	"github.com/smarty/gunit/v2"
-	"github.com/smarty/gunit/v2/should"
+	"github.com/smarty/gunit/v2/assert"
+	"github.com/smarty/gunit/v2/assert/should"
 )
 
 var (
@@ -36,18 +36,18 @@ var (
 
 // NOT constrains all negated assertions to their own 'namespace'.
 var NOT = struct {
-	BeChronological        gunit.Assertion
-	BeEmpty                gunit.Assertion
-	BeGreaterThan          gunit.Assertion
-	BeGreaterThanOrEqualTo gunit.Assertion
-	BeIn                   gunit.Assertion
-	BeLessThan             gunit.Assertion
-	BeLessThanOrEqualTo    gunit.Assertion
-	BeNil                  gunit.Assertion
-	Contain                gunit.Assertion
-	Equal                  gunit.Assertion
-	HappenOn               gunit.Assertion
-	Panic                  gunit.Assertion
+	BeChronological        assert.Assertion
+	BeEmpty                assert.Assertion
+	BeGreaterThan          assert.Assertion
+	BeGreaterThanOrEqualTo assert.Assertion
+	BeIn                   assert.Assertion
+	BeLessThan             assert.Assertion
+	BeLessThanOrEqualTo    assert.Assertion
+	BeNil                  assert.Assertion
+	Contain                assert.Assertion
+	Equal                  assert.Assertion
+	HappenOn               assert.Assertion
+	Panic                  assert.Assertion
 }{
 	BeChronological:        wrapFatal(should.NOT.BeChronological),
 	BeEmpty:                wrapFatal(should.NOT.BeEmpty),
@@ -63,7 +63,7 @@ var NOT = struct {
 	Panic:                  wrapFatal(should.NOT.Panic),
 }
 
-func wrapFatal(original gunit.Assertion) gunit.Assertion {
+func wrapFatal(original assert.Assertion) assert.Assertion {
 	return func(actual any, expected ...any) error {
 		err := original(actual, expected...)
 		if err != nil {

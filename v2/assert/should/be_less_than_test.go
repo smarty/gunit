@@ -4,7 +4,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/smarty/gunit/v2/should"
+	"github.com/smarty/gunit/v2/assert/should"
 )
 
 func TestShouldBeLessThan(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/smarty/gunit/v2"
-	"github.com/smarty/gunit/v2/should"
+	"github.com/smarty/gunit/v2/assert/should"
 )
 
 func TestSuiteWithoutEmbeddedFixture(t *testing.T) {

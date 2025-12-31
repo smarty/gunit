@@ -1,9 +1,9 @@
-package gunit
+package assert
 
 import (
 	"errors"
 
-	"github.com/smarty/gunit/v2/should"
+	"github.com/smarty/gunit/v2/assert/should"
 )
 
 func So(t testingT, actual any, assertion Assertion, expected ...any) {

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/smarty/gunit/v2/should"
+	"github.com/smarty/gunit/v2/assert/should"
 )
 
 func TestShouldHappenOn(t *testing.T) {
