@@ -42,15 +42,15 @@ func EndWith(actual any, expected ...any) error {
 		}
 
 		full := actual.(string)
-		prefix := EXPECTED.(string)
-		if strings.HasSuffix(full, prefix) {
+		suffix := EXPECTED.(string)
+		if strings.HasSuffix(full, suffix) {
 			return nil
 		}
 	}
 
 	return failure("\n"+
-		"   proposed prefix: %#v\n"+
-		"   not a prefix of: %#v",
+		"   proposed suffix: %#v\n"+
+		"   not a suffix of: %#v",
 		EXPECTED,
 		actual,
 	)
