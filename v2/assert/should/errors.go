@@ -50,11 +50,14 @@ func readLines(path string) []string {
 }
 func readSourceCodeLine(readLines func(string) []string, fileLineRaw string) (string, bool) {
 	fileLineJoined := strings.Fields(strings.TrimSpace(fileLineRaw))[0]
-	fileLine := strings.Split(fileLineJoined, ":")
-	sourceCodeLines := readLines(fileLine[0])
-	lineNumber, _ := strconv.Atoi(fileLine[1])
+	lastColon := strings.LastIndex(fileLineJoined, ":")
+	if lastColon < 0 {
+		return "", false
+	}
+	sourceCodeLines := readLines(fileLineJoined[:lastColon])
+	lineNumber, _ := strconv.Atoi(fileLineJoined[lastColon+1:])
 	lineNumber--
-	if len(sourceCodeLines) <= lineNumber {
+	if lineNumber < 0 || len(sourceCodeLines) <= lineNumber {
 		return "", false
 	}
 	return sourceCodeLines[lineNumber], true

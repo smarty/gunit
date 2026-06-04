@@ -36,3 +36,19 @@ func TestStack_NoFilteredLines(t *testing.T) {
 func fakeReadLines(string) []string {
 	return nil
 }
+
+func TestReadSourceCodeLine_WindowsPath(t *testing.T) {
+	reader := func(path string) []string {
+		if path == `C:/path/to/file_test.go` {
+			return []string{"line-0", "the expected line", "line-2"}
+		}
+		return nil
+	}
+	line, ok := readSourceCodeLine(reader, "\tC:/path/to/file_test.go:2")
+	if !ok {
+		t.Errorf("Expected ok=true for valid Windows path")
+	}
+	if line != "the expected line" {
+		t.Errorf("unexpected line: %q", line)
+	}
+}
