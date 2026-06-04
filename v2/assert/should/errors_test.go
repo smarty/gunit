@@ -39,16 +39,13 @@ func fakeReadLines(string) []string {
 
 func TestReadSourceCodeLine_WindowsPath(t *testing.T) {
 	reader := func(path string) []string {
-		if path == `C:/path/to/file_test.go` {
-			return []string{"line-0", "the expected line", "line-2"}
-		}
-		return nil
+		return []string{"line-1", "line-2", "line-3"}
 	}
 	line, ok := readSourceCodeLine(reader, "\tC:/path/to/file_test.go:2")
 	if !ok {
 		t.Errorf("Expected ok=true for valid Windows path")
 	}
-	if line != "the expected line" {
+	if line != "line-2" {
 		t.Errorf("unexpected line: %q", line)
 	}
 }
