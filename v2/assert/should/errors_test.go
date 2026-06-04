@@ -49,3 +49,15 @@ func TestReadSourceCodeLine_WindowsPath(t *testing.T) {
 		t.Errorf("unexpected line: %q", line)
 	}
 }
+func TestReadSourceCodeLine_MissingSeparatorAndLineNumber(t *testing.T) {
+	reader := func(path string) []string {
+		return []string{"line-1", "line-2", "line-3"}
+	}
+	line, ok := readSourceCodeLine(reader, "\t/path/to/file_test.go")
+	if ok {
+		t.Errorf("Expected ok=false for missing line number")
+	}
+	if line != "" {
+		t.Errorf("unexpected content: %q", line)
+	}
+}
