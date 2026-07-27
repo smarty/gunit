@@ -1,10 +1,14 @@
 package gunit
 
+import "testing"
+
 type config struct {
 	skipAllTests    bool
+	skipReason      string
 	freshFixture    bool
 	parallelFixture bool
 	parallelTests   bool
+	short           func() bool
 }
 
 // Option is a function that modifies a config.
@@ -25,6 +29,19 @@ var Options singleton
 func (singleton) SkipAll() Option {
 	return func(this *config) {
 		this.skipAllTests = true
+	}
+}
+
+// LongRunning signals to Run that, when `go test` was invoked
+// with the -short flag, each and every "Test" method in the
+// corresponding fixture is to be skipped (as if each had been
+// prefixed with "Skip").
+func (singleton) LongRunning() Option {
+	return func(this *config) {
+		if this.short() {
+			Options.SkipAll()(this)
+			this.skipReason = "Skipping long-running fixture (-short)"
+		}
 	}
 }
 
@@ -77,7 +94,7 @@ func (singleton) ParallelFixture() Option {
 func (singleton) ParallelTests() Option {
 	return func(c *config) {
 		c.parallelTests = true
-		c.freshFixture = true
+		Options.FreshFixture()(c)
 	}
 }
 
@@ -97,13 +114,36 @@ func (singleton) UnitTests() Option {
 // signals to Run that the test suite should be
 // treated as an integration test suite, avoiding
 // parallelism and utilizing shared fixtures to
-// allow reuse of potentially expensive resources.
+// allow reuse of potentially expensive resources,
+// and skipping the entire fixture when `go test`
+// is invoked with the -short flag.
 func (singleton) IntegrationTests() Option {
 	return func(c *config) {
 		Options.SharedFixture()(c)
+		Options.LongRunning()(c)
+	}
+}
+
+// shortFunc supplies a func of the same signature
+// as testing.Short, which is the default.
+func (singleton) shortFunc(short func() bool) Option {
+	return func(this *config) {
+		this.short = short
+	}
+}
+
+// skipReason supplies text for the value passed to t.Skip
+// in the event that no test methods are able to be executed.
+func (singleton) skipReason(reason string) Option {
+	return func(c *config) {
+		c.skipReason = reason
 	}
 }
 
 var defaultOptions = []Option{
 	Options.UnitTests(),
+	Options.shortFunc(testing.Short),
+	Options.skipReason(defaultSkipReason),
 }
+
+const defaultSkipReason = "NOT IMPLEMENTED (no test cases defined, or they are all marked as skipped)"

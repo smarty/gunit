@@ -71,7 +71,7 @@ func Run(outerFixture any, t *testing.T, options ...Option) {
 	}
 
 	if len(testNames) == 0 {
-		t.Skip("NOT IMPLEMENTED (no test cases defined, or they are all marked as skipped)")
+		t.Skip(config.skipReason)
 		return
 	}
 
